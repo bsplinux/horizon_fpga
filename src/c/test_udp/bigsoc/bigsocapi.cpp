@@ -55,6 +55,7 @@ struct bigsoc_imp_t {
     int server_port;
     unsigned int server_ip;
     unsigned int frame_number;
+    int active=0;
 };
 
 struct msg_header_t {
@@ -316,36 +317,11 @@ static int is_client_wait(struct bigsoc_t* handle) {
 //===================================== UDP ==================================
 int udp_write(struct bigsoc_t *handle,void*pData,int size,unsigned int flags,int dst_ip,int dst_port){
    bigsoc_imp_t* p_sys = (bigsoc_imp_t*)handle->p_sys;
-   unsigned char *p_buf = (unsigned char *)pData;
-   unsigned char *tx_buffer=(unsigned char *)malloc(0x10000);
-   udp_hdr_t udp_hdr;
-    udp_hdr.total_size = size;
-    udp_hdr.offset     =0;
-    udp_hdr.frame_number = p_sys->frame_number++;
-    if(p_sys->udp_socket <=0){
-        return -1;
-    }
-	if(dst_ip ==0 )
-		dst_ip = p_sys->server_ip;
-
-	if(dst_port ==0)
-		dst_port = p_sys->server_port;
-    while(size>0){
-        int ret=0;
-        memcpy(tx_buffer,&udp_hdr,sizeof(udp_hdr));
-        int tx_size = _MIN(size,0x8000-sizeof(sizeof(udp_hdr)));
-        memcpy(&tx_buffer[sizeof(udp_hdr)],&p_buf[udp_hdr.offset],tx_size);
-        ret = Socket_SendTo(p_sys->udp_socket,(unsigned char*)tx_buffer,tx_size+sizeof(udp_hdr),dst_ip,dst_port);
-		printf("%s.%d dip(0x%x) dport(%d)\n\r",__func__,__LINE__,dst_ip,dst_port);
-        if(ret <=0){
-            break;
-        }
-        udp_hdr.offset += (ret - sizeof(udp_hdr));
-        size -= (ret - sizeof(udp_hdr));
-    }
-    if(tx_buffer)
-        free(tx_buffer);
-    return udp_hdr.total_size - size;
+        int ret;
+        ret = Socket_SendTo(p_sys->udp_socket,(unsigned char*)pData,size,dst_ip,dst_port);
+		//printf("%s.%d dip(0x%x) dport(%d)\n\r",__func__,__LINE__,dst_ip,dst_port);
+            
+    return ret;
 }
 
 int udp_is_there_data(struct bigsoc_t *handle,int wait_ms){
@@ -362,22 +338,8 @@ int udp_is_client_wait(struct bigsoc_t *handle){
 
 int udp_read(struct bigsoc_t *handle,void*pData,int size,int &src_ip,int & src_port,unsigned int flags){
     bigsoc_imp_t* p_sys = (bigsoc_imp_t*)handle->p_sys;
-    unsigned char *p_buf = (unsigned char *)pData;
-    int  rx_size=0;
-    int err_flag=0;
- //   unsigned int src_ip;
-//    unsigned short src_port;
-    unsigned char *rx_buffer=(unsigned char *)malloc(0x10000);
-    udp_hdr_t *p_udp_hdr = (udp_hdr_t *)rx_buffer;
-    int offset =0;
-
-    while(1){
-
-        if(p_sys->udp_socket<0){
-            if((p_sys->server_ip >>24) >= 0xe0 && (p_sys->server_ip >>24) <= 0xef ){
-                  //  p_sys->udp_socket = Socket_MUDPServer(p_sys->server_ip,p_sys->server_port);
-              }
-        }
+    int rx_size=0;
+     while(p_sys->active){
         if(p_sys->udp_socket<0){
             return -1;
         }
@@ -391,52 +353,17 @@ int udp_read(struct bigsoc_t *handle,void*pData,int size,int &src_ip,int & src_p
 			
             continue;
         }
-				
-        if(ret >0){
-           rx_size = Socket_ReceiveFrom(p_sys->udp_socket,rx_buffer,0x10000,(unsigned int *)&src_ip,(unsigned short  *)&src_port);
-           if(rx_size <= sizeof(udp_hdr_t)){
-              break;
-           }
-           rx_size -= sizeof(udp_hdr_t);
-           if(offset != p_udp_hdr->offset){
-               offset =0;
-               if((flags & BIT(BIGSOC_WAIT_FOR_CLIENT)==0)){
-                    break;
-               }
-               continue;
-           }
-           if(offset + rx_size   > p_udp_hdr->total_size){
-               offset =0;
-               if((flags & BIT(BIGSOC_WAIT_FOR_CLIENT)==0)){
-                  //  break;
-               }
-               continue;
-           }
-
-           if(offset + rx_size   > size){
-               offset =0;
-               if((flags & BIT(BIGSOC_WAIT_FOR_CLIENT)==0)){
-                    //break;
-               }
-               continue;
-           }
-
-           memcpy(&p_buf[p_udp_hdr->offset],&rx_buffer[sizeof(udp_hdr_t)],rx_size);
-           offset = p_udp_hdr->offset + rx_size;
-           if(offset == p_udp_hdr->total_size){
-               return offset;
-           }
-        }
-		
+        rx_size = Socket_ReceiveFrom(p_sys->udp_socket,(unsigned char *)pData,size,(unsigned int *)&src_ip,(unsigned short  *)&src_port);
+       		
     }
-    return -offset;
+    return rx_size;
 }
 
 void udp_close(struct bigsoc_t *&handle){
   bigsoc_imp_t* p_sys = (bigsoc_imp_t*)handle->p_sys;
   bigsoc_t* p_tmp = handle;
 
-
+   p_sys->active =0;
   if(p_sys->udp_socket>0){
       Socket_Close(p_sys->udp_socket);
   }
@@ -463,6 +390,7 @@ bigsoc_t*  bigsoc_open(bigsoc_open_params_t& params) {
     if(params.protocol == BIGSOC_PROTOCOL_UDP){
         p_ret = (bigsoc_t*)calloc(1, sizeof(bigsoc_t));
         p_sys = (bigsoc_imp_t*)calloc(1, sizeof(bigsoc_imp_t));
+        p_sys->active =1;
         p_ret->write            = udp_write;
         p_ret->read             = udp_read;
         p_ret->close            = udp_close;
