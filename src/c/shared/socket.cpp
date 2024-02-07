@@ -20,7 +20,7 @@ typedef int socklen_t;
 typedef char raw_type;       // Type used for raw data on this platform
 #define perror(a)
 #elif defined(LINUX)
-//#include "oslite.h"
+#include "oslite.h"
 
 //#include <linux/tcp.h>
 

@@ -138,15 +138,15 @@ int            is_control (char *token_p, short * construct_p)
 {
     int            found = 1;
 
-    if (is_matched (token_p, "DEFINE", 2))
+    if (is_matched (token_p, (char*)"DEFINE", 2))
         *construct_p = DEFINE_CONST;
-    else if (is_matched (token_p, "IF", 2))
+    else if (is_matched (token_p, (char*)"IF", 2))
         *construct_p = IF_CONST;
-    else if (is_matched (token_p, "ELSE", 2))
+    else if (is_matched (token_p, (char*)"ELSE", 2))
         *construct_p = ELSE_CONST;
-    else if (is_matched (token_p, "WHILE", 2))
+    else if (is_matched (token_p, (char*)"WHILE", 2))
         *construct_p = WHILE_CONST;
-    else if (is_matched (token_p, "FOR", 2))
+    else if (is_matched (token_p, (char*)"FOR", 2))
         *construct_p = FOR_CONST;
     else
         found = 0;
@@ -165,7 +165,7 @@ int             conv_int (char *token_p, short default_base)
     int             value;
     short             base, cnt;
     int            negative;
-    static char    *conv = "0123456789ABCDEF";
+    static char    *conv = (char*)"0123456789ABCDEF";
 
     negative = 0;
     if (token_p[0] == '#')
@@ -341,7 +341,7 @@ void            tag_current_line (parse_t * pars_p, char *message_p)
    ======================================================================== */
 void            pars_debug (parse_t * pars_p)
 {
-    tag_current_line (pars_p, "debug");
+    tag_current_line (pars_p, (char*)"debug");
     print ("Tok = \"%s\", delim = %x, toklen = %d \n",
            pars_p->token,
            pars_p->tok_del,
@@ -649,9 +649,9 @@ int            assign_integer (char *token_p, int value, int constant)
             {
                 symbol_p->fixed = constant;
                 if (symbol_p->fixed)
-                    symbol_p->info_p = "integer constant";
+                    symbol_p->info_p = (char*)"integer constant";
                 else
-                    symbol_p->info_p = "integer variable";
+                    symbol_p->info_p = (char*)"integer variable";
                 symbol_p->value.int_val = value;
             }
         }
@@ -683,9 +683,9 @@ int            create_integer (char *token_p, int value, int constant)
         {
             symbol_p->fixed = constant;
             if (symbol_p->fixed)
-                symbol_p->info_p = "integer constant";
+                symbol_p->info_p = (char*)"integer constant";
             else
-                symbol_p->info_p = "integer variable";
+                symbol_p->info_p = (char*)"integer variable";
             symbol_p->value.int_val = value;
         }
     }
@@ -711,9 +711,9 @@ int            assign_float (char *token_p, double value, int constant)
             {
                 symbol_p->fixed = constant;
                 if (symbol_p->fixed)
-                    symbol_p->info_p = "floating point constant";
+                    symbol_p->info_p = (char*)"floating point constant";
                 else
-                    symbol_p->info_p = "floating point variable";
+                    symbol_p->info_p = (char*)"floating point variable";
                 symbol_p->value.flt_val = value;
             }
         }
@@ -744,9 +744,9 @@ int            create_float (char *token_p, double value, int constant)
         {
             symbol_p->fixed = constant;
             if (symbol_p->fixed)
-                symbol_p->info_p = "floating point constant";
+                symbol_p->info_p = (char*)"floating point constant";
             else
-                symbol_p->info_p = "floating point variable";
+                symbol_p->info_p = (char*)"floating point variable";
             symbol_p->value.flt_val = value;
         }
     }
@@ -772,9 +772,9 @@ int            assign_string (char *token_p, char *value, int constant)
             {
                 symbol_p->fixed = constant;
                 if (symbol_p->fixed)
-                    symbol_p->info_p = "string constant";
+                    symbol_p->info_p = (char*)"string constant";
                 else
-                    symbol_p->info_p = "string variable";
+                    symbol_p->info_p = (char*)"string variable";
                 symbol_p->value.str_val = (char*)malloc (MAX_TOK_LEN);
                 if (symbol_p->value.str_val == NULL)
                     error = 1;
@@ -809,9 +809,9 @@ int            create_string (char *token_p, char *value, int constant)
         {
             symbol_p->fixed = constant;
             if (symbol_p->fixed)
-                symbol_p->info_p = "string constant";
+                symbol_p->info_p = (char*)"string constant";
             else
-                symbol_p->info_p = "string variable";
+                symbol_p->info_p = (char*)"string variable";
             symbol_p->value.str_val = (char*)malloc (MAX_TOK_LEN);
             if (symbol_p->value.str_val == NULL)
                 error = 1;
@@ -922,7 +922,7 @@ int            evaluate_integer_expr (parse_t * pars_p, int * value_p,
     char            sub_expr[MAX_TOK_LEN];
     char            operation;
 
-    static char    *delim = "*/+-|&^%";     /* recognised arithmetic
+    static char    *delim = (char*)"*/+-|&^%";     /* recognised arithmetic
 
                                                operators */
 
@@ -975,7 +975,7 @@ int            evaluate_integer_expr (parse_t * pars_p, int * value_p,
                 error = evaluate_integer (pars_p->token, &value1, default_base);
             if (!error)
             {
-                get_tok (pars_p, "");   /* all the way to the end of this
+                get_tok (pars_p, (char*)"");   /* all the way to the end of this
                                            line */
                 error = evaluate_integer (pars_p->token, &value2, default_base);
             }
@@ -1074,7 +1074,7 @@ int            evaluate_float_expr (parse_t * pars_p, DOUBLE * value_p)
     char            sub_expr[MAX_TOK_LEN];
     char            operation;
 
-    static char    *delim = "*/+-";     /* recognised arithmetic operators */
+    static char    *delim = (char*)"*/+-";     /* recognised arithmetic operators */
 
     if (pars_p->line_p[0] == '(')
     {
@@ -1124,7 +1124,7 @@ int            evaluate_float_expr (parse_t * pars_p, DOUBLE * value_p)
                 error = evaluate_float (pars_p->token, &value1);
             if (!error)
             {
-                get_tok (pars_p, "");   /* all the way to the end of this
+                get_tok (pars_p, (char*)"");   /* all the way to the end of this
                                            line */
                 error = evaluate_float (pars_p->token, &value2);
             }
@@ -1168,7 +1168,7 @@ int            evaluate_comparison (char *token_p, int * result_p,
     DOUBLE          real_val;
     char            op1, op2 = 0;
 
-    static char    *delim = "><=!";     /* recognised logical operators */
+    static char    *delim = (char*)"><=!";     /* recognised logical operators */
 
     /* evaluate first arithmetic expression in line */
     *result_p = 1;
@@ -1201,7 +1201,7 @@ int            evaluate_comparison (char *token_p, int * result_p,
 
             /* get token for rest of line and extract a value in a similar
                way */
-            get_tok (&pars, "");
+            get_tok (&pars, (char*)"");
             error = evaluate_integer (pars.token, &value2, default_base);
             if (error)
             {
@@ -1302,14 +1302,14 @@ int            evaluate_string (char *token_p, char *string_p, short max_len)
     {
         /* look for concatenation function */
         init_pars (&pars, token_p);
-        get_tok (&pars, "+");
+        get_tok (&pars, (char*)"+");
         if (pars.tok_del == '+')
         {
             /* call routine on halves of passed token */
             error = evaluate_string (pars.token, string_p, max_len);
             if (!error)
             {
-                get_tok (&pars, "");    /* rest of line */
+                get_tok (&pars, (char*)"");    /* rest of line */
                 len = strlen (string_p);
                 error = evaluate_string (pars.token, &string_p[len], max_len - len);
             }
@@ -1593,12 +1593,12 @@ int            execute_macro (char *line_p, char *target_p, int * result_p)
                 not_done = evaluate_assign (formal_pars.token, actual_pars.token, &error, 1);
             }
             else
-                not_done = evaluate_assign (formal_pars.token, "0", &error, 1);
+                not_done = evaluate_assign (formal_pars.token, (char*)"0", &error, 1);
             get_tok (&formal_pars, delim_set);
         }
         if (error || not_done)
             tag_current_line (&actual_pars,
-                              "Failed to assign actual value to formal parameter");
+                              (char*)"Failed to assign actual value to formal parameter");
         else
         {
             /* if all this parameterisation worked out OK, then actually
@@ -1704,7 +1704,7 @@ int            do_show (parse_t * pars_p, char *result_p)
     {
         symbol_p = look_for (pars_p->token, ANY_SYMBOL);
         if (symbol_p == NULL)
-            tag_current_line (pars_p, "unrecognised symbol name");
+            tag_current_line (pars_p, (char*)"unrecognised symbol name");
         else
         {
             switch (symbol_p->type)
@@ -1882,11 +1882,11 @@ int            do_help (parse_t * pars_p, char *result_p)
         }                       /* end of if found one */
         else
         {
-            tag_current_line (pars_p, "unrecognised command or macro");
+            tag_current_line (pars_p, (char*)"unrecognised command or macro");
             error = 1;
         }
     }                           /* end of help XXX */
-    return (error || assign_string (result_p, "", 0));
+    return (error || assign_string (result_p, (char*)"", 0));
 }
 /* ========================================================================
    alternate version of help : lists all the function and macros that
@@ -1944,7 +1944,7 @@ int            do_delete (parse_t * pars_p, char *result_p)
 
     if (get_tok (pars_p, delim_set) == 0)
     {                           /* no items on a line */
-        tag_current_line (pars_p, "Expected symbol or macro name");
+        tag_current_line (pars_p, (char*)"Expected symbol or macro name");
         error = 1;
     }
     else
@@ -1953,23 +1953,23 @@ int            do_delete (parse_t * pars_p, char *result_p)
             symbol_p = look_for (pars_p->token, 0xff);
             if (symbol_p == (symtab_t *) NULL)
             {
-                tag_current_line (pars_p, "Unrecognised symbol");
+                tag_current_line (pars_p, (char*)"Unrecognised symbol");
                 error = 1;
             }
             else if (symbol_p->fixed || (symbol_p->type == COM_SYMBOL))
             {
-                tag_current_line (pars_p, "Cannot delete fixed symbol or command");
+                tag_current_line (pars_p, (char*)"Cannot delete fixed symbol or command");
                 error = 1;
             }
             else
             {
                 error = delete_symbol (pars_p->token);
                 if (error)
-                    tag_current_line (pars_p, "Cannot delete symbol out of current scope");
+                    tag_current_line (pars_p, (char*)"Cannot delete symbol out of current scope");
                 get_tok (pars_p, delim_set);
             }
         }
-    return (error || assign_string (result_p, "", 0));
+    return (error || assign_string (result_p, (char*)"", 0));
 }
 /* ========================================================================
    toggles the echo of input lines
@@ -1981,7 +1981,7 @@ int            do_verify (parse_t * pars_p, char *result_p)
 
     error = cget_integer (pars_p, cur_echo, &echo);
     if (error)
-        tag_current_line (pars_p, "expected command echo flag");
+        tag_current_line (pars_p, (char*)"expected command echo flag");
     else
     {
         cur_echo = (int) echo;
@@ -2006,7 +2006,7 @@ int            do_base (parse_t * pars_p, char *result_p)
     if (error ||
         ((base != 16) && (base != 10) && (base != 8) && (base != 2)))
     {
-        tag_current_line (pars_p, "Illegal number base");
+        tag_current_line (pars_p, (char*)"Illegal number base");
         error = 1;
     }
     else
@@ -2051,13 +2051,13 @@ int            do_define (parse_t * pars_p)
 
     if (get_tok (pars_p, delim_set) == 0)
     {                           /* attempt to find macro name */
-        tag_current_line (pars_p, "macro name expected");
+        tag_current_line (pars_p, (char*)"macro name expected");
         error = 1;
     }
     else
     {
         strcpy (name, pars_p->token);
-        get_tok (pars_p, "");   /* get the rest of the line */
+        get_tok (pars_p, (char*)"");   /* get the rest of the line */
         error = define_macro ((char*)pars_p->token, name);
     }
     return (error);
@@ -2077,7 +2077,7 @@ int            do_for (parse_t * pars_p)
 
     if (get_tok (pars_p, delim_set) == 0)
     {                           /* attempt to find parameters */
-        tag_current_line (pars_p, "for loop variable name expected");
+        tag_current_line (pars_p, (char*)"for loop variable name expected");
         error = 1;
     }
     else
@@ -2085,17 +2085,17 @@ int            do_for (parse_t * pars_p)
         strcpy (variable, pars_p->token);
         error = assign_integer (variable, 0, 0);
         if (error)
-            tag_current_line (pars_p, "expected integer loop variable name");
+            tag_current_line (pars_p, (char*)"expected integer loop variable name");
         else
         {
             error = cget_integer (pars_p, 1, &first);
             if (error)
-                tag_current_line (pars_p, "invalid loop start value");
+                tag_current_line (pars_p, (char*)"invalid loop start value");
             else
             {
                 error = cget_integer (pars_p, 1, &second);
                 if (error)
-                    tag_current_line (pars_p, "invalid loop end value");
+                    tag_current_line (pars_p, (char*)"invalid loop end value");
                 else
                 {
                     error = (cget_integer (pars_p, 1, &step) ||
@@ -2103,11 +2103,11 @@ int            do_for (parse_t * pars_p)
                              ((first < second) && (step < 0)) ||
                              (step == 0));
                     if (error)
-                        tag_current_line (pars_p, "invalid or inconsistent loop step value");
+                        tag_current_line (pars_p, (char*)"invalid or inconsistent loop step value");
                     else
                     {
                         sprintf (name, "FOR%d", macro_depth);
-                        error = define_macro ("", name);
+                        error = define_macro ((char*)"", name);
                         if (!error)
                         {
                             if (first <= second)
@@ -2115,7 +2115,7 @@ int            do_for (parse_t * pars_p)
                                 for (i = first; (i <= second) && !error; i = i + step)
                                 {
                                     assign_integer (variable, i, 0);
-                                    execute_macro (name, "", &error);
+                                    execute_macro (name, (char*)"", &error);
                                 }
                             }
                             else
@@ -2123,7 +2123,7 @@ int            do_for (parse_t * pars_p)
                                 for (i = first; (i >= second) && !error; i = i + step)
                                 {
                                     assign_integer (variable, i, 0);
-                                    execute_macro (name, "", &error);
+                                    execute_macro (name, (char*)"", &error);
                                 }
                             }
                         }
@@ -2147,24 +2147,24 @@ int            do_while (parse_t * pars_p)
 
     if (get_tok (pars_p, delim_set) == 0)
     {                           /* attempt to find parameters */
-        tag_current_line (pars_p, "comparison expression expected");
+        tag_current_line (pars_p, (char*)"comparison expression expected");
         error = 1;
     }
     else
     {
         error = evaluate_comparison (pars_p->token, &result, number_base);
         if (error)
-            tag_current_line (pars_p, "illegal comparison");
+            tag_current_line (pars_p, (char*)"illegal comparison");
         else
         {
             sprintf (name, "WHILE%d", macro_depth);
             strcpy (condition, pars_p->token);
-            error = define_macro ("", name);
+            error = define_macro ((char*)"", name);
             if (!error)
             {
                 while (result && !error)
                 {
-                    execute_macro (name, "", &error);
+                    execute_macro (name, (char*)"", &error);
                     evaluate_comparison (condition, &result, number_base);
                 }
                 delete_symbol (name);
@@ -2185,23 +2185,23 @@ int            do_if (parse_t * pars_p, int * if_taken_p)
 
     if (get_tok (pars_p, delim_set) == 0)
     {                           /* attempt to find parameters */
-        tag_current_line (pars_p, "comparison expression expected");
+        tag_current_line (pars_p, (char*)"comparison expression expected");
         error = 1;
     }
     else
     {
         error = evaluate_comparison (pars_p->token, if_taken_p, number_base);
         if (error)
-            tag_current_line (pars_p, "illegal comparison");
+            tag_current_line (pars_p, (char*)"illegal comparison");
         else
         {
             sprintf (name, "IF%d", macro_depth);
             strcpy (condition, pars_p->token);
-            error = define_macro ("", name);
+            error = define_macro ((char*)"", name);
             if (!error)
             {
                 if (*if_taken_p)
-                    execute_macro (name, "", &error);
+                    execute_macro (name, (char*)"", &error);
                 delete_symbol (name);
             }
         }
@@ -2218,11 +2218,11 @@ int            do_else (int if_taken)
     char            name[MAX_TOK_LEN];
 
     sprintf (name, "ELSE%d", macro_depth);
-    error = define_macro ("", name);
+    error = define_macro ((char*)"", name);
     if (!error)
     {
         if (!if_taken)
-            execute_macro (name, "", &error);
+            execute_macro (name, (char*)"", &error);
         delete_symbol (name);
     }
     return (error);
@@ -2276,7 +2276,7 @@ int            command_loop (macro_t * macro_p, char * file_p, char *rtn_exp_p,
         init_pars (&pars, input_line);
         get_tok (&pars, cmd_delim);
 		//fprintf(stderr,"%s.%d [%s]\n\r",__func__,__LINE__,input_line);
-        if (is_matched (pars.token, "EXIT", 2) || is_matched (pars.token, "exit", 2)){
+        if (is_matched (pars.token, (char*)"EXIT", 2) || is_matched (pars.token, (char*)"exit", 2)){
             exit = 1;
         }
         else if (pars.tok_len > 0)
@@ -2309,7 +2309,7 @@ int            command_loop (macro_t * macro_p, char * file_p, char *rtn_exp_p,
 
                 if_flag = 0;
                 strcpy (target, pars.token);
-                get_tok (&pars, "");    /* tokenise rest of line */
+                get_tok (&pars, (char*)"");    /* tokenise rest of line */
                 not_done = evaluate_assign (target, pars.token, &error, 0);
                 if (not_done)
                     /* attempt to execute a command or macro assignment */
@@ -2317,7 +2317,7 @@ int            command_loop (macro_t * macro_p, char * file_p, char *rtn_exp_p,
                 if (not_done)
                     not_done = execute_macro (pars.token, target, &error);
                 if (not_done)
-                    tag_current_line (&pars, "Unrecognised assignment statement");
+                    tag_current_line (&pars, (char*)"Unrecognised assignment statement");
                 /* Report an error in a separate fashion */
                 if (error)
                     print ("Assignment of \"%s\" failed\n", target);
@@ -2339,7 +2339,7 @@ int            command_loop (macro_t * macro_p, char * file_p, char *rtn_exp_p,
                         if (!if_flag)
                         {
                             error = 1;
-                            tag_current_line (&pars, "ELSE not allowed without IF");
+                            tag_current_line (&pars, (char*)"ELSE not allowed without IF");
                         }
                         else
                         {
@@ -2356,7 +2356,7 @@ int            command_loop (macro_t * macro_p, char * file_p, char *rtn_exp_p,
                         if_flag = 0;
                         break;
                     default:
-                        tag_current_line (&pars, "Unable to understand control construct");
+                        tag_current_line (&pars, (char*)"Unable to understand control construct");
                         error = 1;
                         break;
                 }
@@ -2372,7 +2372,7 @@ int            command_loop (macro_t * macro_p, char * file_p, char *rtn_exp_p,
                     not_done = execute_macro (input_line, target, &error);
                 if (not_done)
                 {
-                    tag_current_line (&pars, "Unrecognised command statement");
+                    tag_current_line (&pars, (char*)"Unrecognised command statement");
                     error = 1;
                 }
             }
@@ -2407,7 +2407,7 @@ void            cli_init (int (*setup_r) (), int max_symbols, short default_base
     number_base = default_base;
     init_sym_table (100 + max_symbols);
     /* set up of all internal commands and constant values */
-    register_command ("HELP", do_help, "<commandname> Displays help string for named commands and macros");
+    register_command ((char*)"HELP", do_help, (char*)"<commandname> Displays help string for named commands and macros");
 
 #if 0
     register_command ("LIST", do_list, "<commandname or partial> Lists all strings of command and macro");
@@ -2483,7 +2483,7 @@ int cli_comand_line(char *input_line,char *target){
 	
 			if_flag = 0;
 			strcpy (target, pars.token);
-			get_tok (&pars, "");	/* tokenise rest of line */
+			get_tok (&pars, (char*)"");	/* tokenise rest of line */
 			not_done = evaluate_assign (target, pars.token, &error, 0);
 			if (not_done)
 				/* attempt to execute a command or macro assignment */
@@ -2491,7 +2491,7 @@ int cli_comand_line(char *input_line,char *target){
 			if (not_done)
 				not_done = execute_macro (pars.token, target, &error);
 			if (not_done)
-				tag_current_line (&pars, "Unrecognised assignment statement");
+				tag_current_line (&pars, (char*)"Unrecognised assignment statement");
 			/* Report an error in a separate fashion */
 			if (error)
 				print ("Assignment of \"%s\" failed\n", target);
@@ -2513,7 +2513,7 @@ int cli_comand_line(char *input_line,char *target){
 					if (!if_flag)
 					{
 						error = 1;
-						tag_current_line (&pars, "ELSE not allowed without IF");
+						tag_current_line (&pars, (char*)"ELSE not allowed without IF");
 					}
 					else
 					{
@@ -2530,7 +2530,7 @@ int cli_comand_line(char *input_line,char *target){
 					if_flag = 0;
 					break;
 				default:
-					tag_current_line (&pars, "Unable to understand control construct");
+					tag_current_line (&pars, (char*)"Unable to understand control construct");
 					error = 1;
 					break;
 			}
@@ -2546,7 +2546,7 @@ int cli_comand_line(char *input_line,char *target){
 				not_done = execute_macro (input_line, target, &error);
 			if (not_done)
 			{
-				tag_current_line (&pars, "Unrecognised command statement");
+				tag_current_line (&pars, (char*)"Unrecognised command statement");
 				error = 1;
 			}
 		}

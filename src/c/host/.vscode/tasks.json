@@ -7,12 +7,12 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "-I${workspaceFolder}\\bigsoc\\",
-                "${workspaceFolder}\\bigsoc\\*.cpp", 
-                "${workspaceFolder}\\bigsoc\\*.c", 
+                "-I${workspaceFolder}\\..\\shared",
+                "${workspaceFolder}\\*.c", 
                 "${workspaceFolder}\\*.cpp", 
+                "${workspaceFolder}\\..\\shared\\*.cpp", 
                 "-o",
-                "${workspaceFolder}\\udp_test.exe",
+                "${workspaceFolder}\\pc_app.exe",
                 "-lws2_32"
             ],
             "options": {

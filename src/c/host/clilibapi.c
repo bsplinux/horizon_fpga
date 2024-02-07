@@ -477,7 +477,7 @@ int            TesttoolRun (void)
    memset(&the_fat,0,sizeof(the_fat));
 	
  //   file_name = NULL;
-    cli_run ("imx > ", "fff.ttm" );
+    cli_run ((char*)"imx > ", (char*)"fff.ttm" );
     return 0;
 }
 
