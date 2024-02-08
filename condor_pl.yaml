@@ -1,0 +1,17 @@
+xilinx_version: 2023.2
+xilinx_location: c:/programs/
+scripts_location: src/tcl
+hls_location: hls
+hls_output_location: ../vivado/repo
+hls_vendor: Growings
+#hls_projects:
+#    IO_BoardDevController: solution4_nocl
+#    IO_BoardOneWire: solution4_nocl
+vivado_project: condor_pl
+steps: 
+    build_hls: false
+    reset_runs : true
+    build: true
+    close: false
+#cache_location is optional, if not used a local cache relative to root of project is created
+cache_location: c:/work/horizon/condor/vivado/ip_cache

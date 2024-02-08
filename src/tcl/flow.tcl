@@ -34,22 +34,8 @@ set proj_name       [dict get $params vivado_project]
 set build_project   [dict get [dict get $params steps] build    ]
 set reset_runs      [dict get [dict get $params steps] reset_runs]
 set close_when_done [dict get [dict get $params steps] close]
-set gen_multiboot   [dict get [dict get $params steps] gen_multiboot]	
 set build_hls       [dict get [dict get $params steps] build_hls]
-if [dict exist $params bin_type] {
-	set bin_type [dict get $params bin_type]
-} else {
-	set bin_type app
-}
 
-
-# this flow (using recreation script) is not used/checked but preseved if needed in future
-if [dict exist $params use_recreation_script] {
-	set use_recreation_script [dict get $params use_recreation_script]
-} else {
-	set use_recreation_script false
-}
-#new project name can only be used with the recreation script
 if {[dict exist $params new_proj_name]} {
 	set new_proj_name [dict get $params new_proj_name]
 } else {
@@ -66,11 +52,12 @@ if {${new_proj_name} == {}} {
 source $script_dir/flow_procs.tcl
 run_hls $params
 
-#check if project exists ? open : create
+#check if project exists ? open 
 if {[file exist ./vivado/$new_proj_name/${new_proj_name}.xpr]} {
 	open_project ./vivado/$new_proj_name/${new_proj_name}.xpr
 } else {
-	if {$use_recreation_script} {build_proj $proj_name $new_proj_name} else {return 0}
+	puts "Error: did not find vivado project, Exiting..."
+	return 0
 }
 set_cache_location $params
 
