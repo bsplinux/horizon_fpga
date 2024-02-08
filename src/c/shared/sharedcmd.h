@@ -39,6 +39,78 @@ typedef struct{
     unsigned int reg_address;         // 32 bit register address
     unsigned int reg_data;            // 32 bit register address
 }cmd5_reg_rw_t;
+
+typedef struct{
+	unsigned char DC_IN_Status                :  0; //
+	unsigned char AC_IN_Status                :  1; //
+	unsigned char Power_Out_Status            :  2; //
+	unsigned char MIU_COM_Status              :  3; //
+	unsigned char OUT1_OC                     :  4; //
+	unsigned char OUT2_OC                     :  5; //
+	unsigned char OUT3_OC                     :  6; //
+	unsigned char OUT4_OC                     :  7; //
+	unsigned char OUT5_OC                     :  8; //
+	unsigned char OUT6_OC                     :  9; //
+	unsigned char OUT7_OC                     :  0; //
+	unsigned char OUT8_OC                     : 11; //
+	unsigned char OUT9_OC                     : 12; //
+	unsigned char OUT10_OC                    : 13; //
+	unsigned char DC_IN_OV                    : 14; //
+	unsigned char OUT1_OV                     : 15; //
+	unsigned char OUT2_OV                     : 16; //
+	unsigned char OUT3_OV                     : 17; //
+	unsigned char OUT4_OV                     : 18; //
+	unsigned char OUT5_OV                     : 19; //
+	unsigned char OUT6_OV                     : 20; //
+	unsigned char OUT7_OV                     : 21; //
+	unsigned char OUT8_OV                     : 22; //
+	unsigned char OUT9_OV                     : 23; //
+	unsigned char OUT10_OV                    : 24; //
+	unsigned char DC_IN_UV                    : 25; //
+	unsigned char AC_IN_UV                    : 26; //
+	unsigned char PH1_Status                  : 27; //
+	unsigned char PH2_Status                  : 28; //
+	unsigned char PH3_Status                  : 29; //
+	unsigned char Neutral_Status              : 30; //
+	unsigned char Is_Logfile_Running          : 31; //
+	unsigned char Is_Logfile_Erase_In_Process : 32; //
+	unsigned char Fan1_Speed_Status           : 33; //
+	unsigned char Fan2_Speed_Status           : 34; //
+	unsigned char Fan3_Speed_Status           : 35; //
+	unsigned char OVER_TEMP_Status            : 36; //
+	unsigned char CC_Inhibit                  : 37; //
+	unsigned char EC_Inhibit                  : 38; //
+	unsigned char System_Reset                : 39; //
+	unsigned char System_Off                  : 30; //
+	unsigned char MIU_Watchdog_Status         : 41; //
+	unsigned char ON_OFF_Switch_State         : 42; //
+	unsigned char Capacitor1_end_of_life      : 43; //
+	unsigned char Capacitor2_end_of_life      : 44; //
+	unsigned char Capacitor3_end_of_life      : 45; //
+	unsigned char Capacitor4_end_of_life      : 46; //
+	unsigned char Capacitor5_end_of_life      : 47; //
+	unsigned char Capacitor6_end_of_life      : 48; //
+	unsigned char Capacitor7_end_of_life      : 49; //
+	unsigned char Capacitor8_end_of_life      : 50; //
+	unsigned char Capacitor9_end_of_life      : 51; //
+	unsigned char Capacitor10_end_of_life     : 52; //
+	unsigned char Capacitor11_end_of_life     : 53; //
+	unsigned char Capacitor12_end_of_life     : 54; //
+	unsigned char Capacitor13_end_of_life     : 55; //
+	unsigned char Capacitor14_end_of_life     : 56; //
+	unsigned char Capacitor15_end_of_life     : 57; //
+	unsigned char Capacitor16_end_of_life     : 58; //
+	unsigned char Spare0                      : 59; //
+	unsigned char Spare1                      : 60; //
+	unsigned char Spare2                      : 61; //
+	unsigned char Spare3                      : 62; //
+	unsigned char Spare4                      : 63; //
+}PSU_Status_t;
+
+typedef union {
+	PSU_Status_t fields;
+	unsigned long long word;
+}PSU_Status_union_t;
                                        // Description                                    Units	Range	      Resolution
 typedef struct{                        //                                                |------|-------------|---------|
 	unsigned char 	    Message_ID   ; // Unique message ID - must be 0x81               N/A	0x81	N/A
@@ -96,7 +168,7 @@ typedef struct{                        //                                       
 	unsigned char 	    Build        ; // Software Version Build                         N/A	00-FF	      N/A
 	unsigned char 	    Hotfix       ; // Software Version Hotfix                        N/A	00-FF	      N/A
 	unsigned char 	    SN           ; // Serial Number                                  N/A	00-FF	      N/A
-	unsigned long long	PSU_Status   ; // PSU Status                                     N/A	N/A	          N/A
+	PSU_Status_union_t	PSU_Status   ; // PSU Status                                     N/A	N/A	          N/A
 	unsigned char 	    Lamp_Ind     ; // Control Panel Lamp Indication                  N/A	0 � 3	      N/A
 	unsigned long long	Spare0       ; // N/A                                            N/A	N/A	          N/A
 	unsigned long long	Spare1       ; // N/A                                            N/A	N/A	          N/A
@@ -105,7 +177,7 @@ typedef struct{                        //                                       
 	unsigned long long	Spare4       ; // N/A                                            N/A	N/A	          N/A
 	unsigned long long	Spare5       ; // N/A                                            N/A	N/A	          N/A
 	unsigned long long	Spare6       ; // N/A                                            N/A	N/A	          N/A
-	unsigned long long	Spare7      ; // N/A                                            N/A	N/A	          N/A
+	unsigned long long	Spare7       ; // N/A                                            N/A	N/A	          N/A
 	unsigned long long	Spare8       ; // N/A                                            N/A	N/A	          N/A
 	unsigned long long  Spare9       ; // N/A                                            N/A	N/A	          N/A
 }cmd81_telemetry_t;
