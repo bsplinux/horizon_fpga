@@ -14,6 +14,9 @@ package regs_pkg is
         GENERAL_STATUS ,
         TIMESTAMP_L    ,
         TIMESTAMP_H    ,
+        IO_IN          ,
+        IO_OUT0        ,
+        IO_OUT1        ,
         NO_REG
     );
     -- NUM_REGS is the neto no. of registers if there are holes there should be another constant for the address space size 
@@ -23,14 +26,17 @@ package regs_pkg is
     -- this array is for mem access from external master, where master gives an address and wishes to access a register, but inside the FPGA everything works by name and not address.
     type regs_a_t is array(REGS_SPACE_SIZE - 1 downto 0) of regs_names_t;
     constant regs_a: regs_a_t := (
-        0 => REGS_VERSION   , -- @suppress "Incorrect array size in assignment: expected (<NUM_REGS>) but was (<8>)"
-        1 => FPGA_VERSION   ,
-        2 => COMPILE_TIME   ,
-        3 => BITSTREAM_TIME ,
-        4 => GENERAL_CONTROL,
-        5 => GENERAL_STATUS ,
-        6 => TIMESTAMP_L    ,
-        7 => TIMESTAMP_H    ,
+         0 => REGS_VERSION   , -- @suppress "Incorrect array size in assignment: expected (<NUM_REGS>) but was (<8>)"
+         1 => FPGA_VERSION   ,
+         2 => COMPILE_TIME   ,
+         3 => BITSTREAM_TIME ,
+         4 => GENERAL_CONTROL,
+         5 => GENERAL_STATUS ,
+         6 => TIMESTAMP_L    ,
+         7 => TIMESTAMP_H    ,
+         8 => IO_IN          ,
+         9 => IO_OUT0        ,
+        10 => IO_OUT1        ,
         others => NO_REG
     );
     
@@ -45,12 +51,76 @@ package regs_pkg is
     -- fields for REGS_VERSION,FPGA_VERSION
     subtype VERSION_MINOR                           is integer range 15 downto 0;
     subtype VERSION_MAJOR                           is integer range 31 downto 16;
-    -- fields for ADR_COMPILE_TIME
+    -- fields for COMPILE_TIME
     subtype TIME_STAMP_HOUR                         is integer range 7 downto 0;
     subtype TIME_STAMP_YEAR                         is integer range 15 downto 8;
     subtype TIME_STAMP_MONTH                        is integer range 23 downto 16;
     subtype TIME_STAMP_DAY                          is integer range 31 downto 24;
-    
+    -- fiels for GENERAL_CONTROL
+    constant CONTROL_SW_RESET                       : integer := 0;
+    constant CONTROL_IO_DEBUG_EN                    : integer := 1;
+    -- fiels for IO_IN
+    constant IO_IN_POWERON_FPGA                     : integer :=  0;      
+    constant IO_IN_FAN_PG1_FPGA                     : integer :=  1;      
+    constant IO_IN_FAN_HALL1_FPGA                   : integer :=  2;     
+    constant IO_IN_FAN_PG3_FPGA                     : integer :=  3;      
+    constant IO_IN_FAN_HALL3_FPGA                   : integer :=  4;     
+    constant IO_IN_FAN_PG2_FPGA                     : integer :=  5;      
+    constant IO_IN_FAN_HALL2_FPGA                   : integer :=  6;     
+    constant IO_IN_PG_BUCK_FB                       : integer :=  7;      
+    constant IO_IN_PG_PSU_1_FB                      : integer :=  8;      
+    constant IO_IN_PG_PSU_2_FB                      : integer :=  9;      
+    constant IO_IN_PG_PSU_5_FB                      : integer := 10;      
+    constant IO_IN_PG_PSU_6_FB                      : integer := 11;      
+    constant IO_IN_PG_PSU_7_FB                      : integer := 12;      
+    constant IO_IN_PG_PSU_8_FB                      : integer := 13;      
+    constant IO_IN_PG_PSU_9_FB                      : integer := 14;      
+    constant IO_IN_PG_PSU_10_FB                     : integer := 15;      
+    constant IO_IN_lamp_status_fpga                 : integer := 16;  
+    constant IO_IN_PH_A_ON_fpga                     : integer := 17;   
+    constant IO_IN_PH_B_ON_fpga                     : integer := 18;   
+    constant IO_IN_PH_C_ON_fpga                     : integer := 19;
+    subtype IO_IN_range                             is integer range IO_IN_PH_C_ON_fpga downto IO_IN_POWERON_FPGA;
+    -- fields for IO_OUT0
+    constant IO_OUT0_FAN_EN1_FPGA                   : integer :=  0;
+    constant IO_OUT0_FAN_CTRL1_FPGA                 : integer :=  1;
+    constant IO_OUT0_P_IN_STATUS_FPGA               : integer :=  2;
+    constant IO_OUT0_POD_STATUS_FPGA                : integer :=  3;
+    constant IO_OUT0_ECTCU_INH_FPGA                 : integer :=  4;
+    constant IO_OUT0_P_OUT_STATUS_FPGA              : integer :=  5;
+    constant IO_OUT0_CCTCU_INH_FPGA                 : integer :=  6;
+    constant IO_OUT0_SHUTDOWN_OUT_FPGA              : integer :=  7;
+    constant IO_OUT0_RESET_OUT_FPGA                 : integer :=  8;
+    constant IO_OUT0_SPARE_OUT_FPGA                 : integer :=  9;
+    constant IO_OUT0_ESHUTDOWN_OUT_FPGA             : integer := 10;
+    constant IO_OUT0_RELAY_1PH_FPGA                 : integer := 11;
+    constant IO_OUT0_RELAY_3PH_FPGA                 : integer := 12;
+    constant IO_OUT0_FAN_EN3_FPGA                   : integer := 13;
+    constant IO_OUT0_FAN_CTRL3_FPGA                 : integer := 14;
+    constant IO_OUT0_FAN_EN2_FPGA                   : integer := 15;
+    constant IO_OUT0_FAN_CTRL2_FPGA                 : integer := 16;
+    constant IO_OUT0_EN_PFC_FB                      : integer := 17;
+    constant IO_OUT0_EN_PSU_1_FB                    : integer := 18;
+    constant IO_OUT0_EN_PSU_2_FB                    : integer := 19;
+    constant IO_OUT0_EN_PSU_5_FB                    : integer := 20;
+    constant IO_OUT0_EN_PSU_6_FB                    : integer := 21; 
+    constant IO_OUT0_EN_PSU_7_FB                    : integer := 22; 
+    constant IO_OUT0_EN_PSU_8_FB                    : integer := 23; 
+    constant IO_OUT0_EN_PSU_9_FB                    : integer := 24; 
+    constant IO_OUT0_EN_PSU_10_FB                   : integer := 25;
+    subtype IO_OUT0_range                           is integer range  IO_OUT0_EN_PSU_10_FB downto IO_OUT0_FAN_EN1_FPGA;
+    -- fields for IO_OUT0
+    constant IO_OUT1_RS485_DE_7                     : integer :=  0; 
+    constant IO_OUT1_RS485_DE_8                     : integer :=  1; 
+    constant IO_OUT1_RS485_DE_9                     : integer :=  2; 
+    constant IO_OUT1_RS485_DE_1                     : integer :=  3; 
+    constant IO_OUT1_RS485_DE_2                     : integer :=  4; 
+    constant IO_OUT1_RS485_DE_3                     : integer :=  5; 
+    constant IO_OUT1_RS485_DE_4                     : integer :=  6;
+    constant IO_OUT1_RS485_DE_5                     : integer :=  7;
+    constant IO_OUT1_RS485_DE_6                     : integer :=  8;
+    subtype IO_OUT1_range                           is integer range  IO_OUT1_RS485_DE_6 downto IO_OUT1_RS485_DE_7;
+
     --------------------------------------------------------------------------------    
     -- initial values for parameters 
     --------------------------------------------------------------------------------    
@@ -77,6 +147,9 @@ package regs_pkg is
         GENERAL_STATUS                => X"0000000F",
         TIMESTAMP_L                   => X"FFFFFFFF",
         TIMESTAMP_H                   => X"FFFFFFFF",
+        IO_IN                         => X"000FFFFF",
+        IO_OUT0                       => X"03FFFFFF",
+        IO_OUT1                       => X"000001FF",
         others                        => X"00000000" -- constant regs are not writable
     );
     
@@ -85,11 +158,14 @@ package regs_pkg is
         GENERAL_STATUS               => '1',
         TIMESTAMP_L                  => '1',
         TIMESTAMP_H                  => '1',
+        IO_OUT0                      => '1',
+        IO_OUT1                      => '1',
         others                       => '0'
     );
 
     constant CPU_WRITEABLE_REGS : reg_slv_array_t := (
         GENERAL_CONTROL               => '1',
+        IO_IN                         => '1',
         others                        => '0'   -- unused, constant regs and internally writable regs are not cpu writable
     );
     
