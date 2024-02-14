@@ -1,7 +1,6 @@
 vivado
 hls
 vitis
-src/c/udpaip
 src/c/test_gcc
 *.exe
 deliveries
