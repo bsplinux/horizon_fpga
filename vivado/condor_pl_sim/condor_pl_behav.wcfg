@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="condor_pl_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="condor_pl" />
+            <top_module name="condor_pl_pkg" />
+            <top_module name="regs_pkg" />
+            <top_module name="sim_pkg" />
+            <top_module name="uart2bustop_pkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="7.598805 us"></ZoomEndTime>
+      <Cursor1Time time="1.271679 us"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="389"></NameColumnWidth>
+      <ValueColumnWidth column_width="182"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="3" />
+   <wvobject fp_name="group326" type="group">
+      <obj_property name="label">app</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/condor_pl/app_inst/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/app_inst/sync_rst" type="logic">
+         <obj_property name="ElementShortName">sync_rst</obj_property>
+         <obj_property name="ObjectShortName">sync_rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/app_inst/sw_reset" type="logic">
+         <obj_property name="ElementShortName">sw_reset</obj_property>
+         <obj_property name="ObjectShortName">sw_reset</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/app_inst/registers" type="array">
+         <obj_property name="ElementShortName">registers[0:11][31:0]</obj_property>
+         <obj_property name="ObjectShortName">registers[0:11][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/app_inst/regs_updating" type="array">
+         <obj_property name="ElementShortName">regs_updating[0:11]</obj_property>
+         <obj_property name="ObjectShortName">regs_updating[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/app_inst/regs_reading" type="array">
+         <obj_property name="ElementShortName">regs_reading[0:11]</obj_property>
+         <obj_property name="ObjectShortName">regs_reading[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/app_inst/internal_regs" type="array">
+         <obj_property name="ElementShortName">internal_regs[0:11][31:0]</obj_property>
+         <obj_property name="ObjectShortName">internal_regs[0:11][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/app_inst/internal_regs_we" type="array">
+         <obj_property name="ElementShortName">internal_regs_we[0:11]</obj_property>
+         <obj_property name="ObjectShortName">internal_regs_we[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/app_inst/ios_2_app" type="array">
+         <obj_property name="ElementShortName">ios_2_app</obj_property>
+         <obj_property name="ObjectShortName">ios_2_app</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/app_inst/app_2_ios" type="array">
+         <obj_property name="ElementShortName">app_2_ios</obj_property>
+         <obj_property name="ObjectShortName">app_2_ios</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/app_inst/timer" type="array">
+         <obj_property name="ElementShortName">timer[63:0]</obj_property>
+         <obj_property name="ObjectShortName">timer[63:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/app_inst/IO_IN_s" type="array">
+         <obj_property name="ElementShortName">IO_IN_s[19:0]</obj_property>
+         <obj_property name="ObjectShortName">IO_IN_s[19:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group339" type="group">
+      <obj_property name="label">regs</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/condor_pl/regs_i/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/sync_rst" type="logic">
+         <obj_property name="ElementShortName">sync_rst</obj_property>
+         <obj_property name="ObjectShortName">sync_rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/AXI_we" type="logic">
+         <obj_property name="ElementShortName">AXI_we</obj_property>
+         <obj_property name="ObjectShortName">AXI_we</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/AXI_a" type="array">
+         <obj_property name="ElementShortName">AXI_a[11:0]</obj_property>
+         <obj_property name="ObjectShortName">AXI_a[11:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/AXI_d" type="array">
+         <obj_property name="ElementShortName">AXI_d[31:0]</obj_property>
+         <obj_property name="ObjectShortName">AXI_d[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/d_to_AXI" type="array">
+         <obj_property name="ElementShortName">d_to_AXI[31:0]</obj_property>
+         <obj_property name="ObjectShortName">d_to_AXI[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/UART_we" type="logic">
+         <obj_property name="ElementShortName">UART_we</obj_property>
+         <obj_property name="ObjectShortName">UART_we</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/UART_a" type="array">
+         <obj_property name="ElementShortName">UART_a[11:0]</obj_property>
+         <obj_property name="ObjectShortName">UART_a[11:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/UART_d" type="array">
+         <obj_property name="ElementShortName">UART_d[31:0]</obj_property>
+         <obj_property name="ObjectShortName">UART_d[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/d_to_UART" type="array">
+         <obj_property name="ElementShortName">d_to_UART[31:0]</obj_property>
+         <obj_property name="ObjectShortName">d_to_UART[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/registers" type="array">
+         <obj_property name="ElementShortName">registers[0:11][31:0]</obj_property>
+         <obj_property name="ObjectShortName">registers[0:11][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/regs_updating" type="array">
+         <obj_property name="ElementShortName">regs_updating[0:11]</obj_property>
+         <obj_property name="ObjectShortName">regs_updating[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/regs_reading" type="array">
+         <obj_property name="ElementShortName">regs_reading[0:11]</obj_property>
+         <obj_property name="ObjectShortName">regs_reading[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/internal_regs" type="array">
+         <obj_property name="ElementShortName">internal_regs[0:11][31:0]</obj_property>
+         <obj_property name="ObjectShortName">internal_regs[0:11][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/internal_regs_we" type="array">
+         <obj_property name="ElementShortName">internal_regs_we[0:11]</obj_property>
+         <obj_property name="ObjectShortName">internal_regs_we[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/bank_regs_in" type="array">
+         <obj_property name="ElementShortName">bank_regs_in[2:0][0:11][31:0]</obj_property>
+         <obj_property name="ObjectShortName">bank_regs_in[2:0][0:11][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/regs_from_axi" type="array">
+         <obj_property name="ElementShortName">regs_from_axi[0:11][31:0]</obj_property>
+         <obj_property name="ObjectShortName">regs_from_axi[0:11][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/regs_from_uart" type="array">
+         <obj_property name="ElementShortName">regs_from_uart[0:11][31:0]</obj_property>
+         <obj_property name="ObjectShortName">regs_from_uart[0:11][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/bank_regs_we" type="array">
+         <obj_property name="ElementShortName">bank_regs_we[2:0][0:11]</obj_property>
+         <obj_property name="ObjectShortName">bank_regs_we[2:0][0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/registers_sig" type="array">
+         <obj_property name="ElementShortName">registers_sig[0:11][31:0]</obj_property>
+         <obj_property name="ObjectShortName">registers_sig[0:11][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/regs_we_from_axi" type="array">
+         <obj_property name="ElementShortName">regs_we_from_axi[0:11]</obj_property>
+         <obj_property name="ObjectShortName">regs_we_from_axi[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/regs_we_from_uart" type="array">
+         <obj_property name="ElementShortName">regs_we_from_uart[0:11]</obj_property>
+         <obj_property name="ObjectShortName">regs_we_from_uart[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/uart_reading" type="array">
+         <obj_property name="ElementShortName">uart_reading[0:11]</obj_property>
+         <obj_property name="ObjectShortName">uart_reading[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/axi_reading" type="array">
+         <obj_property name="ElementShortName">axi_reading[0:11]</obj_property>
+         <obj_property name="ObjectShortName">axi_reading[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/sim_reading" type="array">
+         <obj_property name="ElementShortName">sim_reading[0:11]</obj_property>
+         <obj_property name="ObjectShortName">sim_reading[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/AXI_ADDR_SIZE" type="other">
+         <obj_property name="ElementShortName">AXI_ADDR_SIZE</obj_property>
+         <obj_property name="ObjectShortName">AXI_ADDR_SIZE</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/UART_ADDR_SIZE" type="other">
+         <obj_property name="ElementShortName">UART_ADDR_SIZE</obj_property>
+         <obj_property name="ObjectShortName">UART_ADDR_SIZE</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/SYNTHESIS_TIME" type="array">
+         <obj_property name="ElementShortName">SYNTHESIS_TIME[31:0]</obj_property>
+         <obj_property name="ObjectShortName">SYNTHESIS_TIME[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/SIM_INPUT_FILE_NAME" type="array">
+         <obj_property name="ElementShortName">SIM_INPUT_FILE_NAME[1:58]</obj_property>
+         <obj_property name="ObjectShortName">SIM_INPUT_FILE_NAME[1:58]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/SIM_OUTPUT_FILE_NAME" type="array">
+         <obj_property name="ElementShortName">SIM_OUTPUT_FILE_NAME[1:59]</obj_property>
+         <obj_property name="ObjectShortName">SIM_OUTPUT_FILE_NAME[1:59]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/NUM_REG_SETS" type="other">
+         <obj_property name="ElementShortName">NUM_REG_SETS</obj_property>
+         <obj_property name="ObjectShortName">NUM_REG_SETS</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/REGISTERS_INIT_NEW" type="array">
+         <obj_property name="ElementShortName">REGISTERS_INIT_NEW[0:11][31:0]</obj_property>
+         <obj_property name="ObjectShortName">REGISTERS_INIT_NEW[0:11][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_i/REG_SET_WRITABLE" type="array">
+         <obj_property name="ElementShortName">REG_SET_WRITABLE[2:0][0:11]</obj_property>
+         <obj_property name="ObjectShortName">REG_SET_WRITABLE[2:0][0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="group373" type="group">
+         <obj_property name="label">sim_regs</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/condor_pl/regs_i/reg_bank/sim_gen/regs_fileio_inst/clk" type="logic">
+            <obj_property name="ElementShortName">clk</obj_property>
+            <obj_property name="ObjectShortName">clk</obj_property>
+         </wvobject>
+         <wvobject fp_name="/condor_pl/regs_i/reg_bank/sim_gen/regs_fileio_inst/rst" type="logic">
+            <obj_property name="ElementShortName">rst</obj_property>
+            <obj_property name="ObjectShortName">rst</obj_property>
+         </wvobject>
+         <wvobject fp_name="/condor_pl/regs_i/reg_bank/sim_gen/regs_fileio_inst/regs_in" type="array">
+            <obj_property name="ElementShortName">regs_in[0:11][31:0]</obj_property>
+            <obj_property name="ObjectShortName">regs_in[0:11][31:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/condor_pl/regs_i/reg_bank/sim_gen/regs_fileio_inst/regs_out" type="array">
+            <obj_property name="ElementShortName">regs_out[0:11][31:0]</obj_property>
+            <obj_property name="ObjectShortName">regs_out[0:11][31:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/condor_pl/regs_i/reg_bank/sim_gen/regs_fileio_inst/regs_we" type="array">
+            <obj_property name="ElementShortName">regs_we[0:11]</obj_property>
+            <obj_property name="ObjectShortName">regs_we[0:11]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/condor_pl/regs_i/reg_bank/sim_gen/regs_fileio_inst/reading" type="array">
+            <obj_property name="ElementShortName">reading[0:11]</obj_property>
+            <obj_property name="ObjectShortName">reading[0:11]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/condor_pl/regs_i/reg_bank/sim_gen/regs_fileio_inst/current_cmd" type="array">
+            <obj_property name="ElementShortName">current_cmd[1:4096]</obj_property>
+            <obj_property name="ObjectShortName">current_cmd[1:4096]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/condor_pl/regs_i/reg_bank/sim_gen/regs_fileio_inst/IN_FILE_NAME" type="array">
+            <obj_property name="ElementShortName">IN_FILE_NAME[1:58]</obj_property>
+            <obj_property name="ObjectShortName">IN_FILE_NAME[1:58]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/condor_pl/regs_i/reg_bank/sim_gen/regs_fileio_inst/OUT_FILE_NAME" type="array">
+            <obj_property name="ElementShortName">OUT_FILE_NAME[1:59]</obj_property>
+            <obj_property name="ObjectShortName">OUT_FILE_NAME[1:59]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/condor_pl/regs_i/reg_bank/sim_gen/regs_fileio_inst/PRINT_TIME" type="other">
+            <obj_property name="ElementShortName">PRINT_TIME</obj_property>
+            <obj_property name="ObjectShortName">PRINT_TIME</obj_property>
+         </wvobject>
+         <wvobject fp_name="/condor_pl/regs_i/reg_bank/sim_gen/regs_fileio_inst/PRINT_CSV" type="other">
+            <obj_property name="ElementShortName">PRINT_CSV</obj_property>
+            <obj_property name="ObjectShortName">PRINT_CSV</obj_property>
+         </wvobject>
+         <wvobject fp_name="/condor_pl/regs_i/reg_bank/sim_gen/regs_fileio_inst/WAIT_AFTER_EDGE" type="other">
+            <obj_property name="ElementShortName">WAIT_AFTER_EDGE</obj_property>
+            <obj_property name="ObjectShortName">WAIT_AFTER_EDGE</obj_property>
+         </wvobject>
+         <wvobject fp_name="/condor_pl/regs_i/reg_bank/sim_gen/regs_fileio_inst/PRINT_COMMAND" type="other">
+            <obj_property name="ElementShortName">PRINT_COMMAND</obj_property>
+            <obj_property name="ObjectShortName">PRINT_COMMAND</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group193" type="group">
+      <obj_property name="label">top</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/condor_pl/DDR_addr" type="array">
+         <obj_property name="ElementShortName">DDR_addr[14:0]</obj_property>
+         <obj_property name="ObjectShortName">DDR_addr[14:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_dqs_p" type="array">
+         <obj_property name="ElementShortName">DDR_dqs_p[3:0]</obj_property>
+         <obj_property name="ObjectShortName">DDR_dqs_p[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_dq" type="array">
+         <obj_property name="ElementShortName">DDR_dq[31:0]</obj_property>
+         <obj_property name="ObjectShortName">DDR_dq[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_ba" type="array">
+         <obj_property name="ElementShortName">DDR_ba[2:0]</obj_property>
+         <obj_property name="ObjectShortName">DDR_ba[2:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_dm" type="array">
+         <obj_property name="ElementShortName">DDR_dm[3:0]</obj_property>
+         <obj_property name="ObjectShortName">DDR_dm[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_dqs_n" type="array">
+         <obj_property name="ElementShortName">DDR_dqs_n[3:0]</obj_property>
+         <obj_property name="ObjectShortName">DDR_dqs_n[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_cas_n" type="logic">
+         <obj_property name="ElementShortName">DDR_cas_n</obj_property>
+         <obj_property name="ObjectShortName">DDR_cas_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_ck_n" type="logic">
+         <obj_property name="ElementShortName">DDR_ck_n</obj_property>
+         <obj_property name="ObjectShortName">DDR_ck_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_ck_p" type="logic">
+         <obj_property name="ElementShortName">DDR_ck_p</obj_property>
+         <obj_property name="ObjectShortName">DDR_ck_p</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_cke" type="logic">
+         <obj_property name="ElementShortName">DDR_cke</obj_property>
+         <obj_property name="ObjectShortName">DDR_cke</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_cs_n" type="logic">
+         <obj_property name="ElementShortName">DDR_cs_n</obj_property>
+         <obj_property name="ObjectShortName">DDR_cs_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_odt" type="logic">
+         <obj_property name="ElementShortName">DDR_odt</obj_property>
+         <obj_property name="ObjectShortName">DDR_odt</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_ras_n" type="logic">
+         <obj_property name="ElementShortName">DDR_ras_n</obj_property>
+         <obj_property name="ObjectShortName">DDR_ras_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_reset_n" type="logic">
+         <obj_property name="ElementShortName">DDR_reset_n</obj_property>
+         <obj_property name="ObjectShortName">DDR_reset_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/DDR_we_n" type="logic">
+         <obj_property name="ElementShortName">DDR_we_n</obj_property>
+         <obj_property name="ObjectShortName">DDR_we_n</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FIXED_IO_mio" type="array">
+         <obj_property name="ElementShortName">FIXED_IO_mio[53:0]</obj_property>
+         <obj_property name="ObjectShortName">FIXED_IO_mio[53:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FIXED_IO_ddr_vrn" type="logic">
+         <obj_property name="ElementShortName">FIXED_IO_ddr_vrn</obj_property>
+         <obj_property name="ObjectShortName">FIXED_IO_ddr_vrn</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FIXED_IO_ddr_vrp" type="logic">
+         <obj_property name="ElementShortName">FIXED_IO_ddr_vrp</obj_property>
+         <obj_property name="ObjectShortName">FIXED_IO_ddr_vrp</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FIXED_IO_ps_clk" type="logic">
+         <obj_property name="ElementShortName">FIXED_IO_ps_clk</obj_property>
+         <obj_property name="ObjectShortName">FIXED_IO_ps_clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FIXED_IO_ps_porb" type="logic">
+         <obj_property name="ElementShortName">FIXED_IO_ps_porb</obj_property>
+         <obj_property name="ObjectShortName">FIXED_IO_ps_porb</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FIXED_IO_ps_srstb" type="logic">
+         <obj_property name="ElementShortName">FIXED_IO_ps_srstb</obj_property>
+         <obj_property name="ObjectShortName">FIXED_IO_ps_srstb</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/I_SNS_ADC_CS_FPGA" type="logic">
+         <obj_property name="ElementShortName">I_SNS_ADC_CS_FPGA</obj_property>
+         <obj_property name="ObjectShortName">I_SNS_ADC_CS_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/I_SNS_ADC_SDI_FPGA" type="logic">
+         <obj_property name="ElementShortName">I_SNS_ADC_SDI_FPGA</obj_property>
+         <obj_property name="ObjectShortName">I_SNS_ADC_SDI_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/I_SNS_ADC_SCLK_FPGA" type="logic">
+         <obj_property name="ElementShortName">I_SNS_ADC_SCLK_FPGA</obj_property>
+         <obj_property name="ObjectShortName">I_SNS_ADC_SCLK_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/I_SNS_ADC_SDO_FPGA" type="logic">
+         <obj_property name="ElementShortName">I_SNS_ADC_SDO_FPGA</obj_property>
+         <obj_property name="ObjectShortName">I_SNS_ADC_SDO_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/ZCR_SNS_ADC_SCLK_FPGA" type="logic">
+         <obj_property name="ElementShortName">ZCR_SNS_ADC_SCLK_FPGA</obj_property>
+         <obj_property name="ObjectShortName">ZCR_SNS_ADC_SCLK_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/ZCR_SNS_ADC_CS_FPGA" type="logic">
+         <obj_property name="ElementShortName">ZCR_SNS_ADC_CS_FPGA</obj_property>
+         <obj_property name="ObjectShortName">ZCR_SNS_ADC_CS_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/ZCR_SNS_ADC_SDO_FPGA" type="logic">
+         <obj_property name="ElementShortName">ZCR_SNS_ADC_SDO_FPGA</obj_property>
+         <obj_property name="ObjectShortName">ZCR_SNS_ADC_SDO_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/ZCR_SNS_ADC_SDI_FPGA" type="logic">
+         <obj_property name="ElementShortName">ZCR_SNS_ADC_SDI_FPGA</obj_property>
+         <obj_property name="ObjectShortName">ZCR_SNS_ADC_SDI_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/POWERON_FPGA" type="logic">
+         <obj_property name="ElementShortName">POWERON_FPGA</obj_property>
+         <obj_property name="ObjectShortName">POWERON_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FAN_PG1_FPGA" type="logic">
+         <obj_property name="ElementShortName">FAN_PG1_FPGA</obj_property>
+         <obj_property name="ObjectShortName">FAN_PG1_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FAN_HALL1_FPGA" type="logic">
+         <obj_property name="ElementShortName">FAN_HALL1_FPGA</obj_property>
+         <obj_property name="ObjectShortName">FAN_HALL1_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FAN_EN1_FPGA" type="logic">
+         <obj_property name="ElementShortName">FAN_EN1_FPGA</obj_property>
+         <obj_property name="ObjectShortName">FAN_EN1_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FAN_CTRL1_FPGA" type="logic">
+         <obj_property name="ElementShortName">FAN_CTRL1_FPGA</obj_property>
+         <obj_property name="ObjectShortName">FAN_CTRL1_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/P_IN_STATUS_FPGA" type="logic">
+         <obj_property name="ElementShortName">P_IN_STATUS_FPGA</obj_property>
+         <obj_property name="ObjectShortName">P_IN_STATUS_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/POD_STATUS_FPGA" type="logic">
+         <obj_property name="ElementShortName">POD_STATUS_FPGA</obj_property>
+         <obj_property name="ObjectShortName">POD_STATUS_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/ECTCU_INH_FPGA" type="logic">
+         <obj_property name="ElementShortName">ECTCU_INH_FPGA</obj_property>
+         <obj_property name="ObjectShortName">ECTCU_INH_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/P_OUT_STATUS_FPGA" type="logic">
+         <obj_property name="ElementShortName">P_OUT_STATUS_FPGA</obj_property>
+         <obj_property name="ObjectShortName">P_OUT_STATUS_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/CCTCU_INH_FPGA" type="logic">
+         <obj_property name="ElementShortName">CCTCU_INH_FPGA</obj_property>
+         <obj_property name="ObjectShortName">CCTCU_INH_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/SHUTDOWN_OUT_FPGA" type="logic">
+         <obj_property name="ElementShortName">SHUTDOWN_OUT_FPGA</obj_property>
+         <obj_property name="ObjectShortName">SHUTDOWN_OUT_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RESET_OUT_FPGA" type="logic">
+         <obj_property name="ElementShortName">RESET_OUT_FPGA</obj_property>
+         <obj_property name="ObjectShortName">RESET_OUT_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/SPARE_OUT_FPGA" type="logic">
+         <obj_property name="ElementShortName">SPARE_OUT_FPGA</obj_property>
+         <obj_property name="ObjectShortName">SPARE_OUT_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/ESHUTDOWN_OUT_FPGA" type="logic">
+         <obj_property name="ElementShortName">ESHUTDOWN_OUT_FPGA</obj_property>
+         <obj_property name="ObjectShortName">ESHUTDOWN_OUT_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/HV_ADC_SDI_FPGA" type="logic">
+         <obj_property name="ElementShortName">HV_ADC_SDI_FPGA</obj_property>
+         <obj_property name="ObjectShortName">HV_ADC_SDI_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/HV_ADC_SCLK_FPGA" type="logic">
+         <obj_property name="ElementShortName">HV_ADC_SCLK_FPGA</obj_property>
+         <obj_property name="ObjectShortName">HV_ADC_SCLK_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/HV_ADC_CS_FPGA" type="logic">
+         <obj_property name="ElementShortName">HV_ADC_CS_FPGA</obj_property>
+         <obj_property name="ObjectShortName">HV_ADC_CS_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/HV_ADC_SDO_FPGA" type="logic">
+         <obj_property name="ElementShortName">HV_ADC_SDO_FPGA</obj_property>
+         <obj_property name="ObjectShortName">HV_ADC_SDO_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RELAY_1PH_FPGA" type="logic">
+         <obj_property name="ElementShortName">RELAY_1PH_FPGA</obj_property>
+         <obj_property name="ObjectShortName">RELAY_1PH_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RELAY_3PH_FPGA" type="logic">
+         <obj_property name="ElementShortName">RELAY_3PH_FPGA</obj_property>
+         <obj_property name="ObjectShortName">RELAY_3PH_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FAN_PG3_FPGA" type="logic">
+         <obj_property name="ElementShortName">FAN_PG3_FPGA</obj_property>
+         <obj_property name="ObjectShortName">FAN_PG3_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FAN_HALL3_FPGA" type="logic">
+         <obj_property name="ElementShortName">FAN_HALL3_FPGA</obj_property>
+         <obj_property name="ObjectShortName">FAN_HALL3_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FAN_EN3_FPGA" type="logic">
+         <obj_property name="ElementShortName">FAN_EN3_FPGA</obj_property>
+         <obj_property name="ObjectShortName">FAN_EN3_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FAN_CTRL3_FPGA" type="logic">
+         <obj_property name="ElementShortName">FAN_CTRL3_FPGA</obj_property>
+         <obj_property name="ObjectShortName">FAN_CTRL3_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FAN_PG2_FPGA" type="logic">
+         <obj_property name="ElementShortName">FAN_PG2_FPGA</obj_property>
+         <obj_property name="ObjectShortName">FAN_PG2_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FAN_HALL2_FPGA" type="logic">
+         <obj_property name="ElementShortName">FAN_HALL2_FPGA</obj_property>
+         <obj_property name="ObjectShortName">FAN_HALL2_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FAN_EN2_FPGA" type="logic">
+         <obj_property name="ElementShortName">FAN_EN2_FPGA</obj_property>
+         <obj_property name="ObjectShortName">FAN_EN2_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/FAN_CTRL2_FPGA" type="logic">
+         <obj_property name="ElementShortName">FAN_CTRL2_FPGA</obj_property>
+         <obj_property name="ObjectShortName">FAN_CTRL2_FPGA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/UART_RXD_PL" type="logic">
+         <obj_property name="ElementShortName">UART_RXD_PL</obj_property>
+         <obj_property name="ObjectShortName">UART_RXD_PL</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/UART_TXD_PL" type="logic">
+         <obj_property name="ElementShortName">UART_TXD_PL</obj_property>
+         <obj_property name="ObjectShortName">UART_TXD_PL</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_RXD_1" type="logic">
+         <obj_property name="ElementShortName">RS485_RXD_1</obj_property>
+         <obj_property name="ObjectShortName">RS485_RXD_1</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_DE_7" type="logic">
+         <obj_property name="ElementShortName">RS485_DE_7</obj_property>
+         <obj_property name="ObjectShortName">RS485_DE_7</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_TXD_7" type="logic">
+         <obj_property name="ElementShortName">RS485_TXD_7</obj_property>
+         <obj_property name="ObjectShortName">RS485_TXD_7</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_TXD_8" type="logic">
+         <obj_property name="ElementShortName">RS485_TXD_8</obj_property>
+         <obj_property name="ObjectShortName">RS485_TXD_8</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_RXD_8" type="logic">
+         <obj_property name="ElementShortName">RS485_RXD_8</obj_property>
+         <obj_property name="ObjectShortName">RS485_RXD_8</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_RXD_9" type="logic">
+         <obj_property name="ElementShortName">RS485_RXD_9</obj_property>
+         <obj_property name="ObjectShortName">RS485_RXD_9</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_DE_8" type="logic">
+         <obj_property name="ElementShortName">RS485_DE_8</obj_property>
+         <obj_property name="ObjectShortName">RS485_DE_8</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_DE_9" type="logic">
+         <obj_property name="ElementShortName">RS485_DE_9</obj_property>
+         <obj_property name="ObjectShortName">RS485_DE_9</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_TXD_9" type="logic">
+         <obj_property name="ElementShortName">RS485_TXD_9</obj_property>
+         <obj_property name="ObjectShortName">RS485_TXD_9</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/EN_PFC_FB" type="logic">
+         <obj_property name="ElementShortName">EN_PFC_FB</obj_property>
+         <obj_property name="ObjectShortName">EN_PFC_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/PG_BUCK_FB" type="logic">
+         <obj_property name="ElementShortName">PG_BUCK_FB</obj_property>
+         <obj_property name="ObjectShortName">PG_BUCK_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/EN_PSU_1_FB" type="logic">
+         <obj_property name="ElementShortName">EN_PSU_1_FB</obj_property>
+         <obj_property name="ObjectShortName">EN_PSU_1_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/PG_PSU_1_FB" type="logic">
+         <obj_property name="ElementShortName">PG_PSU_1_FB</obj_property>
+         <obj_property name="ObjectShortName">PG_PSU_1_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/EN_PSU_2_FB" type="logic">
+         <obj_property name="ElementShortName">EN_PSU_2_FB</obj_property>
+         <obj_property name="ObjectShortName">EN_PSU_2_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/PG_PSU_2_FB" type="logic">
+         <obj_property name="ElementShortName">PG_PSU_2_FB</obj_property>
+         <obj_property name="ObjectShortName">PG_PSU_2_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/EN_PSU_5_FB" type="logic">
+         <obj_property name="ElementShortName">EN_PSU_5_FB</obj_property>
+         <obj_property name="ObjectShortName">EN_PSU_5_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/PG_PSU_5_FB" type="logic">
+         <obj_property name="ElementShortName">PG_PSU_5_FB</obj_property>
+         <obj_property name="ObjectShortName">PG_PSU_5_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_DE_1" type="logic">
+         <obj_property name="ElementShortName">RS485_DE_1</obj_property>
+         <obj_property name="ObjectShortName">RS485_DE_1</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_TXD_1" type="logic">
+         <obj_property name="ElementShortName">RS485_TXD_1</obj_property>
+         <obj_property name="ObjectShortName">RS485_TXD_1</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/EN_PSU_6_FB" type="logic">
+         <obj_property name="ElementShortName">EN_PSU_6_FB</obj_property>
+         <obj_property name="ObjectShortName">EN_PSU_6_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/PG_PSU_6_FB" type="logic">
+         <obj_property name="ElementShortName">PG_PSU_6_FB</obj_property>
+         <obj_property name="ObjectShortName">PG_PSU_6_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/EN_PSU_7_FB" type="logic">
+         <obj_property name="ElementShortName">EN_PSU_7_FB</obj_property>
+         <obj_property name="ObjectShortName">EN_PSU_7_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/PG_PSU_7_FB" type="logic">
+         <obj_property name="ElementShortName">PG_PSU_7_FB</obj_property>
+         <obj_property name="ObjectShortName">PG_PSU_7_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/EN_PSU_8_FB" type="logic">
+         <obj_property name="ElementShortName">EN_PSU_8_FB</obj_property>
+         <obj_property name="ObjectShortName">EN_PSU_8_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/PG_PSU_8_FB" type="logic">
+         <obj_property name="ElementShortName">PG_PSU_8_FB</obj_property>
+         <obj_property name="ObjectShortName">PG_PSU_8_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/EN_PSU_9_FB" type="logic">
+         <obj_property name="ElementShortName">EN_PSU_9_FB</obj_property>
+         <obj_property name="ObjectShortName">EN_PSU_9_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/PG_PSU_9_FB" type="logic">
+         <obj_property name="ElementShortName">PG_PSU_9_FB</obj_property>
+         <obj_property name="ObjectShortName">PG_PSU_9_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/EN_PSU_10_FB" type="logic">
+         <obj_property name="ElementShortName">EN_PSU_10_FB</obj_property>
+         <obj_property name="ObjectShortName">EN_PSU_10_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/PG_PSU_10_FB" type="logic">
+         <obj_property name="ElementShortName">PG_PSU_10_FB</obj_property>
+         <obj_property name="ObjectShortName">PG_PSU_10_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_TXD_2" type="logic">
+         <obj_property name="ElementShortName">RS485_TXD_2</obj_property>
+         <obj_property name="ObjectShortName">RS485_TXD_2</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_RXD_2" type="logic">
+         <obj_property name="ElementShortName">RS485_RXD_2</obj_property>
+         <obj_property name="ObjectShortName">RS485_RXD_2</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_RXD_3" type="logic">
+         <obj_property name="ElementShortName">RS485_RXD_3</obj_property>
+         <obj_property name="ObjectShortName">RS485_RXD_3</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_DE_2" type="logic">
+         <obj_property name="ElementShortName">RS485_DE_2</obj_property>
+         <obj_property name="ObjectShortName">RS485_DE_2</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_DE_3" type="logic">
+         <obj_property name="ElementShortName">RS485_DE_3</obj_property>
+         <obj_property name="ObjectShortName">RS485_DE_3</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_TXD_3" type="logic">
+         <obj_property name="ElementShortName">RS485_TXD_3</obj_property>
+         <obj_property name="ObjectShortName">RS485_TXD_3</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_TXD_4" type="logic">
+         <obj_property name="ElementShortName">RS485_TXD_4</obj_property>
+         <obj_property name="ObjectShortName">RS485_TXD_4</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_RXD_4" type="logic">
+         <obj_property name="ElementShortName">RS485_RXD_4</obj_property>
+         <obj_property name="ObjectShortName">RS485_RXD_4</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_RXD_5" type="logic">
+         <obj_property name="ElementShortName">RS485_RXD_5</obj_property>
+         <obj_property name="ObjectShortName">RS485_RXD_5</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_DE_4" type="logic">
+         <obj_property name="ElementShortName">RS485_DE_4</obj_property>
+         <obj_property name="ObjectShortName">RS485_DE_4</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_DE_5" type="logic">
+         <obj_property name="ElementShortName">RS485_DE_5</obj_property>
+         <obj_property name="ObjectShortName">RS485_DE_5</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_TXD_5" type="logic">
+         <obj_property name="ElementShortName">RS485_TXD_5</obj_property>
+         <obj_property name="ObjectShortName">RS485_TXD_5</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_TXD_6" type="logic">
+         <obj_property name="ElementShortName">RS485_TXD_6</obj_property>
+         <obj_property name="ObjectShortName">RS485_TXD_6</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_RXD_6" type="logic">
+         <obj_property name="ElementShortName">RS485_RXD_6</obj_property>
+         <obj_property name="ObjectShortName">RS485_RXD_6</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_RXD_7" type="logic">
+         <obj_property name="ElementShortName">RS485_RXD_7</obj_property>
+         <obj_property name="ObjectShortName">RS485_RXD_7</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/RS485_DE_6" type="logic">
+         <obj_property name="ElementShortName">RS485_DE_6</obj_property>
+         <obj_property name="ObjectShortName">RS485_DE_6</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/lamp_status_fpga" type="logic">
+         <obj_property name="ElementShortName">lamp_status_fpga</obj_property>
+         <obj_property name="ObjectShortName">lamp_status_fpga</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/PH_A_ON_fpga" type="logic">
+         <obj_property name="ElementShortName">PH_A_ON_fpga</obj_property>
+         <obj_property name="ObjectShortName">PH_A_ON_fpga</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/PH_B_ON_fpga" type="logic">
+         <obj_property name="ElementShortName">PH_B_ON_fpga</obj_property>
+         <obj_property name="ObjectShortName">PH_B_ON_fpga</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/PH_C_ON_fpga" type="logic">
+         <obj_property name="ElementShortName">PH_C_ON_fpga</obj_property>
+         <obj_property name="ObjectShortName">PH_C_ON_fpga</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/ps_clk100" type="logic">
+         <obj_property name="ElementShortName">ps_clk100</obj_property>
+         <obj_property name="ObjectShortName">ps_clk100</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/ps_clk100_rst" type="logic">
+         <obj_property name="ElementShortName">ps_clk100_rst</obj_property>
+         <obj_property name="ObjectShortName">ps_clk100_rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/ps_clk100_rstn" type="logic">
+         <obj_property name="ElementShortName">ps_clk100_rstn</obj_property>
+         <obj_property name="ObjectShortName">ps_clk100_rstn</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/REGS_BE" type="array">
+         <obj_property name="ElementShortName">REGS_BE[3:0]</obj_property>
+         <obj_property name="ObjectShortName">REGS_BE[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/REGS_D" type="array">
+         <obj_property name="ElementShortName">REGS_D[31:0]</obj_property>
+         <obj_property name="ObjectShortName">REGS_D[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/REGS_A" type="array">
+         <obj_property name="ElementShortName">REGS_A[11:0]</obj_property>
+         <obj_property name="ObjectShortName">REGS_A[11:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/REGS_Q" type="array">
+         <obj_property name="ElementShortName">REGS_Q[31:0]</obj_property>
+         <obj_property name="ObjectShortName">REGS_Q[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/REGS_WE" type="logic">
+         <obj_property name="ElementShortName">REGS_WE</obj_property>
+         <obj_property name="ObjectShortName">REGS_WE</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/UART_we" type="logic">
+         <obj_property name="ElementShortName">UART_we</obj_property>
+         <obj_property name="ObjectShortName">UART_we</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/UART_a" type="array">
+         <obj_property name="ElementShortName">UART_a[11:0]</obj_property>
+         <obj_property name="ObjectShortName">UART_a[11:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/UART_d" type="array">
+         <obj_property name="ElementShortName">UART_d[31:0]</obj_property>
+         <obj_property name="ObjectShortName">UART_d[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/d_to_UART" type="array">
+         <obj_property name="ElementShortName">d_to_UART[31:0]</obj_property>
+         <obj_property name="ObjectShortName">d_to_UART[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/registers" type="array">
+         <obj_property name="ElementShortName">registers[0:11][31:0]</obj_property>
+         <obj_property name="ObjectShortName">registers[0:11][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_updating" type="array">
+         <obj_property name="ElementShortName">regs_updating[0:11]</obj_property>
+         <obj_property name="ObjectShortName">regs_updating[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_reading" type="array">
+         <obj_property name="ElementShortName">regs_reading[0:11]</obj_property>
+         <obj_property name="ObjectShortName">regs_reading[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/internal_regs" type="array">
+         <obj_property name="ElementShortName">internal_regs[0:11][31:0]</obj_property>
+         <obj_property name="ObjectShortName">internal_regs[0:11][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/internal_regs_we" type="array">
+         <obj_property name="ElementShortName">internal_regs_we[0:11]</obj_property>
+         <obj_property name="ObjectShortName">internal_regs_we[0:11]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/ios_2_app" type="array">
+         <obj_property name="ElementShortName">ios_2_app</obj_property>
+         <obj_property name="ObjectShortName">ios_2_app</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/app_2_ios" type="array">
+         <obj_property name="ElementShortName">app_2_ios</obj_property>
+         <obj_property name="ObjectShortName">app_2_ios</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/sw_reset" type="logic">
+         <obj_property name="ElementShortName">sw_reset</obj_property>
+         <obj_property name="ObjectShortName">sw_reset</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/regs_reset" type="logic">
+         <obj_property name="ElementShortName">regs_reset</obj_property>
+         <obj_property name="ObjectShortName">regs_reset</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/SYNTHESIS_TIME" type="array">
+         <obj_property name="ElementShortName">SYNTHESIS_TIME[31:0]</obj_property>
+         <obj_property name="ObjectShortName">SYNTHESIS_TIME[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/SIM_INPUT_FILE_NAME" type="array">
+         <obj_property name="ElementShortName">SIM_INPUT_FILE_NAME[1:58]</obj_property>
+         <obj_property name="ObjectShortName">SIM_INPUT_FILE_NAME[1:58]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl/SIM_OUTPUT_FILE_NAME" type="array">
+         <obj_property name="ElementShortName">SIM_OUTPUT_FILE_NAME[1:59]</obj_property>
+         <obj_property name="ObjectShortName">SIM_OUTPUT_FILE_NAME[1:59]</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

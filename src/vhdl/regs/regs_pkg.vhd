@@ -158,14 +158,14 @@ package regs_pkg is
         GENERAL_STATUS               => '1',
         TIMESTAMP_L                  => '1',
         TIMESTAMP_H                  => '1',
-        IO_OUT0                      => '1',
-        IO_OUT1                      => '1',
+        IO_IN                         => '1',
         others                       => '0'
     );
 
     constant CPU_WRITEABLE_REGS : reg_slv_array_t := (
         GENERAL_CONTROL               => '1',
-        IO_IN                         => '1',
+        IO_OUT0                      => '1',
+        IO_OUT1                      => '1',
         others                        => '0'   -- unused, constant regs and internally writable regs are not cpu writable
     );
     

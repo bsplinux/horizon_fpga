@@ -130,7 +130,7 @@ end condor_pl;
 
 architecture Behavioral of condor_pl is 
   
-    signal ps_clk100 : std_logic;
+    signal ps_clk100 : std_logic := '0';
     signal ps_clk100_rst : std_logic;
     signal ps_clk100_rstn : std_logic;
   
@@ -175,7 +175,7 @@ begin
     begin
         -- during simulation we skip the need AXI transactions by directly setting values of registers using text IO vhdl package from file
         ps_clk100      <= not ps_clk100 after 5 ns; -- 100 MHz
-        ps_clk100_rst <= '0', '1' after 333 ns;
+        ps_clk100_rst <= '1', '0' after 333 ns;
         ps_clk100_rstn <= not ps_clk100_rst;
         --regs_a   <= (others => '0');
         --regs_be  <= (others => '0');
@@ -442,4 +442,4 @@ begin
     );
 
 end Behavioral;
-check why ios are disapiring (not connected) after synthesis while they exist in the rtl design
+--check why ios are disapiring (not connected) after synthesis while they exist in the rtl design

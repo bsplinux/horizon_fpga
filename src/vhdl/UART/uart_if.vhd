@@ -2,9 +2,6 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
---use work.reg_array_pkg.all;
---use work.AXI_regs_pkg.all;
-
 entity uart_if is
 	generic (
 		UART_A_SIZE : integer := 10
