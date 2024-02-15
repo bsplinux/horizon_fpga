@@ -9,6 +9,9 @@
 #include  "asynclog.h"
 
 extern unsigned int * regs_a;
+extern int log_mseconds;
+int board_id = 1;
+
 int log_active = 0;
 
 static int task_active=0;
@@ -77,12 +80,13 @@ int servercmd_start(int server_port){
         		    }
         		    if(pcmd->cmd3.command == 1){ // start log
         		    	std::string log_name = create_log_name();
-        		        start_async_log(1024,log_name);
+                        start_async_log(1024,log_name,"127.0.0.1",4000);
         		        log_active = 1;
         		        printf("starting log filename: %s\n\r",log_name.c_str());
         		    }
         		    if(pcmd->cmd3.command == 2){ // erase log
-        		        erase_log();
+        		    	end_async_log();
+        		    	erase_log();
         		    	log_active = 0;
         		        printf("erasing log\n\r");
         		    }
@@ -122,6 +126,18 @@ int servercmd_start(int server_port){
 					ret = Socket_SendTo(socket,(unsigned char*)resp,sizeof(cmd5_reg_rw_t),src_ip,src_port);
 					printf("Sent %d bytes, cmd(%d) command(%d) reg_a(%d) reg_d(%d)\n\r",ret, resp->message_id, resp->command, resp->reg_address, resp->reg_data);
 					free(resp);
+					count++;
+                }
+				break;
+                case  CMD_OP6:
+                {
+					if(rx_size != (sizeof(pcmd->cmd6))){
+						printf("%s.%d  worng packet size  \n\r",__func__,__LINE__);
+						continue;
+					}
+					log_mseconds = pcmd->cmd6.log_mseconds;
+					board_id = pcmd->cmd6.board_id;
+					printf("Got cmd(%d) log_mseconds(%d) board_id(%d)\n\r",pcmd->cmd6.message_id, pcmd->cmd6.log_mseconds, pcmd->cmd6.board_id);
 					count++;
                 }
 				break;

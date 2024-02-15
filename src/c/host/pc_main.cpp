@@ -93,6 +93,20 @@ int cli_cmd(parse_t * pars_p, char *result){
             printf("%s.%d tx_size(%d) rx_size(%d) command(%d) reg_a(%d) reg_d(%d) )\n\r",__func__,__LINE__,ret,rx_size,rxudpcmd.data.cmd5.command,rxudpcmd.data.cmd5.reg_address,rxudpcmd.data.cmd5.reg_data);
         }	
         break;
+		case CMD_OP6 :{
+            int param1 = 0;
+            int param2 = 0;
+            int dst_ip  = Socket_Str2Addr((char*)"192.168.1.30");
+            txudpcmd.hdr = cmdhdr_t(opcode,gcount++,sizeof(cmd6_maintenace_t));
+            txudpcmd.data.cmd6.message_id = opcode;
+            cget_integer(pars_p,param1,&param1);
+            txudpcmd.data.cmd6.log_mseconds = param1;
+            cget_integer(pars_p,param2,&param2);
+            txudpcmd.data.cmd6.board_id = param2;
+            ret = Socket_SendTo(socket,(unsigned char*)&txudpcmd.data,txudpcmd.hdr.length,dst_ip,gport);
+            printf("%s.%d tx_size(%d) log_mseconds(%d) board_id(%d) \n\r",__func__,__LINE__,ret,param1, param2);	
+        }	
+        break;
 	}
 	if(socket){
 		Socket_Close(socket);

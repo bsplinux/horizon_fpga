@@ -21,14 +21,17 @@ entity app is
         internal_regs    : out reg_array_t;
         internal_regs_we : out reg_slv_array_t;
         ios_2_app        : in  ios_2_app_t;
-        app_2_ios        : out app_2_ios_t
+        app_2_ios        : out app_2_ios_t;
+        ps_intr          : out std_logic
     );
 end entity app;
 
 architecture RTL of app is
     signal timer   : std_logic_vector(63 downto 0) := (others => '0');
     signal IO_IN_s : std_logic_vector(IO_IN_range);
-    
+    signal internal_regs_update_log    : reg_array_t;
+    signal internal_regs_we_update_log : reg_slv_array_t;
+    signal log_regs         : log_reg_array_t;
 begin
     process(clk)
     begin
@@ -52,6 +55,13 @@ begin
                     internal_regs(IO_IN)(IO_IN_range) <= IO_IN_s;
                 end if;
                 
+                internal_regs_we(GENERAL_STATUS) <= '1';
+                internal_regs(GENERAL_STATUS)(STATUS_REGS_LOCKED) <= internal_regs_update_log(GENERAL_STATUS)(STATUS_REGS_LOCKED);
+                for i in log_regs_range loop
+                    internal_regs_we(i) <= internal_regs_we_update_log(i);
+                    internal_regs(i) <= internal_regs_update_log(i);
+                end loop;
+                    
             end if;
         end if;
     end process;
@@ -166,6 +176,18 @@ begin
         end if;
     end process;
     
-
+    update_log_i: entity work.update_log
+        port map(
+        clk              => clk,
+        sync_rst         => sync_rst,
+        registers        => registers,
+        regs_updating    => regs_updating,
+        regs_reading     => regs_reading,
+        internal_regs    => internal_regs_update_log,
+        internal_regs_we => internal_regs_we_update_log,
+        ps_intr          => ps_intr,
+        log_regs         => log_regs
+    );
+    log_regs <= (others => X"00000000");
     
 end architecture RTL;

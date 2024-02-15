@@ -41,70 +41,76 @@ typedef struct{
 }cmd5_reg_rw_t;
 
 typedef struct{
-	unsigned char DC_IN_Status                :  0; //
-	unsigned char AC_IN_Status                :  1; //
-	unsigned char Power_Out_Status            :  2; //
-	unsigned char MIU_COM_Status              :  3; //
-	unsigned char OUT1_OC                     :  4; //
-	unsigned char OUT2_OC                     :  5; //
-	unsigned char OUT3_OC                     :  6; //
-	unsigned char OUT4_OC                     :  7; //
-	unsigned char OUT5_OC                     :  8; //
-	unsigned char OUT6_OC                     :  9; //
-	unsigned char OUT7_OC                     :  0; //
-	unsigned char OUT8_OC                     : 11; //
-	unsigned char OUT9_OC                     : 12; //
-	unsigned char OUT10_OC                    : 13; //
-	unsigned char DC_IN_OV                    : 14; //
-	unsigned char OUT1_OV                     : 15; //
-	unsigned char OUT2_OV                     : 16; //
-	unsigned char OUT3_OV                     : 17; //
-	unsigned char OUT4_OV                     : 18; //
-	unsigned char OUT5_OV                     : 19; //
-	unsigned char OUT6_OV                     : 20; //
-	unsigned char OUT7_OV                     : 21; //
-	unsigned char OUT8_OV                     : 22; //
-	unsigned char OUT9_OV                     : 23; //
-	unsigned char OUT10_OV                    : 24; //
-	unsigned char DC_IN_UV                    : 25; //
-	unsigned char AC_IN_UV                    : 26; //
-	unsigned char PH1_Status                  : 27; //
-	unsigned char PH2_Status                  : 28; //
-	unsigned char PH3_Status                  : 29; //
-	unsigned char Neutral_Status              : 30; //
-	unsigned char Is_Logfile_Running          : 31; //
-	unsigned char Is_Logfile_Erase_In_Process : 32; //
-	unsigned char Fan1_Speed_Status           : 33; //
-	unsigned char Fan2_Speed_Status           : 34; //
-	unsigned char Fan3_Speed_Status           : 35; //
-	unsigned char OVER_TEMP_Status            : 36; //
-	unsigned char CC_Inhibit                  : 37; //
-	unsigned char EC_Inhibit                  : 38; //
-	unsigned char System_Reset                : 39; //
-	unsigned char System_Off                  : 30; //
-	unsigned char MIU_Watchdog_Status         : 41; //
-	unsigned char ON_OFF_Switch_State         : 42; //
-	unsigned char Capacitor1_end_of_life      : 43; //
-	unsigned char Capacitor2_end_of_life      : 44; //
-	unsigned char Capacitor3_end_of_life      : 45; //
-	unsigned char Capacitor4_end_of_life      : 46; //
-	unsigned char Capacitor5_end_of_life      : 47; //
-	unsigned char Capacitor6_end_of_life      : 48; //
-	unsigned char Capacitor7_end_of_life      : 49; //
-	unsigned char Capacitor8_end_of_life      : 50; //
-	unsigned char Capacitor9_end_of_life      : 51; //
-	unsigned char Capacitor10_end_of_life     : 52; //
-	unsigned char Capacitor11_end_of_life     : 53; //
-	unsigned char Capacitor12_end_of_life     : 54; //
-	unsigned char Capacitor13_end_of_life     : 55; //
-	unsigned char Capacitor14_end_of_life     : 56; //
-	unsigned char Capacitor15_end_of_life     : 57; //
-	unsigned char Capacitor16_end_of_life     : 58; //
-	unsigned char Spare0                      : 59; //
-	unsigned char Spare1                      : 60; //
-	unsigned char Spare2                      : 61; //
-	unsigned char Spare3                      : 62; //
-	unsigned char Spare4                      : 63; //
+    unsigned char message_id;         // must be 5
+    unsigned char log_mseconds;       // how many mseconds between log to file
+    unsigned char board_id;           // serial no.
+}cmd6_maintenace_t;
+
+typedef struct{
+    unsigned int DC_IN_Status                : 1; // 0
+    unsigned int AC_IN_Status                : 1; // 1
+    unsigned int Power_Out_Status            : 1; // 2
+    unsigned int MIU_COM_Status              : 1; // 3
+    unsigned int OUT1_OC                     : 1; // 4
+    unsigned int OUT2_OC                     : 1; // 5
+    unsigned int OUT3_OC                     : 1; // 6
+    unsigned int OUT4_OC                     : 1; // 7
+    unsigned int OUT5_OC                     : 1; // 8
+    unsigned int OUT6_OC                     : 1; // 9
+    unsigned int OUT7_OC                     : 1; // 0
+    unsigned int OUT8_OC                     : 1; //11
+    unsigned int OUT9_OC                     : 1; //12
+    unsigned int OUT10_OC                    : 1; //13
+    unsigned int DC_IN_OV                    : 1; //14
+    unsigned int OUT1_OV                     : 1; //15
+    unsigned int OUT2_OV                     : 1; //16
+    unsigned int OUT3_OV                     : 1; //17
+    unsigned int OUT4_OV                     : 1; //18
+    unsigned int OUT5_OV                     : 1; //19
+    unsigned int OUT6_OV                     : 1; //20
+    unsigned int OUT7_OV                     : 1; //21
+    unsigned int OUT8_OV                     : 1; //22
+    unsigned int OUT9_OV                     : 1; //23
+    unsigned int OUT10_OV                    : 1; //24
+    unsigned int DC_IN_UV                    : 1; //25
+    unsigned int AC_IN_UV                    : 1; //26
+    unsigned int PH1_Status                  : 1; //27
+    unsigned int PH2_Status                  : 1; //28
+    unsigned int PH3_Status                  : 1; //29
+    unsigned int Neutral_Status              : 1; //30
+    unsigned int Is_Logfile_Running          : 1; //31
+    unsigned int Is_Logfile_Erase_In_Process : 1; //32
+    unsigned int Fan1_Speed_Status           : 1; //33
+    unsigned int Fan2_Speed_Status           : 1; //34
+    unsigned int Fan3_Speed_Status           : 1; //35
+    unsigned int OVER_TEMP_Status            : 1; //36
+    unsigned int CC_Inhibit                  : 1; //37
+    unsigned int EC_Inhibit                  : 1; //38
+    unsigned int System_Reset                : 1; //39
+    unsigned int System_Off                  : 1; //30
+    unsigned int MIU_Watchdog_Status         : 1; //41
+    unsigned int ON_OFF_Switch_State         : 1; //42
+    unsigned int Capacitor1_end_of_life      : 1; //43
+    unsigned int Capacitor2_end_of_life      : 1; //44
+    unsigned int Capacitor3_end_of_life      : 1; //45
+    unsigned int Capacitor4_end_of_life      : 1; //46
+    unsigned int Capacitor5_end_of_life      : 1; //47
+    unsigned int Capacitor6_end_of_life      : 1; //48
+    unsigned int Capacitor7_end_of_life      : 1; //49
+    unsigned int Capacitor8_end_of_life      : 1; //50
+    unsigned int Capacitor9_end_of_life      : 1; //51
+    unsigned int Capacitor10_end_of_life     : 1; //52
+    unsigned int Capacitor11_end_of_life     : 1; //53
+    unsigned int Capacitor12_end_of_life     : 1; //54
+    unsigned int Capacitor13_end_of_life     : 1; //55
+    unsigned int Capacitor14_end_of_life     : 1; //56
+    unsigned int Capacitor15_end_of_life     : 1; //57
+    unsigned int Capacitor16_end_of_life     : 1; //58
+    unsigned int Spare0                      : 1; //59
+    unsigned int Spare1                      : 1; //60
+    unsigned int Spare2                      : 1; //61
+    unsigned int Spare3                      : 1; //62
+    unsigned int Spare4                      : 1; //63
 }PSU_Status_t;
 
 typedef union {
@@ -182,13 +188,14 @@ typedef struct{                        //                                       
 	unsigned long long  Spare9       ; // N/A                                            N/A	N/A	          N/A
 }cmd81_telemetry_t;
 
-typedef struct{
-    char raw[TELEMETRY_BYTES];
-}cmd81_telemetry_array_t;
+// typedef struct{
+//     char raw[TELEMETRY_BYTES];
+// }cmd81_telemetry_array_t;
 
 typedef union{
     cmd81_telemetry_t fields;
-    cmd81_telemetry_array_t array;
+    //cmd81_telemetry_array_t array;
+    char array[TELEMETRY_BYTES];
 }cmd81_union_t;
 
 enum{
@@ -198,6 +205,7 @@ enum{
     CMD_OP3,
     CMD_OP4,
     CMD_OP5,
+    CMD_OP6,
 };
 
 typedef union{
@@ -206,6 +214,7 @@ typedef union{
     cmd3_logfile_maintenance_t  cmd3;
     cmd4_gmt_t                  cmd4;
     cmd5_reg_rw_t               cmd5;
+    cmd6_maintenace_t           cmd6;
 }cmd_data_t ;
 
 typedef struct {

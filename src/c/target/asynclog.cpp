@@ -11,32 +11,33 @@
 #include <condition_variable>
 #include <chrono>
 #include <string>
-#include  "asynclog.h"
-
-// Mati
 #include <cstring>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
-#include <filesystem>
-
-// end Mati
-
-static const int        PACKET_SIZE=90;    // packet size 
-static const int        PACKET_COUNT=10;   // fifo size 
-static int              active_task =0;
-std::thread             reader_thread_h;
-
-//static int file_buff_disk(int fd,unsigned char *buffer,int &buffer_offset,void *p_write,unsigned int i_write);
-
-#include <iostream>
 #include <queue>
 #include <mutex>
 #include <condition_variable>
-#include <thread>
-#include <vector>
+#include <chrono>
+#include <iomanip>
+#include <sstream>
+#include <filesystem>
+namespace fs = std::filesystem;
 
+#include  "socket.h"
+#include  "asynclog.h"
+
+int log_mseconds = 1;
+
+static const int        PACKET_SIZE=200;    // packet size 
+static const int        PACKET_COUNT=10;   // fifo size 
+static int              active_task =0;
+static std::string         g_log_path;
+static std::thread         g_log_hread_h;
+static char g_msg[PACKET_SIZE];
+static int  g_msg_size = sizeof(g_msg);
+
+//static int file_buff_disk(int fd,unsigned char *buffer,int &buffer_offset,void *p_write,unsigned int i_write);
 
 struct Packet {
     unsigned char data [PACKET_SIZE];
@@ -59,26 +60,33 @@ public:
     FIFOBuffer(size_t capacity) : capacity(capacity), count(0), head(0), tail(0), buffer(capacity) {}
 
     void write(Packet&& packet) {
+        printf("%s.%d pkt lenght(%d) \n\r",__func__,__LINE__,packet.length);
         std::unique_lock<std::mutex> lock(mutex);
+
         notFull.wait(lock, [this]{ return count < capacity; });
         buffer[tail] = std::move(packet);
         tail = (tail + 1) % capacity;
         ++count;
+
         notEmpty.notify_one();
     }
 
     std::optional<Packet> read(int timeout_ms) {
+
         std::unique_lock<std::mutex> lock(mutex);
+
         if (!notEmpty.wait_for(lock, std::chrono::milliseconds(timeout_ms), [this] { return count > 0; })) {
                   // Timeout
+            printf("%s.%d pkt ms(%d) \n\r",__func__,__LINE__,timeout_ms);
             return std::nullopt; // Indicate that no packet was read due to timeout
         }
-
-        notEmpty.wait(lock, [this]{ return count > 0; });
+        //notEmpty.wait(lock, [this]{ return count > 0; });
         Packet packet = std::move(buffer[head]);
         head = (head + 1) % capacity;
         --count;
         notFull.notify_one();
+
+        printf("%s.%d pkt cnt(%d) \n\r",__func__,__LINE__,count);
         return packet;
     }
 };
@@ -106,13 +114,18 @@ public:
     ~BufferedFileWriter() {
         // Ensure any remaining data is flushed to disk when the object is destroyed
         flushBuffer();
+		if(fd >0){
+			close(fd);
+			//printf("%s.%d close fd(%d) \n\r",__func__,__LINE__,fd);
+			system("sync");
+		}
     }
 
     // Write data to the buffer, flushing to disk as needed
     int writeData(void *p_write, unsigned int i_write) {
         unsigned char *p_wbuff = (unsigned char *)p_write;
         int ret = 0;
-
+        printf("%s.%d ws(%d) ofs(%d)\n\r",__func__,__LINE__,i_write,buffer_offset);
         if (buffer_offset > 0) {
             unsigned int cpy_size = std::min(buffer_size - buffer_offset, (int)i_write);
             assert(cpy_size != 0);
@@ -150,9 +163,17 @@ public:
     // Flush the buffer to disk
     bool flushBuffer() {
         if (buffer_offset > 0) {
+			int diff = buffer_size - buffer_offset;
+			if(diff){
+			//#IN_CASE_THERE_IS_ALLIMENT_ERROR
+			//memset((VOID*)&buffer[buffer_size-diff],0,diff);
+			//buffer_offset = buffer_size;
+			//#endif
+		}
             int ret = write(fd, buffer, buffer_offset);
             if (ret != buffer_offset) {
-                std::cerr << "Error flushing buffer to disk" << std::endl;
+                //std::cerr << "Error flushing buffer to disk" << std::endl;
+printf("%s.%d Flush Fail DIFF(%d) req size(%d) ret(%d)\n\r",__func__,__LINE__,diff,buffer_offset,ret);
                 return false;
             }
             buffer_offset = 0; // Reset buffer offset
@@ -162,13 +183,10 @@ public:
 };
 
 
-static FIFOBuffer          *gfifo=0;
-static BufferedFileWriter *gbuffer=0;
-
-static void reader_thread(int fd,FIFOBuffer * buffer) {
+static void reader_thread(BufferedFileWriter * &gbuffer,FIFOBuffer *& gfifo) {
     int ret=0;
     while(active_task){
-        auto packetOpt = buffer->read(100); // Wait for 100 milliseconds
+        auto packetOpt = gfifo->read(100); // Wait for 100 milliseconds
         if (packetOpt) {
             // Successfully read a packet
             // Process the packet...
@@ -183,80 +201,169 @@ static void reader_thread(int fd,FIFOBuffer * buffer) {
 
     delete gbuffer;
     gbuffer =0;
-    printf("%s.%d exit log\n\r",__func__,__LINE__);
+    delete gfifo;
+    gfifo =0;
+
+//    printf("%s.%d exit log\n\r",__func__,__LINE__);
 }
 
-std::string global_log_name;
+
 
 int rename_log(std::string newname) {
-    int ret=-1;
-    if(!global_log_name.empty()){
-      ret =  rename(global_log_name.c_str(),newname.c_str());
-    }   
-    return ret;
+//    int ret=-1;
+//    if(!global_log_name.empty()){
+//      ret =  rename(global_log_name.c_str(),newname.c_str());
+ //   }
+  //  return ret;
+    return 0;
 }
 
-int fd = -1;
-int start_async_log(int save_block_size,std::string log_name){
-    global_log_name = log_name;
-    if(gbuffer ==0){
-#ifdef WIN32
-        int fd = open(log_name.c_str(),O_CREAT | O_WRONLY,0640 );
-#else
-        struct stat st = {0};
-        if (stat("/log", &st) == -1) {
-            mkdir("/log", 0777);
+static std::string formatNumber(int number) {
+    std::ostringstream oss;
+    oss << std::setw(5) << std::setfill('0') << number;
+    return oss.str();
+}
+
+static std::string getCurrentTimeFormatted() {
+    auto now = std::chrono::system_clock::now();
+    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d-%H-%M-%S");
+    return ss.str();
+}
+
+static int getLastNumberFromFilename(const fs::path& path) {
+    std::string filename = path.filename().string();
+    // Assuming the filename is correctly formatted and the number is at the end
+    std::string numberStr = filename.substr(filename.find_last_of('-') + 1);
+    return std::stoi(numberStr);
+}
+
+int start_async_log(int save_block_size,std::string log_path,std::string dst_log_ip,int dst_log_port){
+	fs::path directory ;
+	std::vector<fs::path> files;
+	int newNumber =1;
+	int fd;
+	static std::thread         reader_thread_h;
+	g_log_path = log_path;
+	directory = log_path;
+	static BufferedFileWriter  *gbuffer=0;
+	static FIFOBuffer          *gfifo  =0;
+
+
+        // Check if directory exists and is a directory
+        if (fs::exists(directory) && fs::is_directory(directory)) {
+            // Load files into the vector
+            for (const auto& entry : fs::directory_iterator(directory)) {
+                if (entry.is_regular_file()) {
+                    files.push_back(entry.path().filename());
+                }
+            }
         }
-        //int fd = open(log_name.c_str(),O_SYNC | O_DIRECT | O_CREAT | O_WRONLY,0640 );
-        std::string full_name("/log/");
-        full_name += log_name;
-        fd = open(full_name.c_str(),O_SYNC | O_DIRECT | O_CREAT | O_WRONLY ,0666 );
+        if (!files.empty()) {
+            // Sort files by their names
+            std::sort(files.begin(), files.end(), [](const fs::path& a, const fs::path& b) {
+                // Assuming filenames are in a format that allows alphabetical sorting
+                return a.filename().string() < b.filename().string();
+            });
+
+            // Check if there are any files in the directory
+
+                    // The last file in the sorted list
+             std::string lastFile = files.back().filename().string();
+             newNumber = getLastNumberFromFilename(lastFile) + 1;
+             std::cout << "The last file is: " << lastFile << std::endl;
+         } else {
+                  std::cout << "No files found in the directory." << std::endl;
+
+          }
+
+          std::string new_file_name = getCurrentTimeFormatted() + "-" + formatNumber(newNumber);
+          std::cout << "The new filename will be: " << new_file_name << std::endl;
+          std::string new_log_file_name = log_path + "/" + new_file_name;
+
+          // Create a directory
+              try {
+                  if (fs::create_directory(log_path)) {
+                      std::cout << "Directory created: " << log_path << std::endl;
+                  } else {
+                      std::cout << "Directory already exists or failed to create: " << log_path << std::endl;
+                  }
+              } catch (const fs::filesystem_error& e) {
+                  std::cerr << "Error: " << e.what() << std::endl;
+              }
+
+#ifdef WIN32
+
+        fd = open(new_log_file_name.c_str(),O_CREAT | O_WRONLY,0640 );
+#else
+
+        fd = open(new_log_file_name.c_str(),O_SYNC | O_DIRECT | O_CREAT | O_WRONLY ,0666 );
 #endif
         if(fd <0){
-            printf("ERROR fail to open %s file (error=%d) \n\r",log_name.c_str(),fd);
+            printf("ERROR fail to open %s file (error=%d) \n\r",new_log_file_name.c_str(),fd);
             return -1;
-        }
-        // move file pointer to end of file
-        int seek = lseek(fd, 0, SEEK_END);
-        if (seek == -1){
-        	printf("could not jump to end of file\n\r");
-        	return -1;
-        }
-        else
-        {
-        	printf("Jumping %d bytes to end of file\n\r", seek);
         }
 
         active_task = 1;
 
         gfifo   = new  FIFOBuffer(PACKET_COUNT);
         gbuffer = new BufferedFileWriter(fd,save_block_size);
-        reader_thread_h= std::thread([fd] { reader_thread(fd,gfifo);});
+        reader_thread_h= std::thread([] { reader_thread(gbuffer,gfifo);});
+        std::thread t([dst_log_ip,dst_log_port] {
+             int pkt_count =0;
+             unsigned int i_dst_ip = Socket_Str2Addr((char*)dst_log_ip.c_str());
+             int socket = Socket_UDPSocket();
+			 assert(socket >0);
+            // Simulate packet data fill (for illustration, not actually filling data here)
+            while(active_task){
+                Packet packet(g_msg,g_msg_size) ;
+                if(gfifo){
+                    gfifo->write(std::move(packet)); // Push pointer into the queue
+                    printf("%s.%d write paket\n\r",__func__,__LINE__);
+                 }
+                pkt_count = (pkt_count + 1) % 10;
+                if(pkt_count==0){
+					Socket_SendTo(socket,(unsigned char*)packet.data,packet.length,i_dst_ip,dst_log_port);
+                }
+                usleep(1000);
+            }
+			if(socket)
+				Socket_Close(socket);
+            if(reader_thread_h.joinable())
+                reader_thread_h.join();
 
+
+            active_task =1;
+            return 0;
+        });
+        t.detach();
+
+
+   // sleep(100);
+    //printf("%s.%d end func\n\r",__func__,__LINE__);
+
+    return 0;
+}
+
+void end_async_log(void){
+    if(active_task){
+        active_task = 0;
+        while(active_task)
+         usleep(0);
     }
-    return 0;
+    printf("%s.%d exit\n\r",__func__,__LINE__);
 }
 
-void end_async_log(){
-    close(fd);
-	active_task = 0;
-    if(reader_thread_h.joinable())
-        reader_thread_h.join();
-}
-
-int print_log(void *msg,int msg_size){
-    Packet packet(msg,msg_size) ;
-    // Simulate packet data fill (for illustration, not actually filling data here)
-    if(gfifo)
-        gfifo->write(std::move(packet)); // Push pointer into the queue
-    return 0;
-}
 
 std::string create_log_name(){
-    return "log.txt";
+    return "/log";
 }
 
 void erase_log(){
-	std::filesystem::remove_all("/log");
+#ifdef LINUX
+    std::filesystem::remove_all(g_log_path);
+#endif
 }
 
