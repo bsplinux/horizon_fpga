@@ -136,6 +136,10 @@ package condor_pl_pkg is
     constant psu_status_Spare3                      : integer := 62;
     constant psu_status_Spare4                      : integer := 63;
 
+    -- ps interrupts index
+    constant PS_INTR_MS                             : integer := 0;
+    constant PS_INTR_UPDATE_FLASH                   : integer := 1;
+
     function ios_2_app_vec(x: ios_2_app_t) return std_logic_vector;
 end package condor_pl_pkg;
 

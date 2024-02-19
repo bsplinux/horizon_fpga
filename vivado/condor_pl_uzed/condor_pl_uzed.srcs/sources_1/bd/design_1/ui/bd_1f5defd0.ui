@@ -1,0 +1,108 @@
+{
+   "ActiveEmotionalView":"Default View",
+   "Default View_ScaleFactor":"1.38328",
+   "Default View_TopLeft":"-766,1397",
+   "ExpandedHierarchyInLayout":"",
+   "guistr":"# # String gsaved with Nlview 7.5.8 2022-09-21 7111 VDI=41 GEI=38 GUI=JA:10.0 threadsafe
+#  -string -flagsOSRD
+preplace port DDR -pg 1 -lvl 3 -x 890 -y 1930 -defaultsOSRD
+preplace port FIXED_IO -pg 1 -lvl 3 -x 890 -y 1960 -defaultsOSRD
+preplace port UART_0 -pg 1 -lvl 3 -x 890 -y 70 -defaultsOSRD
+preplace port UART_1 -pg 1 -lvl 3 -x 890 -y 370 -defaultsOSRD
+preplace port UART_2 -pg 1 -lvl 3 -x 890 -y 510 -defaultsOSRD
+preplace port UART_3 -pg 1 -lvl 3 -x 890 -y 650 -defaultsOSRD
+preplace port UART_4 -pg 1 -lvl 3 -x 890 -y 790 -defaultsOSRD
+preplace port UART_5 -pg 1 -lvl 3 -x 890 -y 930 -defaultsOSRD
+preplace port UART_6 -pg 1 -lvl 3 -x 890 -y 1070 -defaultsOSRD
+preplace port UART_7 -pg 1 -lvl 3 -x 890 -y 1210 -defaultsOSRD
+preplace port UART_8 -pg 1 -lvl 3 -x 890 -y 1350 -defaultsOSRD
+preplace port port-id_ps_clk100 -pg 1 -lvl 3 -x 890 -y 1990 -defaultsOSRD
+preplace port port-id_spio0_sck -pg 1 -lvl 3 -x 890 -y 1560 -defaultsOSRD
+preplace port port-id_spi0_miso -pg 1 -lvl 0 -x -10 -y 1440 -defaultsOSRD
+preplace port port-id_spi0_mosi -pg 1 -lvl 3 -x 890 -y 1530 -defaultsOSRD
+preplace port port-id_spi2_miso -pg 1 -lvl 0 -x -10 -y 2110 -defaultsOSRD
+preplace port port-id_spi2_mosi -pg 1 -lvl 3 -x 890 -y 2207 -defaultsOSRD
+preplace port port-id_spi2_sck -pg 1 -lvl 3 -x 890 -y 2237 -defaultsOSRD
+preplace port port-id_spi1_miso -pg 1 -lvl 0 -x -10 -y 1660 -defaultsOSRD
+preplace port port-id_spi1_mosi -pg 1 -lvl 3 -x 890 -y 1737 -defaultsOSRD
+preplace port port-id_spi1_sck -pg 1 -lvl 3 -x 890 -y 1767 -defaultsOSRD
+preplace portBus ps_clk100_rstn -pg 1 -lvl 3 -x 890 -y 2130 -defaultsOSRD
+preplace portBus ps_clk100_rst -pg 1 -lvl 3 -x 890 -y 1870 -defaultsOSRD
+preplace portBus spi0_cs -pg 1 -lvl 3 -x 890 -y 1590 -defaultsOSRD
+preplace portBus spi2_cs -pg 1 -lvl 3 -x 890 -y 2267 -defaultsOSRD
+preplace portBus spi1_cs -pg 1 -lvl 3 -x 890 -y 1797 -defaultsOSRD
+preplace portBus REGS_BE -pg 1 -lvl 3 -x 890 -y 200 -defaultsOSRD
+preplace portBus REGS_D -pg 1 -lvl 3 -x 890 -y 230 -defaultsOSRD
+preplace portBus REGS_A -pg 1 -lvl 3 -x 890 -y 260 -defaultsOSRD
+preplace portBus REGS_Q -pg 1 -lvl 0 -x -10 -y 220 -defaultsOSRD
+preplace portBus ps_intr -pg 1 -lvl 0 -x -10 -y 2060 -defaultsOSRD
+preplace inst processing_system7_0 -pg 1 -lvl 2 -x 660 -y 1980 -defaultsOSRD
+preplace inst smartconnect_0 -pg 1 -lvl 1 -x 210 -y 1040 -defaultsOSRD
+preplace inst axi_quad_spi_0 -pg 1 -lvl 2 -x 660 -y 1550 -defaultsOSRD
+preplace inst axi_uartlite_0 -pg 1 -lvl 2 -x 660 -y 80 -defaultsOSRD
+preplace inst axi_uartlite_1 -pg 1 -lvl 2 -x 660 -y 380 -defaultsOSRD
+preplace inst axi_uartlite_2 -pg 1 -lvl 2 -x 660 -y 520 -defaultsOSRD
+preplace inst axi_uartlite_3 -pg 1 -lvl 2 -x 660 -y 660 -defaultsOSRD
+preplace inst axi_uartlite_4 -pg 1 -lvl 2 -x 660 -y 800 -defaultsOSRD
+preplace inst axi_uartlite_5 -pg 1 -lvl 2 -x 660 -y 940 -defaultsOSRD
+preplace inst axi_uartlite_6 -pg 1 -lvl 2 -x 660 -y 1080 -defaultsOSRD
+preplace inst axi_uartlite_7 -pg 1 -lvl 2 -x 660 -y 1220 -defaultsOSRD
+preplace inst axi_uartlite_8 -pg 1 -lvl 2 -x 660 -y 1360 -defaultsOSRD
+preplace inst proc_sys_reset_0 -pg 1 -lvl 1 -x 210 -y 1960 -defaultsOSRD
+preplace inst axi_quad_spi_1 -pg 1 -lvl 2 -x 660 -y 1760 -defaultsOSRD -resize 180 153
+preplace inst axi_quad_spi_2 -pg 1 -lvl 2 -x 660 -y 2230 -defaultsOSRD -resize 180 153
+preplace inst axi2regs_0 -pg 1 -lvl 2 -x 660 -y 230 -defaultsOSRD
+preplace netloc IRQ_F2P_0_1 1 0 2 10J 1860 380J
+preplace netloc REGS_Q_0_1 1 0 2 NJ 220 NJ
+preplace netloc axi2regs_0_REGS_A 1 2 1 850J 250n
+preplace netloc axi2regs_0_REGS_BE 1 2 1 850J 200n
+preplace netloc axi2regs_0_REGS_D 1 2 1 NJ 230
+preplace netloc axi_quad_spi_0_io0_o 1 2 1 850J 1530n
+preplace netloc axi_quad_spi_0_sck_o 1 2 1 NJ 1560
+preplace netloc axi_quad_spi_0_ss_o 1 2 1 850J 1580n
+preplace netloc axi_quad_spi_1_io0_o 1 2 1 870J 1737n
+preplace netloc axi_quad_spi_1_sck_o 1 2 1 NJ 1767
+preplace netloc axi_quad_spi_1_ss_o 1 2 1 850J 1782n
+preplace netloc axi_quad_spi_2_io0_o 1 2 1 870J 2207n
+preplace netloc axi_quad_spi_2_sck_o 1 2 1 NJ 2237
+preplace netloc axi_quad_spi_2_ss_o 1 2 1 850J 2252n
+preplace netloc io0_i_0_1 1 0 3 NJ 1440 NJ 1440 850
+preplace netloc io0_i_0_2 1 0 3 NJ 2110 380J 2120 850
+preplace netloc io0_i_0_3 1 0 3 NJ 1660 NJ 1660 850
+preplace netloc proc_sys_reset_0_peripheral_reset 1 1 2 450J 1870 NJ
+preplace netloc processing_system7_0_FCLK_CLK0 1 0 3 20 850 430 2110 870
+preplace netloc processing_system7_0_FCLK_CLK1 1 1 2 470 2100 860
+preplace netloc processing_system7_0_FCLK_RESET0_N 1 0 3 40 860 440 2130 NJ
+preplace netloc processing_system7_0_FCLK_RESET0_N1 1 0 3 40 2090 NJ 2090 850
+preplace netloc axi_uartlite_0_UART 1 2 1 NJ 70
+preplace netloc axi_uartlite_1_UART 1 2 1 NJ 370
+preplace netloc axi_uartlite_2_UART 1 2 1 NJ 510
+preplace netloc axi_uartlite_3_UART 1 2 1 NJ 650
+preplace netloc axi_uartlite_4_UART 1 2 1 NJ 790
+preplace netloc axi_uartlite_5_UART 1 2 1 NJ 930
+preplace netloc axi_uartlite_6_UART 1 2 1 NJ 1070
+preplace netloc axi_uartlite_7_UART 1 2 1 NJ 1210
+preplace netloc axi_uartlite_8_UART 1 2 1 NJ 1350
+preplace netloc processing_system7_0_DDR 1 2 1 NJ 1930
+preplace netloc processing_system7_0_FIXED_IO 1 2 1 870J 1950n
+preplace netloc processing_system7_0_M_AXI_GP0 1 0 3 30 1850 410J 1860 850
+preplace netloc smartconnect_0_M00_AXI 1 1 1 450 920n
+preplace netloc smartconnect_0_M01_AXI 1 1 1 380 60n
+preplace netloc smartconnect_0_M02_AXI 1 1 1 390 360n
+preplace netloc smartconnect_0_M03_AXI 1 1 1 400 500n
+preplace netloc smartconnect_0_M04_AXI 1 1 1 420 640n
+preplace netloc smartconnect_0_M05_AXI 1 1 1 460 780n
+preplace netloc smartconnect_0_M06_AXI 1 1 1 470 920n
+preplace netloc smartconnect_0_M07_AXI 1 1 1 N 1060
+preplace netloc smartconnect_0_M08_AXI 1 1 1 380 1080n
+preplace netloc smartconnect_0_M09_AXI 1 1 1 390 1100n
+preplace netloc smartconnect_0_M10_AXI 1 1 1 410 200n
+preplace netloc smartconnect_0_M11_AXI 1 1 1 410 1140n
+preplace netloc smartconnect_0_M12_AXI 1 1 1 400 1160n
+levelinfo -pg 1 -10 210 660 890
+pagesize -pg 1 -db -bbox -sgen -150 0 1080 2320
+"
+}
+{
+   "da_ps7_cnt":"4"
+}

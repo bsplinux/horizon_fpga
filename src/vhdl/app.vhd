@@ -22,7 +22,7 @@ entity app is
         internal_regs_we : out reg_slv_array_t;
         ios_2_app        : in  ios_2_app_t;
         app_2_ios        : out app_2_ios_t;
-        ps_intr          : out std_logic
+        ps_intr          : out std_logic_vector(1 downto 0)
     );
 end entity app;
 
@@ -32,6 +32,9 @@ architecture RTL of app is
     signal internal_regs_update_log    : reg_array_t;
     signal internal_regs_we_update_log : reg_slv_array_t;
     signal log_regs         : log_reg_array_t;
+    signal ETI : std_logic_vector(31 downto 0);
+    signal SN : std_logic_vector(7 downto 0);
+    
 begin
     process(clk)
     begin
@@ -185,9 +188,42 @@ begin
         regs_reading     => regs_reading,
         internal_regs    => internal_regs_update_log,
         internal_regs_we => internal_regs_we_update_log,
-        ps_intr          => ps_intr,
+        ps_intr          => ps_intr(0),
         log_regs         => log_regs
     );
-    log_regs <= (others => X"00000000");
+    
+    ----------------------
+    -- misc fields -------
+    ----------------------
+    
+    -- ETI (counting hours)
+        -- the cpu is in charge of updating ETI in flash but reset ETI comes from registers
+    -- SN (serial no.)
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            ps_intr(1) <= '0';
+            
+            if registers(SN_ETI)(SN_ETI_RESET_ETI) = '1' and regs_updating(SN_ETI) = '1' then
+                ETI <= (others => '0');
+                ps_intr(1) <= '1'; 
+            else
+                ETI <= registers(LOG_ETM);
+            end if;
+            if registers(SN_ETI)(SN_ETI_SET_SN) = '1' and regs_updating(SN_ETI) = '1' then
+                SN <= registers(SN_ETI)(SN'range);
+                ps_intr(1) <= '1'; 
+            else
+                SN <= registers(LOG_SN)(SN'range);
+            end if;
+        end if;
+    end process;
+
+    process(all)
+    begin
+        log_regs <= (others => X"00000000");
+        log_regs(LOG_ETM) <= ETI;
+        log_regs(LOG_SN)(SN'range) <= SN;
+    end process;
     
 end architecture RTL;
