@@ -250,74 +250,75 @@ int start_async_log(int save_block_size,std::string log_path,std::string dst_log
 	static FIFOBuffer          *gfifo  =0;
 
 
-        // Check if directory exists and is a directory
-        if (fs::exists(directory) && fs::is_directory(directory)) {
-            // Load files into the vector
-            for (const auto& entry : fs::directory_iterator(directory)) {
-                if (entry.is_regular_file()) {
-                    files.push_back(entry.path().filename());
-                }
-            }
-        }
-        if (!files.empty()) {
-            // Sort files by their names
-            std::sort(files.begin(), files.end(), [](const fs::path& a, const fs::path& b) {
-                // Assuming filenames are in a format that allows alphabetical sorting
-                return a.filename().string() < b.filename().string();
-            });
+	// Check if directory exists and is a directory
+	if (fs::exists(directory) && fs::is_directory(directory)) {
+		// Load files into the vector
+		for (const auto& entry : fs::directory_iterator(directory)) {
+			if (entry.is_regular_file()) {
+				files.push_back(entry.path().filename());
+			}
+		}
+	}
+	if (!files.empty()) {
+		// Sort files by their names
+		std::sort(files.begin(), files.end(), [](const fs::path& a, const fs::path& b) {
+			// Assuming filenames are in a format that allows alphabetical sorting
+			return a.filename().string() < b.filename().string();
+		});
 
-            // Check if there are any files in the directory
+		// Check if there are any files in the directory
 
-                    // The last file in the sorted list
-             std::string lastFile = files.back().filename().string();
-             newNumber = getLastNumberFromFilename(lastFile) + 1;
-             std::cout << "The last file is: " << lastFile << std::endl;
-         } else {
-                  std::cout << "No files found in the directory." << std::endl;
+				// The last file in the sorted list
+		 std::string lastFile = files.back().filename().string();
+		 newNumber = getLastNumberFromFilename(lastFile) + 1;
+		 std::cout << "The last file is: " << lastFile << std::endl;
+	 } else {
+			  std::cout << "No files found in the directory." << std::endl;
+	 }
 
-          }
+	 std::string new_file_name = getCurrentTimeFormatted() + "-" + formatNumber(newNumber);
+	 std::cout << "The new filename will be: " << new_file_name << std::endl;
+	 std::string new_log_file_name = log_path + "/" + new_file_name;
 
-          std::string new_file_name = getCurrentTimeFormatted() + "-" + formatNumber(newNumber);
-          std::cout << "The new filename will be: " << new_file_name << std::endl;
-          std::string new_log_file_name = log_path + "/" + new_file_name;
-
-          // Create a directory
-              try {
-                  if (fs::create_directory(log_path)) {
-                      std::cout << "Directory created: " << log_path << std::endl;
-                  } else {
-                      std::cout << "Directory already exists or failed to create: " << log_path << std::endl;
-                  }
-              } catch (const fs::filesystem_error& e) {
-                  std::cerr << "Error: " << e.what() << std::endl;
-              }
+	 // Create a directory
+	 try {
+		  if (fs::create_directory(log_path)) {
+			  std::cout << "Directory created: " << log_path << std::endl;
+		  } else {
+			  std::cout << "Directory already exists or failed to create: " << log_path << std::endl;
+		  }
+	  } catch (const fs::filesystem_error& e) {
+		  std::cerr << "Error: " << e.what() << std::endl;
+	  }
 
 #ifdef WIN32
 
-        fd = open(new_log_file_name.c_str(),O_CREAT | O_WRONLY,0640 );
+      fd = open(new_log_file_name.c_str(),O_CREAT | O_WRONLY,0640 );
 #else
 
-        fd = open(new_log_file_name.c_str(),O_SYNC | O_DIRECT | O_CREAT | O_WRONLY ,0666 );
+      fd = open(new_log_file_name.c_str(),O_SYNC | O_DIRECT | O_CREAT | O_WRONLY ,0666 );
 #endif
-        if(fd <0){
-            printf("ERROR fail to open %s file (error=%d) \n\r",new_log_file_name.c_str(),fd);
-            return -1;
-        }
+      if(fd <0){
+          printf("ERROR fail to open %s file (error=%d) \n\r",new_log_file_name.c_str(),fd);
+          return -1;
+      }
 
-        active_task = 1;
+      active_task = 1;
 
-        gfifo   = new  FIFOBuffer(PACKET_COUNT);
-        gbuffer = new BufferedFileWriter(fd,save_block_size);
-        reader_thread_h= std::thread([] { reader_thread(gbuffer,gfifo);});
-        std::thread t([dst_log_ip, server_status] {
-             int pkt_count =0;
-             unsigned int i_dst_ip = Socket_Str2Addr((char*)dst_log_ip.c_str());
-             int socket = Socket_UDPSocket();
-			 assert(socket >0);
+      gfifo   = new  FIFOBuffer(PACKET_COUNT);
+      gbuffer = new BufferedFileWriter(fd,save_block_size);
+      reader_thread_h= std::thread([] { reader_thread(gbuffer,gfifo);});
+      std::thread t([dst_log_ip, server_status] {
+           int pkt_count = 0;
+           int log_count = 0;
+           unsigned int i_dst_ip = Socket_Str2Addr((char*)dst_log_ip.c_str());
+           int socket = Socket_UDPSocket();
+           assert(socket >0);
             // Simulate packet data fill (for illustration, not actually filling data here)
             while(active_task){
                 Packet packet(g_msg,g_msg_size) ;
-                if(gfifo){
+                log_count = (log_count + 1) % server_status.log_mseconds;
+                if(gfifo && log_count == 0){
                     gfifo->write(std::move(packet)); // Push pointer into the queue
                     printf("%s.%d write paket\n\r",__func__,__LINE__);
                  }
