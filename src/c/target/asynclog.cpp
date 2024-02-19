@@ -27,8 +27,6 @@ namespace fs = std::filesystem;
 #include  "socket.h"
 #include  "asynclog.h"
 
-int log_mseconds = 1;
-
 static const int        PACKET_SIZE=200;    // packet size 
 static const int        PACKET_COUNT=10;   // fifo size 
 static int              active_task =0;
@@ -240,7 +238,7 @@ static int getLastNumberFromFilename(const fs::path& path) {
     return std::stoi(numberStr);
 }
 
-int start_async_log(int save_block_size,std::string log_path,std::string dst_log_ip,int dst_log_port){
+int start_async_log(int save_block_size,std::string log_path,std::string dst_log_ip, ServerStatus &server_status ){
 	fs::path directory ;
 	std::vector<fs::path> files;
 	int newNumber =1;
@@ -311,7 +309,7 @@ int start_async_log(int save_block_size,std::string log_path,std::string dst_log
         gfifo   = new  FIFOBuffer(PACKET_COUNT);
         gbuffer = new BufferedFileWriter(fd,save_block_size);
         reader_thread_h= std::thread([] { reader_thread(gbuffer,gfifo);});
-        std::thread t([dst_log_ip,dst_log_port] {
+        std::thread t([dst_log_ip, server_status] {
              int pkt_count =0;
              unsigned int i_dst_ip = Socket_Str2Addr((char*)dst_log_ip.c_str());
              int socket = Socket_UDPSocket();
@@ -325,7 +323,7 @@ int start_async_log(int save_block_size,std::string log_path,std::string dst_log
                  }
                 pkt_count = (pkt_count + 1) % 10;
                 if(pkt_count==0){
-					Socket_SendTo(socket,(unsigned char*)packet.data,packet.length,i_dst_ip,dst_log_port);
+					Socket_SendTo(socket,(unsigned char*)packet.data,packet.length,i_dst_ip, server_status.log_udp_port);
                 }
                 usleep(1000);
             }

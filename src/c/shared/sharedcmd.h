@@ -1,5 +1,7 @@
 #define COMMAD_SERVER_PORT (1234)
 #define SYNC 0xa5
+#define HOST_IP "192.168.1.30"
+
 #pragma pack(4)
 struct cmdhdr_t{
     unsigned char opcode;
@@ -42,8 +44,9 @@ typedef struct{
 
 typedef struct{
     unsigned char message_id;         // must be 5
-    unsigned char log_mseconds;       // how many mseconds between log to file
-    unsigned char board_id;           // serial no.
+    unsigned char log_mseconds;       // how many mseconds between log to file (if 0, don't update)
+    unsigned char board_id;           // serial no. (if 0, don't update)
+    unsigned int  log_udp_port;       // udp port to send log messages to, (if 0, dont' update) the ip is 192.168.1.30 as in spec 3.1.3
 }cmd6_maintenace_t;
 
 typedef struct{

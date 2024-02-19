@@ -7,16 +7,27 @@
 //#include "commondef.h"
 #include "sharedcmd.h"
 #include  "asynclog.h"
+#include "servercmd.h"
 
 extern unsigned int * regs_a;
 extern int log_mseconds;
-int board_id = 1;
 
-int log_active = 0;
 
 static int task_active=0;
+
+ServerStatus::ServerStatus() : log_active(true), board_id(0), received_keep_alive(false), log_mseconds(1), log_udp_port(4000) {
+
+}
+
+ServerStatus::~ServerStatus() {
+	log_active = false;
+	received_keep_alive = false;
+	log_mseconds = 1;
+	log_udp_port = 4000;
+}
+
 //board command server
-int servercmd_start(int server_port){
+int servercmd_start(int server_port, ServerStatus &server_status){
     int count=1;
     if(task_active !=0){
         fprintf(stderr,"%s.%d ERROR allrady start \n\r",__func__,__LINE__);
@@ -26,7 +37,7 @@ int servercmd_start(int server_port){
 	task_active = 1;
     fprintf(stderr,"start %d readers \n\r",count);
 
-    std::thread t([&count,server_port] {
+    std::thread t([&count,server_port, &server_status] {
     	int src_ip=0,src_port=0;
 		int rx_size;
         int socket = Socket_UDPServer(server_port);
@@ -51,6 +62,7 @@ int servercmd_start(int server_port){
 						printf("%s.%d  worng packet size  \n\r",__func__,__LINE__);
 						continue;
 					}
+					server_status.received_keep_alive = true;
 					printf("Got cmd(%d) \n\r",pcmd->cmd1.message_id);
 					count++;
                 }
@@ -74,20 +86,25 @@ int servercmd_start(int server_port){
 					printf("Got cmd(%d) command(%d) \n\r",pcmd->cmd3.message_id, pcmd->cmd3.command);
         		    count++;
         		    if(pcmd->cmd3.command == 0){ // stop log
-        		    	end_async_log();
-        		    	log_active = 0;
-        		    	printf("Stopping Log \n\r");
+        		    	if (server_status.log_active) {
+        		    		end_async_log();
+        		    		server_status.log_active = false;
+        		    		printf("Stopping Log \n\r");
+        		    	}
         		    }
         		    if(pcmd->cmd3.command == 1){ // start log
-        		    	std::string log_name = create_log_name();
-                        start_async_log(1024,log_name,"127.0.0.1",4000);
-        		        log_active = 1;
-        		        printf("starting log filename: %s\n\r",log_name.c_str());
+        		    	if (!server_status.log_active) {
+        		    		std::string log_name = create_log_name();
+        		    		start_async_log(1024, log_name, HOST_IP, server_status);
+        		    		server_status.log_active = true;
+        		    		printf("starting log filename: %s\n\r",log_name.c_str());
+        		    	}
         		    }
         		    if(pcmd->cmd3.command == 2){ // erase log
-        		    	end_async_log();
+        		    	if(server_status.log_active)
+        		    		end_async_log();
         		    	erase_log();
-        		    	log_active = 0;
+        		    	server_status.log_active = false;
         		        printf("erasing log\n\r");
         		    }
 				}
@@ -135,9 +152,15 @@ int servercmd_start(int server_port){
 						printf("%s.%d  worng packet size  \n\r",__func__,__LINE__);
 						continue;
 					}
-					log_mseconds = pcmd->cmd6.log_mseconds;
-					board_id = pcmd->cmd6.board_id;
-					printf("Got cmd(%d) log_mseconds(%d) board_id(%d)\n\r",pcmd->cmd6.message_id, pcmd->cmd6.log_mseconds, pcmd->cmd6.board_id);
+					if(pcmd->cmd6.log_mseconds > 0)
+						server_status.log_mseconds = pcmd->cmd6.log_mseconds;
+					if(pcmd->cmd6.board_id > 0) {
+						server_status.board_id = pcmd->cmd6.board_id;
+						// TODO update board id in registers
+					}
+					if(pcmd->cmd6.log_udp_port > 0)
+						server_status.log_udp_port = pcmd->cmd6.log_udp_port;
+					printf("Got cmd(%d) log_mseconds(%d) board_id(%d) log_udp_port(%d)\n\r",pcmd->cmd6.message_id, pcmd->cmd6.log_mseconds, pcmd->cmd6.board_id, pcmd->cmd6.log_udp_port);
 					count++;
                 }
 				break;
@@ -155,8 +178,9 @@ int servercmd_start(int server_port){
     return 0;
 }
 
-void servercmd_stop(){
-     task_active =0;
+void servercmd_stop(ServerStatus &server_status){
+	server_status.~ServerStatus();
+	task_active =0;
 }
 
 
