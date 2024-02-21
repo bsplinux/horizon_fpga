@@ -22,7 +22,7 @@ entity app is
         internal_regs_we : out reg_slv_array_t;
         ios_2_app        : in  ios_2_app_t;
         app_2_ios        : out app_2_ios_t;
-        ps_intr          : out std_logic_vector(1 downto 0)
+        ps_intr          : out std_logic_vector(PS_INTR_range)
     );
 end entity app;
 
@@ -34,6 +34,8 @@ architecture RTL of app is
     signal log_regs         : log_reg_array_t;
     signal ETI : std_logic_vector(31 downto 0);
     signal SN : std_logic_vector(7 downto 0);
+    signal stop_log_to_cpu : std_logic;
+    signal condition_to_stop_log_to_do : std_logic;
     
 begin
     process(clk)
@@ -47,6 +49,10 @@ begin
                 internal_regs    <= (others => X"00000000");
                 internal_regs_we <= (others => '0');
 
+                -- general status
+                internal_regs_we(GENERAL_STATUS) <= '1';
+                internal_regs(GENERAL_STATUS)(STATUS_REGS_LOCKED) <= internal_regs_update_log(GENERAL_STATUS)(STATUS_REGS_LOCKED);
+                internal_regs(GENERAL_STATUS)(STATUS_STOP_LOG)    <= stop_log_to_cpu;
                 -- timestamp
                 internal_regs_we(TIMESTAMP_L) <= '1';
                 internal_regs(TIMESTAMP_L)    <= timer(31 downto 0);
@@ -58,8 +64,6 @@ begin
                     internal_regs(IO_IN)(IO_IN_range) <= IO_IN_s;
                 end if;
                 
-                internal_regs_we(GENERAL_STATUS) <= '1';
-                internal_regs(GENERAL_STATUS)(STATUS_REGS_LOCKED) <= internal_regs_update_log(GENERAL_STATUS)(STATUS_REGS_LOCKED);
                 for i in log_regs_range loop
                     internal_regs_we(i) <= internal_regs_we_update_log(i);
                     internal_regs(i) <= internal_regs_update_log(i);
@@ -188,7 +192,7 @@ begin
         regs_reading     => regs_reading,
         internal_regs    => internal_regs_update_log,
         internal_regs_we => internal_regs_we_update_log,
-        ps_intr          => ps_intr(0),
+        ps_intr          => ps_intr(PS_INTR_MS),
         log_regs         => log_regs
     );
     
@@ -202,17 +206,17 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-            ps_intr(1) <= '0';
+            ps_intr(PS_INTR_UPDATE_FLASH) <= '0';
             
             if registers(SN_ETI)(SN_ETI_RESET_ETI) = '1' and regs_updating(SN_ETI) = '1' then
                 ETI <= (others => '0');
-                ps_intr(1) <= '1'; 
+                ps_intr(PS_INTR_UPDATE_FLASH) <= '1'; 
             else
                 ETI <= registers(LOG_ETM);
             end if;
             if registers(SN_ETI)(SN_ETI_SET_SN) = '1' and regs_updating(SN_ETI) = '1' then
                 SN <= registers(SN_ETI)(SN'range);
-                ps_intr(1) <= '1'; 
+                ps_intr(PS_INTR_UPDATE_FLASH) <= '1'; 
             else
                 SN <= registers(LOG_SN)(SN'range);
             end if;
@@ -225,5 +229,25 @@ begin
         log_regs(LOG_ETM) <= ETI;
         log_regs(LOG_SN)(SN'range) <= SN;
     end process;
+    
+    stop_log_pr: process(clk)
+    begin
+        if rising_edge(clk) then
+            if sync_rst = '1' then
+                stop_log_to_cpu <= '0';
+                ps_intr(PS_INTR_STOP_LOG) <= '0';
+            else
+                ps_intr(PS_INTR_STOP_LOG) <= '0';
+                if registers(GENERAL_CONTROL)(CONTROL_STOP_LOG_ACK) = '1' and regs_updating(GENERAL_CONTROL) = '1' then
+                    stop_log_to_cpu <= '0';
+                elsif condition_to_stop_log_to_do = '1' then
+                    ps_intr(PS_INTR_STOP_LOG) <= '1';
+                    stop_log_to_cpu <= '1';
+                end if;
+            end if;
+        end if;
+    end process;
+    -- TODO fill this with real stuff
+    condition_to_stop_log_to_do <= '0';
     
 end architecture RTL;

@@ -139,6 +139,8 @@ package condor_pl_pkg is
     -- ps interrupts index
     constant PS_INTR_MS                             : integer := 0;
     constant PS_INTR_UPDATE_FLASH                   : integer := 1;
+    constant PS_INTR_STOP_LOG                       : integer := 2;
+    subtype  PS_INTR_range                          is integer range PS_INTR_STOP_LOG downto PS_INTR_MS;
 
     function ios_2_app_vec(x: ios_2_app_t) return std_logic_vector;
 end package condor_pl_pkg;

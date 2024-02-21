@@ -155,7 +155,7 @@ architecture Behavioral of condor_pl is
     signal app_2_ios  : app_2_ios_t;
     signal sw_reset   : std_logic;
     signal regs_reset : std_logic;
-    signal ps_intr : std_logic_vector(1 downto 0);
+    signal ps_intr : std_logic_vector(PS_INTR_range);
 begin
     bd_gen : if sim_on generate
         procedure tick(num_ticks : integer := 1) is
@@ -256,7 +256,7 @@ begin
             spi1_mosi : out STD_LOGIC;
             spi1_sck : out STD_LOGIC;
             spi1_cs : out STD_LOGIC_VECTOR ( 0 to 0 );
-            ps_intr : in std_logic_vector(1 downto 0)
+            ps_intr : in std_logic_vector(PS_INTR_range)
         );
         end component design_1;
     begin
@@ -320,7 +320,7 @@ begin
           REGS_BE => REGS_BE,
           REGS_D => REGS_D,
           REGS_Q => REGS_Q,
-          ps_intr(0) => ps_intr
+          ps_intr => ps_intr
         );
     end generate bd_gen;
 

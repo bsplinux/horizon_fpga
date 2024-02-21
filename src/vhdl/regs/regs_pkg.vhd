@@ -183,8 +183,10 @@ package regs_pkg is
     constant CONTROL_IO_DEBUG_EN                    : integer := 1;
     constant CONTROL_EN_1MS_INTR                    : integer := 2;
     constant CONTROL_RLEASE_REGS                    : integer := 3;
+    constant CONTROL_STOP_LOG_ACK                   : integer := 4;
     -- fields for GENERAL_STATUS
     constant STATUS_REGS_LOCKED                     : integer := 0;
+    constant STATUS_STOP_LOG                        : integer := 0;
     -- fiels for IO_IN
     constant IO_IN_POWERON_FPGA                     : integer :=  0;      
     constant IO_IN_FAN_PG1_FPGA                     : integer :=  1;      
@@ -273,7 +275,7 @@ package regs_pkg is
                                                                                 
     constant WRITEABLE_REGS : reg_array_t := (
         BITSTREAM_TIME                => X"FFFFFFFF",
-        GENERAL_CONTROL               => X"0000000F",
+        GENERAL_CONTROL               => X"0000001F",
         GENERAL_STATUS                => X"0000000F",
         TIMESTAMP_L                   => X"FFFFFFFF",
         TIMESTAMP_H                   => X"FFFFFFFF",

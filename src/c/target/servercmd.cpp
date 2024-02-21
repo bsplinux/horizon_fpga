@@ -160,7 +160,7 @@ int servercmd_start(int server_port, ServerStatus &server_status){
 					}
 					if(pcmd->cmd6.log_udp_port > 0)
 						server_status.log_udp_port = pcmd->cmd6.log_udp_port;
-					printf("Got cmd(%d) log_mseconds(%d) board_id(%d) log_udp_port(%d)\n\r",pcmd->cmd6.message_id, pcmd->cmd6.log_mseconds, pcmd->cmd6.board_id, pcmd->cmd6.log_udp_port);
+					printf("Got cmd(%d) board_id(%d) log_mseconds(%d) log_udp_port(%d)\n\r",pcmd->cmd6.message_id, pcmd->cmd6.board_id, pcmd->cmd6.log_mseconds, pcmd->cmd6.log_udp_port);
 					count++;
                 }
 				break;
