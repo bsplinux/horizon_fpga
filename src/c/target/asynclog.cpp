@@ -238,7 +238,7 @@ static int getLastNumberFromFilename(const fs::path& path) {
     return std::stoi(numberStr);
 }
 
-int start_async_log(int save_block_size,std::string log_path,std::string dst_log_ip, ServerStatus &server_status ){
+int start_async_log(int save_block_size,std::string log_path, ServerStatus &server_status ){
 	fs::path directory ;
 	std::vector<fs::path> files;
 	int newNumber =1;
@@ -308,23 +308,26 @@ int start_async_log(int save_block_size,std::string log_path,std::string dst_log
       gfifo   = new  FIFOBuffer(PACKET_COUNT);
       gbuffer = new BufferedFileWriter(fd,save_block_size);
       reader_thread_h= std::thread([] { reader_thread(gbuffer,gfifo);});
-      std::thread t([dst_log_ip, server_status] {
+      std::thread t([&server_status] {
            int pkt_count = 0;
            int log_count = 0;
-           unsigned int i_dst_ip = Socket_Str2Addr((char*)dst_log_ip.c_str());
            int socket = Socket_UDPSocket();
            assert(socket >0);
             // Simulate packet data fill (for illustration, not actually filling data here)
             while(active_task){
-                Packet packet(g_msg,g_msg_size) ;
+                if (server_status.update_log_name) { // on first keep alive we need to update log file name
+                	// TODO rename the log file name
+                	server_status.update_log_name = false;
+                }
+            	Packet packet(g_msg,g_msg_size) ;
                 log_count = (log_count + 1) % server_status.log_mseconds;
-                if(gfifo && log_count == 0){
+                if(gfifo && log_count == 0 && server_status.log_active){
                     gfifo->write(std::move(packet)); // Push pointer into the queue
                     printf("%s.%d write paket\n\r",__func__,__LINE__);
                  }
                 pkt_count = (pkt_count + 1) % 10;
-                if(pkt_count==0){
-					Socket_SendTo(socket,(unsigned char*)packet.data,packet.length,i_dst_ip, server_status.log_udp_port);
+                if(pkt_count==0 && server_status.host_ip != 0){
+					Socket_SendTo(socket,(unsigned char*)packet.data,packet.length, server_status.host_ip, server_status.log_udp_port);
                 }
                 usleep(1000);
             }

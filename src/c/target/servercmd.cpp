@@ -15,15 +15,21 @@ extern int log_mseconds;
 
 static int task_active=0;
 
-ServerStatus::ServerStatus() : log_active(true), board_id(0), received_keep_alive(false), log_mseconds(1), log_udp_port(4000) {
+ServerStatus::ServerStatus() : log_active(true),
+		board_id(0),
+		received_first_keep_alive(false),
+		keep_alive_cnt(0),
+		log_mseconds(1),
+		log_paused(false),
+		log_udp_port(4000),
+		ETI_task_acitve(true),
+		host_ip(0),
+		update_log_name(false)
+		{
 
 }
 
 ServerStatus::~ServerStatus() {
-	log_active = false;
-	received_keep_alive = false;
-	log_mseconds = 1;
-	log_udp_port = 4000;
 }
 
 //board command server
@@ -56,13 +62,24 @@ int servercmd_start(int server_port, ServerStatus &server_status){
             switch(pcmd->cmd1.message_id){
                 case  CMD_OP1:
                 {
-					// replay
-					//if((pcmd->hdr.length != sizeof(pcmd->data.tx_op1)) || (rx_size != (sizeof(pcmd->data.tx_op1) + sizeof(cmdhdr_t)))){
 					if(rx_size != (sizeof(pcmd->cmd1))){
 						printf("%s.%d  worng packet size  \n\r",__func__,__LINE__);
 						continue;
 					}
-					server_status.received_keep_alive = true;
+					server_status.keep_alive_cnt++;
+					// TODO delete keep alive error if exists
+					// registers.GENERAL_CONTROL.CONTROL_ALIVE_ERROR = 0;
+					// wirte to register
+					if(!server_status.received_first_keep_alive){  //  first keep alive received
+						server_status.received_first_keep_alive = true;
+						server_status.host_ip = src_ip;
+						// change file name of log
+						server_status.update_log_name = true;
+						// TODO update time from NTP server
+						// syncronize to NTP at NTP_SERVER_IP
+
+						printf("received first keep alive, from ip = %d", src_ip);
+					}
 					printf("Got cmd(%d) \n\r",pcmd->cmd1.message_id);
 					count++;
                 }
@@ -87,24 +104,27 @@ int servercmd_start(int server_port, ServerStatus &server_status){
         		    count++;
         		    if(pcmd->cmd3.command == 0){ // stop log
         		    	if (server_status.log_active) {
-        		    		end_async_log();
+        		    		//end_async_log();
         		    		server_status.log_active = false;
-        		    		printf("Stopping Log \n\r");
+        		    		printf("Pusing Log \n\r");
         		    	}
         		    }
         		    if(pcmd->cmd3.command == 1){ // start log
         		    	if (!server_status.log_active) {
-        		    		std::string log_name = create_log_name();
-        		    		start_async_log(1024, log_name, HOST_IP, server_status);
+        		    		//std::string log_name = create_log_name();
+        		    		//start_async_log(1024, log_name, HOST_IP, server_status);
         		    		server_status.log_active = true;
-        		    		printf("starting log filename: %s\n\r",log_name.c_str());
+        		    		printf("restarting log \n\r");
         		    	}
         		    }
         		    if(pcmd->cmd3.command == 2){ // erase log
         		    	if(server_status.log_active)
         		    		end_async_log();
         		    	erase_log();
-        		    	server_status.log_active = false;
+        		    	// now restarting log
+        		    	std::string log_name = create_log_name();
+       		    		start_async_log(1024, log_name, server_status);
+        		    	server_status.log_active = true;
         		        printf("erasing log\n\r");
         		    }
 				}

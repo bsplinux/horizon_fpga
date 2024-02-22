@@ -6,9 +6,14 @@ class ServerStatus {
 public:
 	bool log_active;
 	int board_id;
-	bool received_keep_alive;
+	bool received_first_keep_alive;
+	unsigned char keep_alive_cnt;
 	int log_mseconds;
 	int log_udp_port;
+	bool log_paused;
+	bool ETI_task_acitve;
+	unsigned int host_ip;
+	bool update_log_name;
 	ServerStatus();
     ~ServerStatus();
 };
