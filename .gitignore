@@ -10,3 +10,4 @@ deliveries
 *.bkp
 *.xsa
 *~$*
+/src/c/host/pc_app.exe

@@ -16,7 +16,9 @@ entity update_log is
         internal_regs    : out reg_array_t;
         internal_regs_we : out reg_slv_array_t;
         ps_intr          : out std_logic;
-        log_regs         : in  log_reg_array_t
+        log_regs         : in  log_reg_array_t;
+        ios_2_app        : in  ios_2_app_t;
+        app_2_ios        : out app_2_ios_t
     );
 end entity update_log;
 
