@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xAB0150D82C473317",
+      "boundary_crc": "0xA6A10A98DCDD4C71",
       "device": "xa7z020clg400-1Q",
       "gen_directory": "../../../../condor_pl.gen/sources_1/bd/design_1",
       "name": "design_1",
@@ -457,11 +457,11 @@
       "ps_intr": {
         "type": "intr",
         "direction": "I",
-        "left": "0",
+        "left": "2",
         "right": "0",
         "parameters": {
           "PortWidth": {
-            "value": "1"
+            "value": "3"
           },
           "SENSITIVITY": {
             "value": "LEVEL_HIGH",

@@ -78,6 +78,13 @@ package regs_pkg is
         LOG_PSU_STATUS_L   ,
         LOG_PSU_STATUS_H   ,
         LOG_LAMP_IND       ,
+        PWM_CTL            ,
+        PWM0_LOW           ,
+        PWM0_HIGH          ,
+        PWM1_LOW           ,
+        PWM1_HIGH          ,
+        PWM2_LOW           ,
+        PWM2_HIGH          ,
         NO_REG
     );
     -- NUM_REGS is the neto no. of registers if there are holes there should be another constant for the address space size 
@@ -159,6 +166,13 @@ package regs_pkg is
         69 => LOG_PSU_STATUS_L   ,
         70 => LOG_PSU_STATUS_H   ,
         71 => LOG_LAMP_IND       ,
+        72 => PWM_CTL            ,
+        73 => PWM0_LOW           ,
+        74 => PWM0_HIGH          ,
+        75 => PWM1_LOW           ,
+        76 => PWM1_HIGH          ,
+        77 => PWM2_LOW           ,
+        78 => PWM2_HIGH          ,
         others => NO_REG
     );  
     
@@ -253,7 +267,14 @@ package regs_pkg is
     subtype SN_ETI_SN                               is integer range 7 downto 0;
     constant SN_ETI_SET_SN                          : integer := 8;
     constant SN_ETI_RESET_ETI                       : integer := 9;
-    
+    -- fields for PWM_CTL
+    constant PWM_CTL_PWM0_ACTIVE                    : integer := 0;
+    constant PWM_CTL_PWM0_START_HIGH                : integer := 1;
+    constant PWM_CTL_PWM1_ACTIVE                    : integer := 2;
+    constant PWM_CTL_PWM1_START_HIGH                : integer := 3;
+    constant PWM_CTL_PWM2_ACTIVE                    : integer := 4;
+    constant PWM_CTL_PWM2_START_HIGH                : integer := 5;
+        
     --------------------------------------------------------------------------------    
     -- initial values for parameters 
     --------------------------------------------------------------------------------    
@@ -344,6 +365,13 @@ package regs_pkg is
         LOG_PSU_STATUS_L              => X"FFFFFFFF",
         LOG_PSU_STATUS_H              => X"FFFFFFFF",
         LOG_LAMP_IND                  => X"FFFFFFFF",
+        PWM_CTL                       => X"0000003F",
+        PWM0_LOW                      => X"FFFFFFFF",
+        PWM0_HIGH                     => X"FFFFFFFF",
+        PWM1_LOW                      => X"FFFFFFFF",
+        PWM1_HIGH                     => X"FFFFFFFF",
+        PWM2_LOW                      => X"FFFFFFFF",
+        PWM2_HIGH                     => X"FFFFFFFF",
         others                        => X"00000000" -- constant regs are not writable
     );
     
@@ -423,7 +451,14 @@ package regs_pkg is
         SN_ETI             => '1',
         LOG_ETM            => '1',
         LOG_SN             => '1',
-        others                        => '0'   -- unused, constant regs and internally writable regs are not cpu writable
+        PWM_CTL            => '1',
+        PWM0_LOW           => '1',
+        PWM0_HIGH          => '1',
+        PWM1_LOW           => '1',
+        PWM1_HIGH          => '1',
+        PWM2_LOW           => '1',
+        PWM2_HIGH          => '1',
+        others             => '0'   -- unused, constant regs and internally writable regs are not cpu writable
     );
     
     --------------------------------------------------------------------------------------------------------    
