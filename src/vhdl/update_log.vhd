@@ -18,7 +18,8 @@ entity update_log is
         ps_intr          : out std_logic;
         log_regs         : in  log_reg_array_t;
         ios_2_app        : in  ios_2_app_t;
-        app_2_ios        : out app_2_ios_t
+        app_2_ios        : out app_2_ios_t;
+        free_running_1ms : out std_logic
     );
 end entity update_log;
 
@@ -84,6 +85,7 @@ begin
                 ms_tick := '0';
                 ms_pulse <= '0';
                 ps_intr <= '0';
+                free_running_1ms <= '0';
             else
                 ms_tick := '0';
                 ms_pulse <= '0';
@@ -104,6 +106,7 @@ begin
                 if registers(GENERAL_CONTROL)(CONTROL_EN_1MS_INTR) = '1' then
                     ps_intr <= ms_pulse;
                 end if;
+                free_running_1ms <= ms_tick;
             end if;
         end if;
     end process;

@@ -22,7 +22,10 @@ entity app is
         internal_regs_we : out reg_slv_array_t;
         ios_2_app        : in  ios_2_app_t;
         app_2_ios        : out app_2_ios_t;
-        ps_intr          : out std_logic_vector(PS_INTR_range)
+        ps_intr          : out std_logic_vector(PS_INTR_range);
+        HLS_to_BD        : out HLS_axim_to_interconnect_t;
+        BD_to_HLS        : in  HLS_axim_from_interconnect_t
+        
     );
 end entity app;
 
@@ -31,12 +34,15 @@ architecture RTL of app is
     signal IO_IN_s : std_logic_vector(IO_IN_range);
     signal internal_regs_update_log    : reg_array_t;
     signal internal_regs_we_update_log : reg_slv_array_t;
+    signal internal_regs_rs485 : reg_array_t;
+    signal internal_regs_we_rs485 : reg_slv_array_t;
     signal log_regs         : log_reg_array_t;
     signal ETI : std_logic_vector(31 downto 0);
     signal SN : std_logic_vector(7 downto 0);
     signal stop_log_to_cpu : std_logic;
     signal condition_to_stop_log_to_do : std_logic;
-    signal fan_pwm : std_logic_vector(2 downto 0);
+    signal fan_pwm : std_logic_vector(1 to 3);
+    signal free_running_1ms : std_logic;
     
 begin
     process(clk)
@@ -68,6 +74,11 @@ begin
                 for i in log_regs_range loop
                     internal_regs_we(i) <= internal_regs_we_update_log(i);
                     internal_regs(i) <= internal_regs_update_log(i);
+                end loop;
+                    
+                for i in rs485_regs_range loop
+                    internal_regs_we(i) <= internal_regs_we_rs485(i);
+                    internal_regs(i) <= internal_regs_rs485(i);
                 end loop;
                     
             end if;
@@ -109,8 +120,8 @@ begin
     begin
         if rising_edge(clk) then
             if registers(GENERAL_CONTROL)(CONTROL_IO_DEBUG_EN) = '1' then
-                app_2_IOs.FAN_EN1_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN1_FPGA      ) when registers(PWM_CTL)(PWM_CTL_PWM0_ACTIVE) = '0' else fan_pwm(0);
-                app_2_IOs.FAN_CTRL1_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL1_FPGA    );
+                app_2_IOs.FAN_EN1_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN1_FPGA      );
+                app_2_IOs.FAN_CTRL1_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL1_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM1_ACTIVE) = '0' else fan_pwm(1);
                 app_2_IOs.P_IN_STATUS_FPGA   <= registers(IO_OUT0)(IO_OUT0_P_IN_STATUS_FPGA  );
                 app_2_IOs.POD_STATUS_FPGA    <= registers(IO_OUT0)(IO_OUT0_POD_STATUS_FPGA   );
                 app_2_IOs.ECTCU_INH_FPGA     <= registers(IO_OUT0)(IO_OUT0_ECTCU_INH_FPGA    );
@@ -122,10 +133,10 @@ begin
                 app_2_IOs.ESHUTDOWN_OUT_FPGA <= registers(IO_OUT0)(IO_OUT0_ESHUTDOWN_OUT_FPGA);
                 app_2_IOs.RELAY_1PH_FPGA     <= registers(IO_OUT0)(IO_OUT0_RELAY_1PH_FPGA    );
                 app_2_IOs.RELAY_3PH_FPGA     <= registers(IO_OUT0)(IO_OUT0_RELAY_3PH_FPGA    );
-                app_2_IOs.FAN_EN3_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN3_FPGA      ) when registers(PWM_CTL)(PWM_CTL_PWM2_ACTIVE) = '0' else fan_pwm(2);
-                app_2_IOs.FAN_CTRL3_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL3_FPGA    );
-                app_2_IOs.FAN_EN2_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN2_FPGA      ) when registers(PWM_CTL)(PWM_CTL_PWM1_ACTIVE) = '0' else fan_pwm(1);
-                app_2_IOs.FAN_CTRL2_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL2_FPGA    );
+                app_2_IOs.FAN_EN3_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN3_FPGA      );
+                app_2_IOs.FAN_CTRL3_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL3_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM3_ACTIVE) = '0' else fan_pwm(3);
+                app_2_IOs.FAN_EN2_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN2_FPGA      );
+                app_2_IOs.FAN_CTRL2_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL2_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM2_ACTIVE) = '0' else fan_pwm(2);
                 app_2_IOs.EN_PFC_FB          <= registers(IO_OUT0)(IO_OUT0_EN_PFC_FB         );
                 app_2_IOs.EN_PSU_1_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_1_FB       );
                 app_2_IOs.EN_PSU_2_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_2_FB       );
@@ -145,8 +156,8 @@ begin
                 app_2_IOs.RS485_DE_5         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_5        );
                 app_2_IOs.RS485_DE_6         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_6        );             
             else  -- here we need to add application assignment to the pins
-                app_2_IOs.FAN_EN1_FPGA       <= fan_pwm(0);
-                app_2_IOs.FAN_CTRL1_FPGA     <= '0';
+                app_2_IOs.FAN_EN1_FPGA       <= '0';
+                app_2_IOs.FAN_CTRL1_FPGA     <= fan_pwm(1);
                 app_2_IOs.P_IN_STATUS_FPGA   <= '0';
                 app_2_IOs.POD_STATUS_FPGA    <= '0';
                 app_2_IOs.ECTCU_INH_FPGA     <= '0';
@@ -158,10 +169,10 @@ begin
                 app_2_IOs.ESHUTDOWN_OUT_FPGA <= '0';
                 app_2_IOs.RELAY_1PH_FPGA     <= '0';
                 app_2_IOs.RELAY_3PH_FPGA     <= '0';
-                app_2_IOs.FAN_EN3_FPGA       <= fan_pwm(2);
-                app_2_IOs.FAN_CTRL3_FPGA     <= '0';
-                app_2_IOs.FAN_EN2_FPGA       <= fan_pwm(1);
-                app_2_IOs.FAN_CTRL2_FPGA     <= '0';
+                app_2_IOs.FAN_EN3_FPGA       <= '0';
+                app_2_IOs.FAN_CTRL3_FPGA     <= fan_pwm(3);
+                app_2_IOs.FAN_EN2_FPGA       <= '0';
+                app_2_IOs.FAN_CTRL2_FPGA     <= fan_pwm(2);
                 app_2_IOs.EN_PFC_FB          <= '0';
                 app_2_IOs.EN_PSU_1_FB        <= '0';
                 app_2_IOs.EN_PSU_2_FB        <= '0';
@@ -195,7 +206,8 @@ begin
         internal_regs_we => internal_regs_we_update_log,
         ps_intr          => ps_intr(PS_INTR_MS),
         log_regs         => log_regs,
-        ios_2_app        => ios_2_app
+        ios_2_app        => ios_2_app,
+        free_running_1ms => free_running_1ms
     );
     
     ----------------------
@@ -252,47 +264,28 @@ begin
     -- TODO fill this with real stuff
     condition_to_stop_log_to_do <= '0';
     
-    -- FAN PWM
-    fan0_pwm: entity work.pwm
-    generic map(
-        SIZE => 32
-    )
+    --FANs
+    fans_i: entity work.fans
     port map(
-        clk        => clk,
-        rst        => sync_rst,
-        low        => registers(PWM0_LOW),
-        high       => registers(PWM0_LOW),
-        start_high => registers(PWM_CTL)(PWM_CTL_PWM0_START_HIGH),
-        active     => registers(PWM_CTL)(PWM_CTL_PWM0_ACTIVE),
-        pwm        => fan_pwm(0)
+        clk       => clk,
+        sync_rst  => sync_rst,
+        registers => registers,
+        fan_pwm   => fan_pwm
     );
     
-    fan1_pwm: entity work.pwm
-    generic map(
-        SIZE => 32
-    )
+    -- rs485
+    rs485_i: entity work.rs485_if
     port map(
-        clk        => clk,
-        rst        => sync_rst,
-        low        => registers(PWM1_LOW),
-        high       => registers(PWM1_LOW),
-        start_high => registers(PWM_CTL)(PWM_CTL_PWM1_START_HIGH),
-        active     => registers(PWM_CTL)(PWM_CTL_PWM1_ACTIVE),
-        pwm        => fan_pwm(1)
-    );
-    
-    fan2_pwm: entity work.pwm
-    generic map(
-        SIZE => 32
-    )
-    port map(
-        clk        => clk,
-        rst        => sync_rst,
-        low        => registers(PWM2_LOW),
-        high       => registers(PWM2_LOW),
-        start_high => registers(PWM_CTL)(PWM_CTL_PWM2_START_HIGH),
-        active     => registers(PWM_CTL)(PWM_CTL_PWM2_ACTIVE),
-        pwm        => fan_pwm(2)
+        clk              => clk,
+        sync_rst         => sync_rst,
+        registers        => registers,
+        regs_updating    => regs_updating,
+        --regs_reading     => regs_reading,
+        internal_regs    => internal_regs_rs485,
+        internal_regs_we => internal_regs_we_rs485,
+        HLS_to_BD        => HLS_to_BD,
+        BD_to_HLS        => BD_to_HLS,
+        one_ms_interrupt => free_running_1ms
     );
     
 end architecture RTL;

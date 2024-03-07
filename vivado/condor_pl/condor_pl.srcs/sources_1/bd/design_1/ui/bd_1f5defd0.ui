@@ -1,7 +1,7 @@
 {
    "ActiveEmotionalView":"Default View",
-   "Default View_ScaleFactor":"1.94777",
-   "Default View_TopLeft":"-297,1433",
+   "Default View_ScaleFactor":"0.562877",
+   "Default View_TopLeft":"-2002,5",
    "ExpandedHierarchyInLayout":"",
    "guistr":"# # String gsaved with Nlview 7.5.8 2022-09-21 7111 VDI=41 GEI=38 GUI=JA:10.0
 #  -string -flagsOSRD
@@ -16,6 +16,7 @@ preplace port UART_5 -pg 1 -lvl 3 -x 890 -y 930 -defaultsOSRD
 preplace port UART_6 -pg 1 -lvl 3 -x 890 -y 1070 -defaultsOSRD
 preplace port UART_7 -pg 1 -lvl 3 -x 890 -y 1210 -defaultsOSRD
 preplace port UART_8 -pg 1 -lvl 3 -x 890 -y 1350 -defaultsOSRD
+preplace port UARTS_AXI -pg 1 -lvl 0 -x -10 -y 1030 -defaultsOSRD
 preplace port port-id_ps_clk100 -pg 1 -lvl 3 -x 890 -y 1990 -defaultsOSRD
 preplace port port-id_spio0_sck -pg 1 -lvl 3 -x 890 -y 1560 -defaultsOSRD
 preplace port port-id_spi0_miso -pg 1 -lvl 0 -x -10 -y 1440 -defaultsOSRD
@@ -54,26 +55,27 @@ preplace inst axi_quad_spi_2 -pg 1 -lvl 2 -x 660 -y 2230 -defaultsOSRD -resize 1
 preplace inst axi2regs_0 -pg 1 -lvl 2 -x 660 -y 230 -defaultsOSRD
 preplace netloc IRQ_F2P_0_1 1 0 2 10J 1860 380J
 preplace netloc REGS_Q_0_1 1 0 2 NJ 220 NJ
-preplace netloc axi2regs_0_REGS_A 1 2 1 850J 250n
-preplace netloc axi2regs_0_REGS_BE 1 2 1 850J 200n
+preplace netloc axi2regs_0_REGS_A 1 2 1 840J 250n
+preplace netloc axi2regs_0_REGS_BE 1 2 1 840J 200n
 preplace netloc axi2regs_0_REGS_D 1 2 1 NJ 230
-preplace netloc axi_quad_spi_0_io0_o 1 2 1 850J 1530n
+preplace netloc axi_quad_spi_0_io0_o 1 2 1 840J 1530n
 preplace netloc axi_quad_spi_0_sck_o 1 2 1 NJ 1560
-preplace netloc axi_quad_spi_0_ss_o 1 2 1 850J 1580n
-preplace netloc axi_quad_spi_1_io0_o 1 2 1 870J 1737n
+preplace netloc axi_quad_spi_0_ss_o 1 2 1 840J 1580n
+preplace netloc axi_quad_spi_1_io0_o 1 2 1 860J 1737n
 preplace netloc axi_quad_spi_1_sck_o 1 2 1 NJ 1767
-preplace netloc axi_quad_spi_1_ss_o 1 2 1 850J 1782n
-preplace netloc axi_quad_spi_2_io0_o 1 2 1 870J 2207n
+preplace netloc axi_quad_spi_1_ss_o 1 2 1 840J 1782n
+preplace netloc axi_quad_spi_2_io0_o 1 2 1 860J 2207n
 preplace netloc axi_quad_spi_2_sck_o 1 2 1 NJ 2237
-preplace netloc axi_quad_spi_2_ss_o 1 2 1 850J 2252n
-preplace netloc io0_i_0_1 1 0 3 NJ 1440 NJ 1440 850
-preplace netloc io0_i_0_2 1 0 3 NJ 2110 380J 2120 850
-preplace netloc io0_i_0_3 1 0 3 NJ 1660 NJ 1660 850
-preplace netloc proc_sys_reset_0_peripheral_reset 1 1 2 450J 1870 NJ
-preplace netloc processing_system7_0_FCLK_CLK0 1 0 3 20 850 430 2110 870
-preplace netloc processing_system7_0_FCLK_CLK1 1 1 2 470 2100 860
-preplace netloc processing_system7_0_FCLK_RESET0_N 1 0 3 40 860 440 2130 NJ
-preplace netloc processing_system7_0_FCLK_RESET0_N1 1 0 3 40 2090 NJ 2090 850
+preplace netloc axi_quad_spi_2_ss_o 1 2 1 840J 2252n
+preplace netloc io0_i_0_1 1 0 3 NJ 1440 NJ 1440 840
+preplace netloc io0_i_0_2 1 0 3 NJ 2110 380J 2120 840
+preplace netloc io0_i_0_3 1 0 3 NJ 1660 NJ 1660 840
+preplace netloc proc_sys_reset_0_peripheral_reset 1 1 2 460J 1870 NJ
+preplace netloc processing_system7_0_FCLK_CLK0 1 0 3 20 850 440 2110 860
+preplace netloc processing_system7_0_FCLK_CLK1 1 1 2 480 2100 850
+preplace netloc processing_system7_0_FCLK_RESET0_N 1 0 3 40 860 450 2130 NJ
+preplace netloc processing_system7_0_FCLK_RESET0_N1 1 0 3 40 2090 NJ 2090 840
+preplace netloc S01_AXI_0_1 1 0 1 N 1030
 preplace netloc axi_uartlite_0_UART 1 2 1 NJ 70
 preplace netloc axi_uartlite_1_UART 1 2 1 NJ 370
 preplace netloc axi_uartlite_2_UART 1 2 1 NJ 510
@@ -84,15 +86,15 @@ preplace netloc axi_uartlite_6_UART 1 2 1 NJ 1070
 preplace netloc axi_uartlite_7_UART 1 2 1 NJ 1210
 preplace netloc axi_uartlite_8_UART 1 2 1 NJ 1350
 preplace netloc processing_system7_0_DDR 1 2 1 NJ 1930
-preplace netloc processing_system7_0_FIXED_IO 1 2 1 870J 1950n
-preplace netloc processing_system7_0_M_AXI_GP0 1 0 3 30 1850 410J 1860 850
-preplace netloc smartconnect_0_M00_AXI 1 1 1 450 920n
+preplace netloc processing_system7_0_FIXED_IO 1 2 1 860J 1950n
+preplace netloc processing_system7_0_M_AXI_GP0 1 0 3 30 1850 410J 1860 840
+preplace netloc smartconnect_0_M00_AXI 1 1 1 460 920n
 preplace netloc smartconnect_0_M01_AXI 1 1 1 380 60n
 preplace netloc smartconnect_0_M02_AXI 1 1 1 390 360n
 preplace netloc smartconnect_0_M03_AXI 1 1 1 400 500n
 preplace netloc smartconnect_0_M04_AXI 1 1 1 420 640n
-preplace netloc smartconnect_0_M05_AXI 1 1 1 460 780n
-preplace netloc smartconnect_0_M06_AXI 1 1 1 470 920n
+preplace netloc smartconnect_0_M05_AXI 1 1 1 470 780n
+preplace netloc smartconnect_0_M06_AXI 1 1 1 480 920n
 preplace netloc smartconnect_0_M07_AXI 1 1 1 N 1060
 preplace netloc smartconnect_0_M08_AXI 1 1 1 380 1080n
 preplace netloc smartconnect_0_M09_AXI 1 1 1 390 1100n

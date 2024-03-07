@@ -4,12 +4,12 @@ scripts_location: src/tcl
 hls_location: hls
 hls_output_location: ../vivado/repo
 hls_vendor: Growings
-#hls_projects:
-#    IO_BoardDevController: solution4_nocl
+hls_projects:
+    uarts: solution1
 #    IO_BoardOneWire: solution4_nocl
 vivado_project: condor_pl
 steps: 
-    build_hls: false
+    build_hls: true
     reset_runs : true
     build: true
     close: false

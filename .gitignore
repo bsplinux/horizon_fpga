@@ -2,6 +2,7 @@ vivado
 hls
 vitis
 src/c/test_gcc
+src/ip
 *.exe
 deliveries
 *.jou
@@ -10,4 +11,8 @@ deliveries
 *.bkp
 *.xsa
 *~$*
+*.str
 /src/c/host/pc_app.exe
+hls_params.yaml
+itamar
+linux

@@ -9,7 +9,9 @@ package condor_pl_pkg is
     
     subtype log_regs_range is regs_names_t range LOG_MESSAGE_ID to LOG_LAMP_IND;
     type log_reg_array_t is array (log_regs_range) of std_logic_vector(full_reg_range);
-     
+
+    subtype rs485_regs_range is regs_names_t range UARTS_CONTROL to UART_RAW8_H;
+
     type ios_2_app_t is record
         POWERON_FPGA     : std_logic;      
         FAN_PG1_FPGA     : std_logic;      
@@ -141,6 +143,56 @@ package condor_pl_pkg is
     constant PS_INTR_UPDATE_FLASH                   : integer := 1;
     constant PS_INTR_STOP_LOG                       : integer := 2;
     subtype  PS_INTR_range                          is integer range PS_INTR_STOP_LOG downto PS_INTR_MS;
+
+    type HLS_axim_to_interconnect_t is record
+        awaddr      : STD_LOGIC_VECTOR(31 DOWNTO 0);
+        awlen       : STD_LOGIC_VECTOR(7 DOWNTO 0);
+        awsize      : STD_LOGIC_VECTOR(2 DOWNTO 0);
+        awburst     : STD_LOGIC_VECTOR(1 DOWNTO 0);
+        awlock      : STD_LOGIC_VECTOR(1 DOWNTO 0);
+        awregion    : STD_LOGIC_VECTOR(3 DOWNTO 0);
+        awcache     : STD_LOGIC_VECTOR(3 DOWNTO 0);
+        awprot      : STD_LOGIC_VECTOR(2 DOWNTO 0);
+        awqos       : STD_LOGIC_VECTOR(3 DOWNTO 0);
+        awvalid     : STD_LOGIC;
+        wdata       : STD_LOGIC_VECTOR(31 DOWNTO 0);
+        wstrb       : STD_LOGIC_VECTOR(3 DOWNTO 0);
+        wlast       : STD_LOGIC;
+        wvalid      : STD_LOGIC;
+        bready      : STD_LOGIC;
+        araddr      : STD_LOGIC_VECTOR(31 DOWNTO 0);
+        arlen       : STD_LOGIC_VECTOR(7 DOWNTO 0);
+        arsize      : STD_LOGIC_VECTOR(2 DOWNTO 0);
+        arburst     : STD_LOGIC_VECTOR(1 DOWNTO 0);
+        arlock      : STD_LOGIC_VECTOR(1 DOWNTO 0);
+        arregion    : STD_LOGIC_VECTOR(3 DOWNTO 0);
+        arcache     : STD_LOGIC_VECTOR(3 DOWNTO 0);
+        arprot      : STD_LOGIC_VECTOR(2 DOWNTO 0);
+        arqos       : STD_LOGIC_VECTOR(3 DOWNTO 0);
+        arvalid     : STD_LOGIC;
+        rready      : STD_LOGIC;
+        --arid        : STD_LOGIC_VECTOR(0 to 0);
+        --awid        : STD_LOGIC_VECTOR(0 to 0);
+        aruser      : std_logic_vector(15 downto 0);
+        awuser      : std_logic_vector(15 downto 0);
+    end record HLS_axim_to_interconnect_t;
+    --type HLS_axim_to_interconnect_array_t is array (natural range <>) of HLS_axim_to_interconnect_t;
+    
+    type HLS_axim_from_interconnect_t is record
+        awready     : STD_LOGIC;
+        wready      : STD_LOGIC;
+        bresp       : STD_LOGIC_VECTOR(1 DOWNTO 0);
+        bvalid      : STD_LOGIC;
+        arready     : STD_LOGIC;
+        rdata       : STD_LOGIC_VECTOR(31 DOWNTO 0);
+        rresp       : STD_LOGIC_VECTOR(1 DOWNTO 0);
+        rlast       : STD_LOGIC;
+        rvalid      : STD_LOGIC;
+        --bid         : STD_LOGIC_VECTOR(5 downto 0);
+        --rid         : STD_LOGIC_VECTOR(5 downto 0);
+    end record HLS_axim_from_interconnect_t;
+    --type HLS_axim_from_interconnect_array_t is array (natural range <>) of HLS_axim_from_interconnect_t;
+
 
     function ios_2_app_vec(x: ios_2_app_t) return std_logic_vector;
 end package condor_pl_pkg;

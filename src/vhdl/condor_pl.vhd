@@ -156,6 +156,9 @@ architecture Behavioral of condor_pl is
     signal sw_reset   : std_logic;
     signal regs_reset : std_logic;
     signal ps_intr : std_logic_vector(PS_INTR_range);
+
+    signal HLS_to_BD  : HLS_axim_to_interconnect_t;
+    signal BD_to_HLS  : HLS_axim_from_interconnect_t;
 begin
     bd_gen : if sim_on generate
         procedure tick(num_ticks : integer := 1) is
@@ -225,6 +228,39 @@ begin
             FIXED_IO_ps_porb : inout STD_LOGIC;
             ps_clk100 : out STD_LOGIC;
             ps_clk100_rstn : out STD_LOGIC_VECTOR ( 0 to 0 );
+            UARTS_AXI_araddr : in STD_LOGIC_VECTOR ( 31 downto 0 );
+            UARTS_AXI_arburst : in STD_LOGIC_VECTOR ( 1 downto 0 );
+            UARTS_AXI_arcache : in STD_LOGIC_VECTOR ( 3 downto 0 );
+            UARTS_AXI_arlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
+            UARTS_AXI_arlock : in STD_LOGIC_VECTOR ( 0 to 0 );
+            UARTS_AXI_arprot : in STD_LOGIC_VECTOR ( 2 downto 0 );
+            UARTS_AXI_arqos : in STD_LOGIC_VECTOR ( 3 downto 0 );
+            UARTS_AXI_arready : out STD_LOGIC;
+            UARTS_AXI_arsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
+            UARTS_AXI_arvalid : in STD_LOGIC;
+            UARTS_AXI_awaddr : in STD_LOGIC_VECTOR ( 31 downto 0 );
+            UARTS_AXI_awburst : in STD_LOGIC_VECTOR ( 1 downto 0 );
+            UARTS_AXI_awcache : in STD_LOGIC_VECTOR ( 3 downto 0 );
+            UARTS_AXI_awlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
+            UARTS_AXI_awlock : in STD_LOGIC_VECTOR ( 0 to 0 );
+            UARTS_AXI_awprot : in STD_LOGIC_VECTOR ( 2 downto 0 );
+            UARTS_AXI_awqos : in STD_LOGIC_VECTOR ( 3 downto 0 );
+            UARTS_AXI_awready : out STD_LOGIC;
+            UARTS_AXI_awsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
+            UARTS_AXI_awvalid : in STD_LOGIC;
+            UARTS_AXI_bready : in STD_LOGIC;
+            UARTS_AXI_bresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
+            UARTS_AXI_bvalid : out STD_LOGIC;
+            UARTS_AXI_rdata : out STD_LOGIC_VECTOR ( 31 downto 0 );
+            UARTS_AXI_rlast : out STD_LOGIC;
+            UARTS_AXI_rready : in STD_LOGIC;
+            UARTS_AXI_rresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
+            UARTS_AXI_rvalid : out STD_LOGIC;
+            UARTS_AXI_wdata : in STD_LOGIC_VECTOR ( 31 downto 0 );
+            UARTS_AXI_wlast : in STD_LOGIC;
+            UARTS_AXI_wready : out STD_LOGIC;
+            UARTS_AXI_wstrb : in STD_LOGIC_VECTOR ( 3 downto 0 );
+            UARTS_AXI_wvalid : in STD_LOGIC;
             UART_0_rxd : in STD_LOGIC;
             UART_0_txd : out STD_LOGIC;
             UART_1_rxd : in STD_LOGIC;
@@ -283,6 +319,39 @@ begin
           FIXED_IO_ps_clk => FIXED_IO_ps_clk,
           FIXED_IO_ps_porb => FIXED_IO_ps_porb,
           FIXED_IO_ps_srstb => FIXED_IO_ps_srstb,
+          UARTS_AXI_araddr  => HLS_to_BD.araddr ,                                   --: in STD_LOGIC_VECTOR ( 31 downto 0 );
+          UARTS_AXI_arburst => HLS_to_BD.arburst,                                   --: in STD_LOGIC_VECTOR ( 1 downto 0 );
+          UARTS_AXI_arcache => HLS_to_BD.arcache,                                   --: in STD_LOGIC_VECTOR ( 3 downto 0 );
+          UARTS_AXI_arlen   => HLS_to_BD.arlen  ,                                   --: in STD_LOGIC_VECTOR ( 7 downto 0 );
+          UARTS_AXI_arlock(0)  => HLS_to_BD.arlock(0) ,                                   --: in STD_LOGIC_VECTOR ( 0 to 0 );
+          UARTS_AXI_arprot  => HLS_to_BD.arprot ,                                   --: in STD_LOGIC_VECTOR ( 2 downto 0 );
+          UARTS_AXI_arqos   => HLS_to_BD.arqos  ,                                   --: in STD_LOGIC_VECTOR ( 3 downto 0 );
+          UARTS_AXI_arready => BD_to_HLS.arready,                                   --: out STD_LOGIC;
+          UARTS_AXI_arsize  => HLS_to_BD.arsize ,                                   --: in STD_LOGIC_VECTOR ( 2 downto 0 );
+          UARTS_AXI_arvalid => HLS_to_BD.arvalid,                                   --: in STD_LOGIC;
+          UARTS_AXI_awaddr  => HLS_to_BD.awaddr ,                                   --: in STD_LOGIC_VECTOR ( 31 downto 0 );
+          UARTS_AXI_awburst => HLS_to_BD.awburst,                                   --: in STD_LOGIC_VECTOR ( 1 downto 0 );
+          UARTS_AXI_awcache => HLS_to_BD.awcache,                                   --: in STD_LOGIC_VECTOR ( 3 downto 0 );
+          UARTS_AXI_awlen   => HLS_to_BD.awlen  ,                                   --: in STD_LOGIC_VECTOR ( 7 downto 0 );
+          UARTS_AXI_awlock(0)  => HLS_to_BD.awlock(0) ,                                   --: in STD_LOGIC_VECTOR ( 0 to 0 );
+          UARTS_AXI_awprot  => HLS_to_BD.awprot ,                                   --: in STD_LOGIC_VECTOR ( 2 downto 0 );
+          UARTS_AXI_awqos   => HLS_to_BD.awqos  ,                                   --: in STD_LOGIC_VECTOR ( 3 downto 0 );
+          UARTS_AXI_awready => BD_to_HLS.awready,                                   --: out STD_LOGIC;
+          UARTS_AXI_awsize  => HLS_to_BD.awsize ,                                   --: in STD_LOGIC_VECTOR ( 2 downto 0 );
+          UARTS_AXI_awvalid => HLS_to_BD.awvalid,                                   --: in STD_LOGIC;
+          UARTS_AXI_bready  => HLS_to_BD.bready ,                                   --: in STD_LOGIC;
+          UARTS_AXI_bresp   => BD_to_HLS.bresp  ,                                  --: out STD_LOGIC_VECTOR ( 1 downto 0 );
+          UARTS_AXI_bvalid  => BD_to_HLS.bvalid ,                                  --: out STD_LOGIC;
+          UARTS_AXI_rdata   => BD_to_HLS.rdata  ,                                  --: out STD_LOGIC_VECTOR ( 31 downto 0 );
+          UARTS_AXI_rlast   => BD_to_HLS.rlast  ,                                  --: out STD_LOGIC;
+          UARTS_AXI_rready  => HLS_to_BD.rready ,                                   --: in STD_LOGIC;
+          UARTS_AXI_rresp   => BD_to_HLS.rresp  ,                                   --: out STD_LOGIC_VECTOR ( 1 downto 0 );
+          UARTS_AXI_rvalid  => BD_to_HLS.rvalid ,                                   --: out STD_LOGIC;
+          UARTS_AXI_wdata   => HLS_to_BD.wdata  ,                                   --: in STD_LOGIC_VECTOR ( 31 downto 0 );
+          UARTS_AXI_wlast   => HLS_to_BD.wlast  ,                                   --: in STD_LOGIC;
+          UARTS_AXI_wready  => BD_to_HLS.wready ,                                   --: out STD_LOGIC;
+          UARTS_AXI_wstrb   => HLS_to_BD.wstrb  ,                                   --: in STD_LOGIC_VECTOR ( 3 downto 0 );
+          UARTS_AXI_wvalid  => HLS_to_BD.wvalid ,                                   --: in STD_LOGIC;
           UART_0_rxd => RS485_RXD_1,
           UART_0_txd => RS485_TXD_1,
           UART_1_rxd => RS485_RXD_2,
@@ -442,7 +511,9 @@ begin
         internal_regs_we => internal_regs_we,
         ios_2_app        => ios_2_app,
         app_2_ios        => app_2_ios,
-        ps_intr          => ps_intr
+        ps_intr          => ps_intr,
+        BD_to_HLS        => BD_to_HLS,
+        HLS_to_BD        => HLS_to_BD
     );
 
 end Behavioral;

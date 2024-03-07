@@ -79,12 +79,32 @@ package regs_pkg is
         LOG_PSU_STATUS_H   ,
         LOG_LAMP_IND       ,
         PWM_CTL            ,
-        PWM0_LOW           ,
-        PWM0_HIGH          ,
         PWM1_LOW           ,
         PWM1_HIGH          ,
         PWM2_LOW           ,
         PWM2_HIGH          ,
+        PWM3_LOW           ,
+        PWM3_HIGH          ,
+        UARTS_CONTROL      ,
+        UARTS_STATUS       ,
+        UART_RAW0_L        ,
+        UART_RAW0_H        ,
+        UART_RAW1_L        ,
+        UART_RAW1_H        ,
+        UART_RAW2_L        ,
+        UART_RAW2_H        ,
+        UART_RAW3_L        ,
+        UART_RAW3_H        ,
+        UART_RAW4_L        ,
+        UART_RAW4_H        ,
+        UART_RAW5_L        ,
+        UART_RAW5_H        ,
+        UART_RAW6_L        ,
+        UART_RAW6_H        ,
+        UART_RAW7_L        ,
+        UART_RAW7_H        ,
+        UART_RAW8_L        ,
+        UART_RAW8_H        ,
         NO_REG
     );
     -- NUM_REGS is the neto no. of registers if there are holes there should be another constant for the address space size 
@@ -167,15 +187,35 @@ package regs_pkg is
         70 => LOG_PSU_STATUS_H   ,
         71 => LOG_LAMP_IND       ,
         72 => PWM_CTL            ,
-        73 => PWM0_LOW           ,
-        74 => PWM0_HIGH          ,
-        75 => PWM1_LOW           ,
-        76 => PWM1_HIGH          ,
-        77 => PWM2_LOW           ,
-        78 => PWM2_HIGH          ,
+        73 => PWM1_LOW           ,
+        74 => PWM1_HIGH          ,
+        75 => PWM2_LOW           ,
+        76 => PWM2_HIGH          ,
+        77 => PWM3_LOW           ,
+        78 => PWM3_HIGH          ,
+        79 => UARTS_CONTROL      ,
+        80 => UARTS_STATUS       ,
+        81 => UART_RAW0_L        ,
+        82 => UART_RAW0_H        ,
+        83 => UART_RAW1_L        ,
+        84 => UART_RAW1_H        ,
+        85 => UART_RAW2_L        ,
+        86 => UART_RAW2_H        ,
+        87 => UART_RAW3_L        ,
+        88 => UART_RAW3_H        ,
+        89 => UART_RAW4_L        ,
+        90 => UART_RAW4_H        ,
+        91 => UART_RAW5_L        ,
+        92 => UART_RAW5_H        ,
+        93 => UART_RAW6_L        ,
+        94 => UART_RAW6_H        ,
+        95 => UART_RAW7_L        ,
+        96 => UART_RAW7_H        ,
+        97 => UART_RAW8_L        ,
+        98 => UART_RAW8_H        ,
         others => NO_REG
-    );  
-    
+    );   
+         
     type reg_array_t is array (regs_names_t) of std_logic_vector(full_reg_range);
     type reg_arrays_t is array (natural range <>) of reg_array_t;
     type reg_slv_array_t is array (regs_names_t) of std_logic;
@@ -252,7 +292,7 @@ package regs_pkg is
     constant IO_OUT0_EN_PSU_9_FB                    : integer := 24; 
     constant IO_OUT0_EN_PSU_10_FB                   : integer := 25;
     subtype IO_OUT0_range                           is integer range  IO_OUT0_EN_PSU_10_FB downto IO_OUT0_FAN_EN1_FPGA;
-    -- fields for IO_OUT0
+    -- fields for IO_OUT1
     constant IO_OUT1_RS485_DE_7                     : integer :=  0; 
     constant IO_OUT1_RS485_DE_8                     : integer :=  1; 
     constant IO_OUT1_RS485_DE_9                     : integer :=  2; 
@@ -268,13 +308,17 @@ package regs_pkg is
     constant SN_ETI_SET_SN                          : integer := 8;
     constant SN_ETI_RESET_ETI                       : integer := 9;
     -- fields for PWM_CTL
-    constant PWM_CTL_PWM0_ACTIVE                    : integer := 0;
-    constant PWM_CTL_PWM0_START_HIGH                : integer := 1;
-    constant PWM_CTL_PWM1_ACTIVE                    : integer := 2;
-    constant PWM_CTL_PWM1_START_HIGH                : integer := 3;
-    constant PWM_CTL_PWM2_ACTIVE                    : integer := 4;
-    constant PWM_CTL_PWM2_START_HIGH                : integer := 5;
-        
+    constant PWM_CTL_PWM1_ACTIVE                    : integer := 0;
+    constant PWM_CTL_PWM1_START_HIGH                : integer := 1;
+    constant PWM_CTL_PWM2_ACTIVE                    : integer := 2;
+    constant PWM_CTL_PWM2_START_HIGH                : integer := 3;
+    constant PWM_CTL_PWM3_ACTIVE                    : integer := 4;
+    constant PWM_CTL_PWM3_START_HIGH                : integer := 5;
+    -- fields for UARTS_CONTROL
+    subtype UARTS_CONTROL_EN_RANGE                  is integer range 8 downto 0;
+    constant UARTS_CONTROL_RST                      : integer := 9;
+    -- fields for UARTS_STATUS
+    constant UARTS_STATUS_BUSY                      : integer := 0;        
     --------------------------------------------------------------------------------    
     -- initial values for parameters 
     --------------------------------------------------------------------------------    
@@ -366,12 +410,32 @@ package regs_pkg is
         LOG_PSU_STATUS_H              => X"FFFFFFFF",
         LOG_LAMP_IND                  => X"FFFFFFFF",
         PWM_CTL                       => X"0000003F",
-        PWM0_LOW                      => X"FFFFFFFF",
-        PWM0_HIGH                     => X"FFFFFFFF",
         PWM1_LOW                      => X"FFFFFFFF",
         PWM1_HIGH                     => X"FFFFFFFF",
         PWM2_LOW                      => X"FFFFFFFF",
         PWM2_HIGH                     => X"FFFFFFFF",
+        PWM3_LOW                      => X"FFFFFFFF",
+        PWM3_HIGH                     => X"FFFFFFFF",
+        UARTS_CONTROL                 => X"0000003F",
+        UARTS_STATUS                  => X"00000001",
+        UART_RAW0_L                   => X"FFFFFFFF",
+        UART_RAW0_H                   => X"FFFFFFFF",
+        UART_RAW1_L                   => X"FFFFFFFF",
+        UART_RAW1_H                   => X"FFFFFFFF",
+        UART_RAW2_L                   => X"FFFFFFFF",
+        UART_RAW2_H                   => X"FFFFFFFF",
+        UART_RAW3_L                   => X"FFFFFFFF",
+        UART_RAW3_H                   => X"FFFFFFFF",
+        UART_RAW4_L                   => X"FFFFFFFF",
+        UART_RAW4_H                   => X"FFFFFFFF",
+        UART_RAW5_L                   => X"FFFFFFFF",
+        UART_RAW5_H                   => X"FFFFFFFF",
+        UART_RAW6_L                   => X"FFFFFFFF",
+        UART_RAW6_H                   => X"FFFFFFFF",
+        UART_RAW7_L                   => X"FFFFFFFF",
+        UART_RAW7_H                   => X"FFFFFFFF",
+        UART_RAW8_L                   => X"FFFFFFFF",
+        UART_RAW8_H                   => X"FFFFFFFF",
         others                        => X"00000000" -- constant regs are not writable
     );
     
@@ -441,7 +505,26 @@ package regs_pkg is
         LOG_PSU_STATUS_L   => '1',
         LOG_PSU_STATUS_H   => '1',
         LOG_LAMP_IND       => '1',
-        others                       => '0'
+        UARTS_STATUS       => '1',
+        UART_RAW0_L        => '1',
+        UART_RAW0_H        => '1',
+        UART_RAW1_L        => '1',
+        UART_RAW1_H        => '1',
+        UART_RAW2_L        => '1',
+        UART_RAW2_H        => '1',
+        UART_RAW3_L        => '1',
+        UART_RAW3_H        => '1',
+        UART_RAW4_L        => '1',
+        UART_RAW4_H        => '1',
+        UART_RAW5_L        => '1',
+        UART_RAW5_H        => '1',
+        UART_RAW6_L        => '1',
+        UART_RAW6_H        => '1',
+        UART_RAW7_L        => '1',
+        UART_RAW7_H        => '1',
+        UART_RAW8_L        => '1',
+        UART_RAW8_H        => '1',
+        others             => '0'
     );
 
     constant CPU_WRITEABLE_REGS : reg_slv_array_t := (
@@ -452,12 +535,13 @@ package regs_pkg is
         LOG_ETM            => '1',
         LOG_SN             => '1',
         PWM_CTL            => '1',
-        PWM0_LOW           => '1',
-        PWM0_HIGH          => '1',
         PWM1_LOW           => '1',
         PWM1_HIGH          => '1',
         PWM2_LOW           => '1',
         PWM2_HIGH          => '1',
+        PWM3_LOW           => '1',
+        PWM3_HIGH          => '1',
+        UARTS_CONTROL      => '1',
         others             => '0'   -- unused, constant regs and internally writable regs are not cpu writable
     );
     
