@@ -1,8 +1,13 @@
-#define COMMAD_SERVER_PORT (1234)
-#define SYNC 0xa5
-#define HOST_IP "192.168.1.30"
+#ifndef __SHAREDCMD_H__
+#define __SHAREDCMD_H__
 
-#pragma pack(4)
+#define COMMAD_SERVER_PORT (1234)
+#define LOG_PORT (1235)
+#define SYNC 0xa5
+#define TARGET_IP "192.168.1.30"
+#define MESSAGE_ID_CONST 0x81
+
+#pragma pack(1)
 struct cmdhdr_t{
     unsigned char opcode;
     unsigned char sync;  // 0xa5
@@ -122,7 +127,7 @@ typedef union {
 }PSU_Status_union_t;
                                        // Description                                    Units	Range	      Resolution
 typedef struct{                        //                                                |------|-------------|---------|
-	unsigned char 	    Message_ID   ; // Unique message ID - must be 0x81               N/A	0x81	N/A
+	//unsigned char 	    Message_ID   ; // Unique message ID - must be 0x81               N/A	0x81	N/A            this field is only for UDP not for LOG
 	short 	            VDC_IN       ; // 28VDC Input voltage                            VDC	+/- 100VDC	  50mV
 	short 	            VAC_IN_PH_A  ; // 115 VAC phA input  voltage                     VAC	+/- 200VAC	  100mV
 	short 	            VAC_IN_PH_B  ; // 115 VAC phB input  voltage                     VAC	+/- 200VAC	  100mV
@@ -189,17 +194,42 @@ typedef struct{                        //                                       
 	unsigned long long	Spare7       ; // N/A                                            N/A	N/A	          N/A
 	unsigned long long	Spare8       ; // N/A                                            N/A	N/A	          N/A
 	unsigned long long  Spare9       ; // N/A                                            N/A	N/A	          N/A
+} message_base_t;
+
+typedef struct {
+	unsigned char 	Message_ID   ; // Unique message ID - must be 0x81               N/A	0x81	N/A
+	message_base_t  message_base;
 }cmd81_telemetry_t;
 
-// typedef struct{
-//     char raw[TELEMETRY_BYTES];
-// }cmd81_telemetry_array_t;
+//typedef union{
+//    cmd81_telemetry_t fields;
+//    char raw[TELEMETRY_BYTES];
+//}cmd81_union_t;
 
-typedef union{
-    cmd81_telemetry_t fields;
-    //cmd81_telemetry_array_t array;
-    char array[TELEMETRY_BYTES];
-}cmd81_union_t;
+typedef struct {
+	unsigned int Log_ID;
+	unsigned short Log_Payload_Size;
+	unsigned int GMT_Time;
+	unsigned short Micro_Sec;
+} log_header_t;
+
+typedef struct {
+	log_header_t header;
+	message_base_t message_base;
+	unsigned char footer_checksum;
+} log_entrie_t;
+
+typedef struct {
+	unsigned char header_padd[sizeof(log_header_t) - 1]; // only used by log
+	cmd81_telemetry_t  tele;
+	unsigned char footer_pad; // only used by log
+} cmd81_telemetry_expanded_t;
+
+typedef union {
+	cmd81_telemetry_expanded_t tele;
+	log_entrie_t               log;
+	char raw[sizeof(log_header_t) - 1 + TELEMETRY_BYTES + 1];
+} message_superset_union_t;
 
 enum{
     CMD_OP0,
@@ -225,4 +255,4 @@ typedef struct {
     cmd_data_t      data;
 }udpcmd_t;
 
-
+#endif //__SHAREDCMD_H__

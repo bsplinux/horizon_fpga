@@ -11,6 +11,7 @@ use work.regs_pkg.all;
 --use UNISIM.vcomponents.all;
 
 entity app is
+    generic(HLS_EN : boolean);
     port(
         clk              : in  std_logic;
         sync_rst         : in  std_logic;
@@ -275,6 +276,7 @@ begin
     
     -- rs485
     rs485_i: entity work.rs485_if
+    generic map(HLS_EN => HLS_EN)
     port map(
         clk              => clk,
         sync_rst         => sync_rst,

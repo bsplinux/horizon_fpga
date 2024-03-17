@@ -15,18 +15,18 @@ extern int log_mseconds;
 
 static int task_active=0;
 
-ServerStatus::ServerStatus() : log_active(true),
+ServerStatus::ServerStatus() :
+		log_active(true),
 		board_id(0),
 		received_first_keep_alive(false),
 		keep_alive_cnt(0),
 		log_mseconds(1),
-		log_paused(false),
 		log_udp_port(4000),
+		log_paused(false),
 		ETI_task_acitve(true),
 		host_ip(0),
 		update_log_name(false)
 		{
-
 }
 
 ServerStatus::~ServerStatus() {
@@ -69,15 +69,10 @@ int servercmd_start(int server_port, ServerStatus &server_status){
 					server_status.keep_alive_cnt++;
 					// TODO delete keep alive error if exists
 					// registers.GENERAL_CONTROL.CONTROL_ALIVE_ERROR = 0;
-					// wirte to register
+					// write to register
 					if(!server_status.received_first_keep_alive){  //  first keep alive received
 						server_status.received_first_keep_alive = true;
 						server_status.host_ip = src_ip;
-						// change file name of log
-						server_status.update_log_name = true;
-						// TODO update time from NTP server
-						// syncronize to NTP at NTP_SERVER_IP
-
 						printf("received first keep alive, from ip = %d", src_ip);
 					}
 					printf("Got cmd(%d) \n\r",pcmd->cmd1.message_id);
@@ -91,7 +86,18 @@ int servercmd_start(int server_port, ServerStatus &server_status){
 						continue;
 					}
 					printf("Got cmd(%d) tcu_id(%d) on_off(%d)\n\r",pcmd->cmd2.message_id, pcmd->cmd2.tcu_id, pcmd->cmd2.on_off);
-    				count++;
+					if (pcmd->cmd2.tcu_id == 0)  //ECTCU
+					{
+						server_status.message.log.message_base.PSU_Status.fields.EC_Inhibit = pcmd->cmd2.on_off;
+						// TODO set register
+					}
+					else if (pcmd->cmd2.tcu_id == 1)  //CCTCU
+					{
+						server_status.message.log.message_base.PSU_Status.fields.CC_Inhibit = pcmd->cmd2.on_off;
+						// TODO set register
+					}
+
+					count++;
 				}
 				break;
                 case  CMD_OP3:
@@ -106,6 +112,7 @@ int servercmd_start(int server_port, ServerStatus &server_status){
         		    	if (server_status.log_active) {
         		    		//end_async_log();
         		    		server_status.log_active = false;
+        		    		server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Running = 0;
         		    		printf("Pusing Log \n\r");
         		    	}
         		    }
@@ -114,17 +121,23 @@ int servercmd_start(int server_port, ServerStatus &server_status){
         		    		//std::string log_name = create_log_name();
         		    		//start_async_log(1024, log_name, HOST_IP, server_status);
         		    		server_status.log_active = true;
+        		    		server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Running = 1;
         		    		printf("restarting log \n\r");
         		    	}
         		    }
         		    if(pcmd->cmd3.command == 2){ // erase log
-        		    	if(server_status.log_active)
+        		    	if(server_status.log_active) {
         		    		end_async_log();
+        		    		server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Running = 0;
+        		    	}
+        		    	server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Erase_In_Process = 1;
         		    	erase_log();
+        		    	server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Erase_In_Process = 0;
         		    	// now restarting log
         		    	std::string log_name = create_log_name();
        		    		start_async_log(1024, log_name, server_status);
-        		    	server_status.log_active = true;
+       		    		server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Running = 1;
+       		    		server_status.log_active = true;
         		        printf("erasing log\n\r");
         		    }
 				}
@@ -132,10 +145,12 @@ int servercmd_start(int server_port, ServerStatus &server_status){
                 case  CMD_OP4:
                 {
 					if(rx_size != (sizeof(pcmd->cmd4))){
-						printf("%s.%d  worng packet size  \n\r",__func__,__LINE__);
+						printf("%s.%d  worng packet size, got %d expected %d  \n\r",__func__,__LINE__,rx_size, sizeof(pcmd->cmd4) );
 						continue;
 					}
 					printf("Got cmd(%d) gmt_time(%d) gmt_microseconds(%d)\n\r",pcmd->cmd4.message_id, pcmd->cmd4.gmt_time, pcmd->cmd4.microseconds);
+					// change file name of log
+					server_status.update_log_name = true;
 					count++;
                 }
 				break;

@@ -27,21 +27,22 @@ namespace fs = std::filesystem;
 #include  "socket.h"
 #include  "asynclog.h"
 
-static const int        PACKET_SIZE=200;    // packet size 
+//static const int        PACKET_SIZE;    // packet size
 static const int        PACKET_COUNT=10;   // fifo size 
 static int              active_task =0;
 static std::string         g_log_path;
 static std::thread         g_log_hread_h;
-static char g_msg[PACKET_SIZE];
-static int  g_msg_size = sizeof(g_msg);
+//static char g_msg[PACKET_SIZE];
+//static int  g_msg_size = sizeof(g_msg);
+extern ServerStatus server_status;
 
 //static int file_buff_disk(int fd,unsigned char *buffer,int &buffer_offset,void *p_write,unsigned int i_write);
 
 struct Packet {
-    unsigned char data [PACKET_SIZE];
-    int           length  = PACKET_SIZE;
+    unsigned char data [sizeof(message_superset_union_t)];
+    int           length  = sizeof(message_superset_union_t);
     Packet() {};
-    Packet(void *msg,int l) {l = std::min(l,PACKET_SIZE); memcpy(data,msg,l); };
+    Packet(void *msg,int l) { memcpy(data,msg,l); };
 };
 
 class FIFOBuffer {
@@ -55,10 +56,10 @@ class FIFOBuffer {
     std::condition_variable notFull;
 
 public:
-    FIFOBuffer(size_t capacity) : capacity(capacity), count(0), head(0), tail(0), buffer(capacity) {}
+    FIFOBuffer(size_t capacity) :  buffer(capacity), capacity(capacity), count(0), head(0), tail(0) {}
 
     void write(Packet&& packet) {
-        printf("%s.%d pkt lenght(%d) \n\r",__func__,__LINE__,packet.length);
+        //printf("%s.%d pkt lenght(%d) \n\r",__func__,__LINE__,packet.length);
         std::unique_lock<std::mutex> lock(mutex);
 
         notFull.wait(lock, [this]{ return count < capacity; });
@@ -75,7 +76,7 @@ public:
 
         if (!notEmpty.wait_for(lock, std::chrono::milliseconds(timeout_ms), [this] { return count > 0; })) {
                   // Timeout
-            printf("%s.%d pkt ms(%d) \n\r",__func__,__LINE__,timeout_ms);
+            //printf("%s.%d pkt ms(%d) \n\r",__func__,__LINE__,timeout_ms);
             return std::nullopt; // Indicate that no packet was read due to timeout
         }
         //notEmpty.wait(lock, [this]{ return count > 0; });
@@ -84,7 +85,7 @@ public:
         --count;
         notFull.notify_one();
 
-        printf("%s.%d pkt cnt(%d) \n\r",__func__,__LINE__,count);
+        //printf("%s.%d pkt cnt(%d) \n\r",__func__,__LINE__,count);
         return packet;
     }
 };
@@ -92,26 +93,58 @@ public:
 
 class BufferedFileWriter {
 private:
-    int fd; // File descriptor
+    int fd=0; // File descriptor
+    std::string current_fn;
     unsigned char *buffer;
-    int buffer_offset;
-    int buffer_size;
+    unsigned int buffer_offset;
+    unsigned int buffer_size;
+    std::mutex mutex;
+
 public:
-    BufferedFileWriter(int fd,int bsize) : fd(fd), buffer_offset(0),buffer_size(bsize) {
-        // Initialize the buffer to zeros or leave it uninitialized based on your needs
-        // std::fill_n(buffer, BUFFER_SIZE, 0);
+    int file_open_status() {return fd ;}
+    int update_file_name(std::string update_fn){
+    	//int ret =0;
+    	 std::unique_lock<std::mutex> lock(mutex);
+    	 close(fd);
+    	 rename(current_fn.c_str(),update_fn.c_str());
+    	 current_fn = update_fn;
 
 #ifdef WIN32
+        fd = open(current_fn.c_str(),O_CREAT | O_WRONLY,0640 );
+#else
+        fd = open(current_fn.c_str(),O_SYNC | O_DIRECT | O_CREAT | O_WRONLY ,0666 );
+#endif
+        if(fd <0){
+            printf("ERROR fail to open %s file (error=%d) \n\r",current_fn.c_str(),fd);
+           // return -1;
+        }
+        if(fd >0)
+        	return 0;
+        return -1;
+
+    }
+    BufferedFileWriter(std::string filename,int bsize) : current_fn(filename), buffer_offset(0),buffer_size(bsize) {
+        // Initialize the buffer to zeros or leave it uninitialized based on your needs
+        // std::fill_n(buffer, BUFFER_SIZE, 0);
+    	 std::unique_lock<std::mutex> lock(mutex);
+#ifdef WIN32
+        fd = open(current_fn.c_str(),O_CREAT | O_WRONLY,0640 );
         buffer = new unsigned char [buffer_size];
 #else
+        fd = open(current_fn.c_str(),O_SYNC | O_DIRECT | O_CREAT | O_WRONLY ,0666 );
         buffer = (unsigned char*)aligned_alloc(512, buffer_size);
 #endif
+        if(fd <0){
+            printf("ERROR fail to open %s file (error=%d) \n\r",current_fn.c_str(),fd);
+           // return -1;
+        }
 
     }
 
     ~BufferedFileWriter() {
         // Ensure any remaining data is flushed to disk when the object is destroyed
         flushBuffer();
+        std::unique_lock<std::mutex> lock(mutex);
 		if(fd >0){
 			close(fd);
 			//printf("%s.%d close fd(%d) \n\r",__func__,__LINE__,fd);
@@ -123,9 +156,9 @@ public:
     int writeData(void *p_write, unsigned int i_write) {
         unsigned char *p_wbuff = (unsigned char *)p_write;
         int ret = 0;
-        printf("%s.%d ws(%d) ofs(%d)\n\r",__func__,__LINE__,i_write,buffer_offset);
+        //printf("%s.%d ws(%d) ofs(%d)\n\r",__func__,__LINE__,i_write,buffer_offset);
         if (buffer_offset > 0) {
-            unsigned int cpy_size = std::min(buffer_size - buffer_offset, (int)i_write);
+            unsigned int cpy_size = std::min(buffer_size - buffer_offset, i_write);
             assert(cpy_size != 0);
             memcpy(&buffer[buffer_offset], (void*)p_wbuff, cpy_size);
             p_wbuff += cpy_size;
@@ -141,7 +174,7 @@ public:
         while (i_write >= buffer_size) {
             ret = write(fd, (unsigned char *)p_wbuff, buffer_size);
 
-            if (ret != buffer_size) {
+            if (ret != (int)buffer_size) {
                 return -1; // Error writing to disk
             }
             p_wbuff += buffer_size;
@@ -168,6 +201,9 @@ public:
 			//buffer_offset = buffer_size;
 			//#endif
 		}
+
+		std::unique_lock<std::mutex> lock(mutex);
+
             int ret = write(fd, buffer, buffer_offset);
             if (ret != buffer_offset) {
                 //std::cerr << "Error flushing buffer to disk" << std::endl;
@@ -205,17 +241,6 @@ static void reader_thread(BufferedFileWriter * &gbuffer,FIFOBuffer *& gfifo) {
 //    printf("%s.%d exit log\n\r",__func__,__LINE__);
 }
 
-
-
-int rename_log(std::string newname) {
-//    int ret=-1;
-//    if(!global_log_name.empty()){
-//      ret =  rename(global_log_name.c_str(),newname.c_str());
- //   }
-  //  return ret;
-    return 0;
-}
-
 static std::string formatNumber(int number) {
     std::ostringstream oss;
     oss << std::setw(5) << std::setfill('0') << number;
@@ -238,11 +263,156 @@ static int getLastNumberFromFilename(const fs::path& path) {
     return std::stoi(numberStr);
 }
 
+void init_message()
+{
+	server_status.message.log.header.Log_ID             = 0x12345678;
+	server_status.message.log.header.Log_Payload_Size   = TELEMETRY_BYTES - 1; //the -1 as we do not include the messaage id
+	server_status.message.log.header.GMT_Time           = 0;
+	server_status.message.log.header.Micro_Sec          = 0;
+	server_status.message.log.footer_checksum           = 0;
+
+	server_status.message.log.message_base.VDC_IN       = 0;
+	server_status.message.log.message_base.VAC_IN_PH_A  = 1;
+	server_status.message.log.message_base.VAC_IN_PH_B  = 2;
+	server_status.message.log.message_base.VAC_IN_PH_C  = 3;
+	server_status.message.log.message_base.I_DC_IN      = 4;
+	server_status.message.log.message_base.I_AC_IN_PH_A = 5;
+	server_status.message.log.message_base.I_AC_IN_PH_B = 6;
+	server_status.message.log.message_base.I_AC_IN_PH_C = 7;
+	server_status.message.log.message_base.V_OUT_1      = 8;
+	server_status.message.log.message_base.V_OUT_2      = 9;
+	server_status.message.log.message_base.V_OUT_3_ph1  = 10;
+	server_status.message.log.message_base.V_OUT_3_ph2  = 11;
+	server_status.message.log.message_base.V_OUT_3_ph3  = 12;
+	server_status.message.log.message_base.V_OUT_4      = 13;
+	server_status.message.log.message_base.V_OUT_5      = 14;
+	server_status.message.log.message_base.V_OUT_6      = 15;
+	server_status.message.log.message_base.V_OUT_7      = 16;
+	server_status.message.log.message_base.V_OUT_8      = 17;
+	server_status.message.log.message_base.V_OUT_9      = 18;
+	server_status.message.log.message_base.V_OUT_10     = 19;
+	server_status.message.log.message_base.I_OUT_1      = 20;
+	server_status.message.log.message_base.I_OUT_2      = 21;
+	server_status.message.log.message_base.I_OUT_3_ph1  = 22;
+	server_status.message.log.message_base.I_OUT_3_ph2  = 23;
+	server_status.message.log.message_base.I_OUT_3_ph3  = 24;
+	server_status.message.log.message_base.I_OUT_4      = 25;
+	server_status.message.log.message_base.I_OUT_5      = 26;
+	server_status.message.log.message_base.I_OUT_6      = 27;
+	server_status.message.log.message_base.I_OUT_7      = 28;
+	server_status.message.log.message_base.I_OUT_8      = 29;
+	server_status.message.log.message_base.I_OUT_9      = 30;
+	server_status.message.log.message_base.I_OUT_10     = 31;
+	server_status.message.log.message_base.AC_Power     = 32;
+	server_status.message.log.message_base.Fan_Speed    = 33;
+	server_status.message.log.message_base.Fan1_Speed   = 34;
+	server_status.message.log.message_base.Fan2_Speed   = 35;
+	server_status.message.log.message_base.Fan3_Speed   = 36;
+	server_status.message.log.message_base.Volume_size  = 37;
+	server_status.message.log.message_base.Logfile_size = 38;
+	server_status.message.log.message_base.T1           = 39;
+	server_status.message.log.message_base.T2           = 40;
+	server_status.message.log.message_base.T3           = 41;
+	server_status.message.log.message_base.T4           = 42;
+	server_status.message.log.message_base.T5           = 43;
+	server_status.message.log.message_base.T6           = 44;
+	server_status.message.log.message_base.T7           = 45;
+	server_status.message.log.message_base.T8           = 46;
+	server_status.message.log.message_base.T9           = 47;
+	server_status.message.log.message_base.ETM          = 0xffffff;
+	server_status.message.log.message_base.Major        = 48;
+	server_status.message.log.message_base.Minor        = 49;
+	server_status.message.log.message_base.Build        = 50;
+	server_status.message.log.message_base.Hotfix       = 51;
+	server_status.message.log.message_base.SN           = 52;
+    server_status.message.log.message_base.PSU_Status.word  = 0;
+    server_status.message.log.message_base.Lamp_Ind     = 56;
+    server_status.message.log.message_base.Spare0       = 57;
+    server_status.message.log.message_base.Spare1       = 58;
+    server_status.message.log.message_base.Spare2       = 59;
+    server_status.message.log.message_base.Spare3       = 60;
+    server_status.message.log.message_base.Spare4       = 61;
+    server_status.message.log.message_base.Spare5       = 62;
+    server_status.message.log.message_base.Spare6       = 63;
+    server_status.message.log.message_base.Spare7       = 64;
+    server_status.message.log.message_base.Spare8       = 65;
+    server_status.message.log.message_base.Spare9       = 66;
+
+    server_status.message.tele.tele.Message_ID          = MESSAGE_ID_CONST;
+}
+
+void format_message()
+{
+	// read status from HW and format correctly for LOG
+	server_status.message.log.header.GMT_Time           ++;
+	server_status.message.log.header.Micro_Sec          ++;
+
+	server_status.message.log.message_base.VDC_IN       ++;
+	server_status.message.log.message_base.VAC_IN_PH_A  ++;
+	server_status.message.log.message_base.VAC_IN_PH_B  ++;
+	server_status.message.log.message_base.VAC_IN_PH_C  ++;
+	server_status.message.log.message_base.I_DC_IN      ++;
+	server_status.message.log.message_base.I_AC_IN_PH_A ++;
+	server_status.message.log.message_base.I_AC_IN_PH_B ++;
+	server_status.message.log.message_base.I_AC_IN_PH_C ++;
+	server_status.message.log.message_base.V_OUT_1      ++;
+	server_status.message.log.message_base.V_OUT_2      ++;
+	server_status.message.log.message_base.V_OUT_3_ph1  ++;
+	server_status.message.log.message_base.V_OUT_3_ph2  ++;
+	server_status.message.log.message_base.V_OUT_3_ph3  ++;
+	server_status.message.log.message_base.V_OUT_4      ++;
+	server_status.message.log.message_base.V_OUT_5      ++;
+	server_status.message.log.message_base.V_OUT_6      ++;
+	server_status.message.log.message_base.V_OUT_7      ++;
+	server_status.message.log.message_base.V_OUT_8      ++;
+	server_status.message.log.message_base.V_OUT_9      ++;
+	server_status.message.log.message_base.V_OUT_10     ++;
+	server_status.message.log.message_base.I_OUT_1      ++;
+	server_status.message.log.message_base.I_OUT_2      ++;
+	server_status.message.log.message_base.I_OUT_3_ph1  ++;
+	server_status.message.log.message_base.I_OUT_3_ph2  ++;
+	server_status.message.log.message_base.I_OUT_3_ph3  ++;
+	server_status.message.log.message_base.I_OUT_4      ++;
+	server_status.message.log.message_base.I_OUT_5      ++;
+	server_status.message.log.message_base.I_OUT_6      ++;
+	server_status.message.log.message_base.I_OUT_7      ++;
+	server_status.message.log.message_base.I_OUT_8      ++;
+	server_status.message.log.message_base.I_OUT_9      ++;
+	server_status.message.log.message_base.I_OUT_10     ++;
+	server_status.message.log.message_base.AC_Power     ++;
+	server_status.message.log.message_base.Fan_Speed    ++;
+	server_status.message.log.message_base.Fan1_Speed   ++;
+	server_status.message.log.message_base.Fan2_Speed   ++;
+	server_status.message.log.message_base.Fan3_Speed   ++;
+	server_status.message.log.message_base.Volume_size  ++;
+	server_status.message.log.message_base.Logfile_size ++;
+	server_status.message.log.message_base.T1           ++;
+	server_status.message.log.message_base.T2           ++;
+	server_status.message.log.message_base.T3           ++;
+	server_status.message.log.message_base.T4           ++;
+	server_status.message.log.message_base.T5           ++;
+	server_status.message.log.message_base.T6           ++;
+	server_status.message.log.message_base.T7           ++;
+	server_status.message.log.message_base.T8           ++;
+	server_status.message.log.message_base.T9           ++;
+	//server_status.message.log.message_base.ETM          = 0;
+	server_status.message.log.message_base.Major        ++;
+	server_status.message.log.message_base.Minor        ++;
+	server_status.message.log.message_base.Build        ++;
+	server_status.message.log.message_base.Hotfix       ++;
+	server_status.message.log.message_base.SN           ++;
+    //server_status.message.log.message_base.PSU_Status.word   = 0;
+    server_status.message.log.message_base.Lamp_Ind     ++;
+
+    // calculate checksum
+	server_status.message.log.footer_checksum           ++;
+
+}
+
 int start_async_log(int save_block_size,std::string log_path, ServerStatus &server_status ){
 	fs::path directory ;
 	std::vector<fs::path> files;
 	int newNumber =1;
-	int fd;
 	static std::thread         reader_thread_h;
 	g_log_path = log_path;
 	directory = log_path;
@@ -291,24 +461,13 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 		  std::cerr << "Error: " << e.what() << std::endl;
 	  }
 
-#ifdef WIN32
-
-      fd = open(new_log_file_name.c_str(),O_CREAT | O_WRONLY,0640 );
-#else
-
-      fd = open(new_log_file_name.c_str(),O_SYNC | O_DIRECT | O_CREAT | O_WRONLY ,0666 );
-#endif
-      if(fd <0){
-          printf("ERROR fail to open %s file (error=%d) \n\r",new_log_file_name.c_str(),fd);
-          return -1;
-      }
 
       active_task = 1;
 
       gfifo   = new  FIFOBuffer(PACKET_COUNT);
-      gbuffer = new BufferedFileWriter(fd,save_block_size);
+      gbuffer = new BufferedFileWriter(new_log_file_name,save_block_size);
       reader_thread_h= std::thread([] { reader_thread(gbuffer,gfifo);});
-      std::thread t([&server_status] {
+      std::thread t([newNumber, &server_status, log_path, gbuffer] {
            int pkt_count = 0;
            int log_count = 0;
            int socket = Socket_UDPSocket();
@@ -316,20 +475,34 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
             // Simulate packet data fill (for illustration, not actually filling data here)
             while(active_task){
                 if (server_status.update_log_name) { // on first keep alive we need to update log file name
+                	 std::string new_file_name = getCurrentTimeFormatted() + "-" + formatNumber(newNumber);
+                	 std::cout << "The new filename will be: " << new_file_name << std::endl;
+                	 std::string new_log_file_name = log_path + "/" + new_file_name;
+
                 	// TODO rename the log file name
+                	 gbuffer->update_file_name(new_log_file_name);
                 	server_status.update_log_name = false;
+                	//rename(new_log_file_name.c_str(),);
                 }
-            	Packet packet(g_msg,g_msg_size) ;
+                format_message();
+
+                Packet packet(&server_status.message,sizeof(message_superset_union_t)) ;
                 log_count = (log_count + 1) % server_status.log_mseconds;
                 if(gfifo && log_count == 0 && server_status.log_active){
                     gfifo->write(std::move(packet)); // Push pointer into the queue
-                    printf("%s.%d write paket\n\r",__func__,__LINE__);
+                    //printf("%s.%d write paket\n\r",__func__,__LINE__);
                  }
                 pkt_count = (pkt_count + 1) % 10;
                 if(pkt_count==0 && server_status.host_ip != 0){
-					Socket_SendTo(socket,(unsigned char*)packet.data,packet.length, server_status.host_ip, server_status.log_udp_port);
+                	server_status.message.tele.tele.Message_ID = MESSAGE_ID_CONST;
+
+                	int ret = Socket_SendTo(socket,&server_status.message.tele.tele.Message_ID,sizeof(cmd81_telemetry_t), server_status.host_ip, server_status.log_udp_port);
+                	//printf("%s.%d %d log  IP(0x%x) port(%d) \n\r",__func__,__LINE__,ret,server_status.host_ip,server_status.log_udp_port);
                 }
+                //next_time_micro = next_time_micro +1000;
+
                 usleep(1000);
+
             }
 			if(socket)
 				Socket_Close(socket);
@@ -360,7 +533,7 @@ void end_async_log(void){
 
 
 std::string create_log_name(){
-    return "/log";
+    return "/work/log";
 }
 
 void erase_log(){
@@ -368,4 +541,7 @@ void erase_log(){
     std::filesystem::remove_all(g_log_path);
 #endif
 }
+
+
+
 

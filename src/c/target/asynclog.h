@@ -8,6 +8,7 @@ void end_async_log();
 //int print_log(void *msg,int msg_size);
 std::string create_log_name();
 void erase_log();
+void init_message();
 
 #define NTP_SERVER_IP "192.168.1.10"
 

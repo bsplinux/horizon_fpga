@@ -12,7 +12,8 @@ entity condor_pl is
     generic(
         SYNTHESIS_TIME       : std_logic_vector(31 downto 0) := X"DEADBEEF";
         SIM_INPUT_FILE_NAME  : string                        := "no_file";
-        SIM_OUTPUT_FILE_NAME : string                        := "no_file"
+        SIM_OUTPUT_FILE_NAME : string                        := "no_file";
+        HLS_EN               : boolean                       := false
     );
     Port ( 
         DDR_addr : inout STD_LOGIC_VECTOR ( 14 downto 0 );
@@ -500,6 +501,7 @@ begin
     );
     
     app_inst: entity work.app
+    generic map(HLS_EN => HLS_EN)
     port map(
         clk              => ps_clk100,
         sync_rst         => ps_clk100_rst,

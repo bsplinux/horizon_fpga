@@ -1,6 +1,7 @@
 #ifndef SERVERCMD_H
 #define SERVERCMD_H
 #include <string>
+#include "sharedcmd.h"
 
 class ServerStatus {
 public:
@@ -14,6 +15,7 @@ public:
 	bool ETI_task_acitve;
 	unsigned int host_ip;
 	bool update_log_name;
+	message_superset_union_t message;
 	ServerStatus();
     ~ServerStatus();
 };
