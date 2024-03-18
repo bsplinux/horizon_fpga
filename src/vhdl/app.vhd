@@ -31,20 +31,24 @@ entity app is
 end entity app;
 
 architecture RTL of app is
-    signal timer   : std_logic_vector(63 downto 0) := (others => '0');
-    signal IO_IN_s : std_logic_vector(IO_IN_range);
+    signal timer                       : std_logic_vector(63 downto 0) := (others => '0');
     signal internal_regs_update_log    : reg_array_t;
     signal internal_regs_we_update_log : reg_slv_array_t;
-    signal internal_regs_rs485 : reg_array_t;
-    signal internal_regs_we_rs485 : reg_slv_array_t;
-    signal log_regs         : log_reg_array_t;
-    signal ETI : std_logic_vector(31 downto 0);
-    signal SN : std_logic_vector(7 downto 0);
-    signal stop_log_to_cpu : std_logic;
-    signal condition_to_stop_log_to_do : std_logic;
-    signal fan_pwm : std_logic_vector(1 to 3);
-    signal free_running_1ms : std_logic;
-    
+    signal internal_regs_rs485         : reg_array_t;
+    signal internal_regs_we_rs485      : reg_slv_array_t;
+    signal internal_regs_ios           : reg_array_t;
+    signal internal_regs_we_ios        : reg_slv_array_t;
+    signal internal_regs_power         : reg_array_t;
+    signal internal_regs_we_power      : reg_slv_array_t;
+    signal log_regs                    : log_reg_array_t;
+    signal ETI                         : std_logic_vector(31 downto 0);
+    signal SN                          : std_logic_vector(7 downto 0);
+    signal fan_pwm                     : std_logic_vector(1 to 3);
+    signal free_running_1ms            : std_logic;
+    signal stop_log_to_cpu             : std_logic;
+    signal stop_log                    : std_logic;
+    signal log_ps_intr                 : std_logic_vector(PS_INTR_range);
+    signal power_2_ios                 : power_2_ios_t;
 begin
     process(clk)
     begin
@@ -67,10 +71,8 @@ begin
                 internal_regs_we(TIMESTAMP_H) <= '1';
                 internal_regs(TIMESTAMP_H)    <= timer(63 downto 32);
                 
-                if registers(GENERAL_CONTROL)(CONTROL_IO_DEBUG_EN) = '1' then
-                    internal_regs_we(IO_IN) <= '1';
-                    internal_regs(IO_IN)(IO_IN_range) <= IO_IN_s;
-                end if;
+                internal_regs_we(IO_IN) <= internal_regs_we_ios(IO_IN);
+                internal_regs(IO_IN) <= internal_regs_ios(IO_IN);
                 
                 for i in log_regs_range loop
                     internal_regs_we(i) <= internal_regs_we_update_log(i);
@@ -107,94 +109,6 @@ begin
         end if;
     end process;
     
-    meta_regs: entity work.syncronizers
-    generic map(
-        SIZE    => IO_IN_s'length
-    )
-    port map(
-        src     => ios_2_app_vec(ios_2_app),
-        dst     => IO_IN_s,
-        dst_clk => clk
-    );
-
-    process(clk)
-    begin
-        if rising_edge(clk) then
-            if registers(GENERAL_CONTROL)(CONTROL_IO_DEBUG_EN) = '1' then
-                app_2_IOs.FAN_EN1_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN1_FPGA      );
-                app_2_IOs.FAN_CTRL1_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL1_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM1_ACTIVE) = '0' else fan_pwm(1);
-                app_2_IOs.P_IN_STATUS_FPGA   <= registers(IO_OUT0)(IO_OUT0_P_IN_STATUS_FPGA  );
-                app_2_IOs.POD_STATUS_FPGA    <= registers(IO_OUT0)(IO_OUT0_POD_STATUS_FPGA   );
-                app_2_IOs.ECTCU_INH_FPGA     <= registers(IO_OUT0)(IO_OUT0_ECTCU_INH_FPGA    );
-                app_2_IOs.P_OUT_STATUS_FPGA  <= registers(IO_OUT0)(IO_OUT0_P_OUT_STATUS_FPGA );
-                app_2_IOs.CCTCU_INH_FPGA     <= registers(IO_OUT0)(IO_OUT0_CCTCU_INH_FPGA    );
-                app_2_IOs.SHUTDOWN_OUT_FPGA  <= registers(IO_OUT0)(IO_OUT0_SHUTDOWN_OUT_FPGA );
-                app_2_IOs.RESET_OUT_FPGA     <= registers(IO_OUT0)(IO_OUT0_RESET_OUT_FPGA    );
-                app_2_IOs.SPARE_OUT_FPGA     <= registers(IO_OUT0)(IO_OUT0_SPARE_OUT_FPGA    );
-                app_2_IOs.ESHUTDOWN_OUT_FPGA <= registers(IO_OUT0)(IO_OUT0_ESHUTDOWN_OUT_FPGA);
-                app_2_IOs.RELAY_1PH_FPGA     <= registers(IO_OUT0)(IO_OUT0_RELAY_1PH_FPGA    );
-                app_2_IOs.RELAY_3PH_FPGA     <= registers(IO_OUT0)(IO_OUT0_RELAY_3PH_FPGA    );
-                app_2_IOs.FAN_EN3_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN3_FPGA      );
-                app_2_IOs.FAN_CTRL3_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL3_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM3_ACTIVE) = '0' else fan_pwm(3);
-                app_2_IOs.FAN_EN2_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN2_FPGA      );
-                app_2_IOs.FAN_CTRL2_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL2_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM2_ACTIVE) = '0' else fan_pwm(2);
-                app_2_IOs.EN_PFC_FB          <= registers(IO_OUT0)(IO_OUT0_EN_PFC_FB         );
-                app_2_IOs.EN_PSU_1_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_1_FB       );
-                app_2_IOs.EN_PSU_2_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_2_FB       );
-                app_2_IOs.EN_PSU_5_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_5_FB       );
-                app_2_IOs.EN_PSU_6_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_6_FB       );
-                app_2_IOs.EN_PSU_7_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_7_FB       );
-                app_2_IOs.EN_PSU_8_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_8_FB       );
-                app_2_IOs.EN_PSU_9_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_9_FB       );
-                app_2_IOs.EN_PSU_10_FB       <= registers(IO_OUT0)(IO_OUT0_EN_PSU_10_FB      );
-                app_2_IOs.RS485_DE_7         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_7        );
-                app_2_IOs.RS485_DE_8         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_8        );
-                app_2_IOs.RS485_DE_9         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_9        );
-                app_2_IOs.RS485_DE_1         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_1        );
-                app_2_IOs.RS485_DE_2         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_2        );
-                app_2_IOs.RS485_DE_3         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_3        );
-                app_2_IOs.RS485_DE_4         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_4        );
-                app_2_IOs.RS485_DE_5         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_5        );
-                app_2_IOs.RS485_DE_6         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_6        );             
-            else  -- here we need to add application assignment to the pins
-                app_2_IOs.FAN_EN1_FPGA       <= '0';
-                app_2_IOs.FAN_CTRL1_FPGA     <= fan_pwm(1);
-                app_2_IOs.P_IN_STATUS_FPGA   <= '0';
-                app_2_IOs.POD_STATUS_FPGA    <= '0';
-                app_2_IOs.ECTCU_INH_FPGA     <= '0';
-                app_2_IOs.P_OUT_STATUS_FPGA  <= '0';
-                app_2_IOs.CCTCU_INH_FPGA     <= '0';
-                app_2_IOs.SHUTDOWN_OUT_FPGA  <= '0';
-                app_2_IOs.RESET_OUT_FPGA     <= '0';
-                app_2_IOs.SPARE_OUT_FPGA     <= '0';
-                app_2_IOs.ESHUTDOWN_OUT_FPGA <= '0';
-                app_2_IOs.RELAY_1PH_FPGA     <= '0';
-                app_2_IOs.RELAY_3PH_FPGA     <= '0';
-                app_2_IOs.FAN_EN3_FPGA       <= '0';
-                app_2_IOs.FAN_CTRL3_FPGA     <= fan_pwm(3);
-                app_2_IOs.FAN_EN2_FPGA       <= '0';
-                app_2_IOs.FAN_CTRL2_FPGA     <= fan_pwm(2);
-                app_2_IOs.EN_PFC_FB          <= '0';
-                app_2_IOs.EN_PSU_1_FB        <= '0';
-                app_2_IOs.EN_PSU_2_FB        <= '0';
-                app_2_IOs.EN_PSU_5_FB        <= '0';
-                app_2_IOs.EN_PSU_6_FB        <= '0';
-                app_2_IOs.EN_PSU_7_FB        <= '0';
-                app_2_IOs.EN_PSU_8_FB        <= '0';
-                app_2_IOs.EN_PSU_9_FB        <= '0';
-                app_2_IOs.EN_PSU_10_FB       <= '0';
-                app_2_IOs.RS485_DE_7         <= '0';
-                app_2_IOs.RS485_DE_8         <= '0';
-                app_2_IOs.RS485_DE_9         <= '0';
-                app_2_IOs.RS485_DE_1         <= '0';
-                app_2_IOs.RS485_DE_2         <= '0';
-                app_2_IOs.RS485_DE_3         <= '0';
-                app_2_IOs.RS485_DE_4         <= '0';
-                app_2_IOs.RS485_DE_5         <= '0';
-                app_2_IOs.RS485_DE_6         <= '0';             
-            end if;
-        end if;
-    end process;
     
     update_log_i: entity work.update_log
         port map(
@@ -205,11 +119,14 @@ begin
         regs_reading     => regs_reading,
         internal_regs    => internal_regs_update_log,
         internal_regs_we => internal_regs_we_update_log,
-        ps_intr          => ps_intr(PS_INTR_MS),
+        ps_intr          => log_ps_intr,
         log_regs         => log_regs,
-        ios_2_app        => ios_2_app,
+        stop_log         => stop_log, -- TODO connect this to the actual condition that requests to stop log
+        stop_log_to_cpu  => stop_log_to_cpu,
         free_running_1ms => free_running_1ms
     );
+    ps_intr(PS_INTR_MS)       <= log_ps_intr(PS_INTR_MS)      ;
+    ps_intr(PS_INTR_STOP_LOG) <= log_ps_intr(PS_INTR_STOP_LOG);
     
     ----------------------
     -- misc fields -------
@@ -245,26 +162,6 @@ begin
         log_regs(LOG_SN)(SN'range) <= SN;
     end process;
     
-    stop_log_pr: process(clk)
-    begin
-        if rising_edge(clk) then
-            if sync_rst = '1' then
-                stop_log_to_cpu <= '0';
-                ps_intr(PS_INTR_STOP_LOG) <= '0';
-            else
-                ps_intr(PS_INTR_STOP_LOG) <= '0';
-                if registers(GENERAL_CONTROL)(CONTROL_STOP_LOG_ACK) = '1' and regs_updating(GENERAL_CONTROL) = '1' then
-                    stop_log_to_cpu <= '0';
-                elsif condition_to_stop_log_to_do = '1' then
-                    ps_intr(PS_INTR_STOP_LOG) <= '1';
-                    stop_log_to_cpu <= '1';
-                end if;
-            end if;
-        end if;
-    end process;
-    -- TODO fill this with real stuff
-    condition_to_stop_log_to_do <= '0';
-    
     --FANs
     fans_i: entity work.fans
     port map(
@@ -288,6 +185,34 @@ begin
         HLS_to_BD        => HLS_to_BD,
         BD_to_HLS        => BD_to_HLS,
         one_ms_interrupt => free_running_1ms
+    );
+    
+    ios_i: entity work.app_ios
+    port map(
+        clk              => clk,
+        sync_rst         => sync_rst,
+        registers        => registers,
+        regs_updating    => regs_updating,
+        regs_reading     => regs_reading,
+        internal_regs    => internal_regs_ios,
+        internal_regs_we => internal_regs_we_ios,
+        ios_2_app        => ios_2_app,
+        app_2_ios        => app_2_ios,
+        power_2_ios      => power_2_ios,
+        fan_pwm          => fan_pwm
+    );
+    
+    power_i: entity work.power_on_off
+    port map(
+        clk              => clk,
+        sync_rst         => sync_rst,
+        registers        => registers,
+        regs_updating    => regs_updating,
+        regs_reading     => regs_reading,
+        internal_regs    => internal_regs_power,
+        internal_regs_we => internal_regs_we_power,
+        power_2_ios      => power_2_ios,
+        free_running_1ms => free_running_1ms
     );
     
 end architecture RTL;

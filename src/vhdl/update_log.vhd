@@ -15,10 +15,10 @@ entity update_log is
         regs_reading     : in  reg_slv_array_t;
         internal_regs    : out reg_array_t;
         internal_regs_we : out reg_slv_array_t;
-        ps_intr          : out std_logic;
+        ps_intr          : out std_logic_vector(PS_INTR_range);
         log_regs         : in  log_reg_array_t;
-        ios_2_app        : in  ios_2_app_t;
-        app_2_ios        : out app_2_ios_t;
+        stop_log         : in  std_logic;
+        stop_log_to_cpu  : out std_logic;
         free_running_1ms : out std_logic
     );
 end entity update_log;
@@ -26,7 +26,7 @@ end entity update_log;
 architecture RTL of update_log is
     signal ms_pulse : std_logic;
     signal regs_locked : std_logic;
-    signal regs_released : std_logic;
+    signal intr_ms, intr_stop_log : std_logic;
     --signal update_log : std_logic;
 begin
     update_log_regs_pr: process(all)
@@ -50,11 +50,9 @@ begin
         if rising_edge(clk) then
             if sync_rst = '1' then
                 regs_locked <= '0';
-                regs_released <= '0';
                 --regs_locked_s := '0';
                 --update_log <= '0';
             else
-                regs_released <= '0';
                 --update_log <= '0';
                 if regs_reading(LOG_MESSAGE_ID) then
                     regs_locked <= '1';
@@ -84,12 +82,12 @@ begin
                 pulse_cnt := 0;
                 ms_tick := '0';
                 ms_pulse <= '0';
-                ps_intr <= '0';
+                intr_ms <= '0';
                 free_running_1ms <= '0';
             else
                 ms_tick := '0';
                 ms_pulse <= '0';
-                ps_intr <= '0';
+                intr_ms <= '0';
                 ms_cnt := ms_cnt - 1;
                 if ms_cnt = 0 then
                     ms_cnt := CLKS_IN_MS;
@@ -104,12 +102,36 @@ begin
                     ms_pulse <= '1';
                 end if;
                 if registers(GENERAL_CONTROL)(CONTROL_EN_1MS_INTR) = '1' then
-                    ps_intr <= ms_pulse;
+                    intr_ms <= ms_pulse;
                 end if;
                 free_running_1ms <= ms_tick;
             end if;
         end if;
     end process;
     
-
+    stop_log_pr: process(clk)
+    begin
+        if rising_edge(clk) then
+            if sync_rst = '1' then
+                stop_log_to_cpu <= '0';
+                intr_stop_log <= '0';
+            else
+                intr_stop_log <= '0';
+                if registers(GENERAL_CONTROL)(CONTROL_STOP_LOG_ACK) = '1' and regs_updating(GENERAL_CONTROL) = '1' then
+                    stop_log_to_cpu <= '0';
+                elsif stop_log = '1' then
+                    intr_stop_log <= '1';
+                    stop_log_to_cpu <= '1';
+                end if;
+            end if;
+        end if;
+    end process;
+    
+    process (all)
+    begin
+        ps_intr <= (others => '0');
+        ps_intr(PS_INTR_MS)       <= intr_ms;
+        ps_intr(PS_INTR_STOP_LOG) <= intr_stop_log;
+    end process;
+    
 end architecture RTL;

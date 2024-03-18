@@ -1,6 +1,7 @@
 vivado
 hls
 vitis
+vitis_sbc
 src/c/test_gcc
 src/ip
 *.exe

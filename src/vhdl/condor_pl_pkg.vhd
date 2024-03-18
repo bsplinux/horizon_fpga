@@ -72,6 +72,35 @@ package condor_pl_pkg is
         RS485_DE_5        : std_logic; 
         RS485_DE_6        : std_logic;
     end record app_2_ios_t;
+    
+    type power_2_ios_t is record
+        FAN_EN1_FPGA      : std_logic; 
+        FAN_EN2_FPGA      : std_logic; 
+        FAN_EN3_FPGA      : std_logic; 
+        FAN_CTRL1_FPGA    : std_logic;
+        FAN_CTRL2_FPGA    : std_logic;
+        FAN_CTRL3_FPGA    : std_logic;
+        P_IN_STATUS_FPGA  : std_logic; 
+        POD_STATUS_FPGA   : std_logic; 
+        ECTCU_INH_FPGA    : std_logic; 
+        P_OUT_STATUS_FPGA : std_logic; 
+        CCTCU_INH_FPGA    : std_logic; 
+        SHUTDOWN_OUT_FPGA : std_logic; 
+        RESET_OUT_FPGA    : std_logic; 
+        SPARE_OUT_FPGA    : std_logic; 
+        ESHUTDOWN_OUT_FPGA: std_logic; 
+        RELAY_1PH_FPGA    : std_logic; 
+        RELAY_3PH_FPGA    : std_logic; 
+        EN_PFC_FB         : std_logic; 
+        EN_PSU_1_FB       : std_logic; 
+        EN_PSU_2_FB       : std_logic; 
+        EN_PSU_5_FB       : std_logic; 
+        EN_PSU_6_FB       : std_logic; 
+        EN_PSU_7_FB       : std_logic; 
+        EN_PSU_8_FB       : std_logic; 
+        EN_PSU_9_FB       : std_logic; 
+        EN_PSU_10_FB      : std_logic; 
+    end record power_2_ios_t;
   
     constant psu_status_DC_IN_Status                : integer :=  0;
     constant psu_status_AC_IN_Status                : integer :=  1;
