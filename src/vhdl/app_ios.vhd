@@ -18,7 +18,8 @@ entity app_ios is
         ios_2_app        : in  ios_2_app_t;
         app_2_ios        : out app_2_ios_t;
         power_2_ios      : in  power_2_ios_t;
-        fan_pwm          :  in std_logic_vector(1 to 3)
+        fan_pwm          : in  std_logic_vector(1 to 3);
+        de               : in  std_logic_vector(8 downto 0)
     );
 end entity app_ios;
 
@@ -39,60 +40,24 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-            if registers(GENERAL_CONTROL)(CONTROL_IO_DEBUG_EN) = '1' then
-                app_2_IOs.FAN_EN1_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN1_FPGA      );
-                app_2_IOs.FAN_CTRL1_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL1_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM1_ACTIVE) = '0' else fan_pwm(1);
-                app_2_IOs.P_IN_STATUS_FPGA   <= registers(IO_OUT0)(IO_OUT0_P_IN_STATUS_FPGA  );
-                app_2_IOs.POD_STATUS_FPGA    <= registers(IO_OUT0)(IO_OUT0_POD_STATUS_FPGA   );
-                app_2_IOs.ECTCU_INH_FPGA     <= registers(IO_OUT0)(IO_OUT0_ECTCU_INH_FPGA    );
-                app_2_IOs.P_OUT_STATUS_FPGA  <= registers(IO_OUT0)(IO_OUT0_P_OUT_STATUS_FPGA );
-                app_2_IOs.CCTCU_INH_FPGA     <= registers(IO_OUT0)(IO_OUT0_CCTCU_INH_FPGA    );
-                app_2_IOs.SHUTDOWN_OUT_FPGA  <= registers(IO_OUT0)(IO_OUT0_SHUTDOWN_OUT_FPGA );
-                app_2_IOs.RESET_OUT_FPGA     <= registers(IO_OUT0)(IO_OUT0_RESET_OUT_FPGA    );
-                app_2_IOs.SPARE_OUT_FPGA     <= registers(IO_OUT0)(IO_OUT0_SPARE_OUT_FPGA    );
-                app_2_IOs.ESHUTDOWN_OUT_FPGA <= registers(IO_OUT0)(IO_OUT0_ESHUTDOWN_OUT_FPGA);
-                app_2_IOs.RELAY_1PH_FPGA     <= registers(IO_OUT0)(IO_OUT0_RELAY_1PH_FPGA    );
-                app_2_IOs.RELAY_3PH_FPGA     <= registers(IO_OUT0)(IO_OUT0_RELAY_3PH_FPGA    );
-                app_2_IOs.FAN_EN3_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN3_FPGA      );
-                app_2_IOs.FAN_CTRL3_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL3_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM3_ACTIVE) = '0' else fan_pwm(3);
-                app_2_IOs.FAN_EN2_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN2_FPGA      );
-                app_2_IOs.FAN_CTRL2_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL2_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM2_ACTIVE) = '0' else fan_pwm(2);
-                app_2_IOs.EN_PFC_FB          <= registers(IO_OUT0)(IO_OUT0_EN_PFC_FB         );
-                app_2_IOs.EN_PSU_1_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_1_FB       );
-                app_2_IOs.EN_PSU_2_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_2_FB       );
-                app_2_IOs.EN_PSU_5_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_5_FB       );
-                app_2_IOs.EN_PSU_6_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_6_FB       );
-                app_2_IOs.EN_PSU_7_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_7_FB       );
-                app_2_IOs.EN_PSU_8_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_8_FB       );
-                app_2_IOs.EN_PSU_9_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_9_FB       );
-                app_2_IOs.EN_PSU_10_FB       <= registers(IO_OUT0)(IO_OUT0_EN_PSU_10_FB      );
-                app_2_IOs.RS485_DE_7         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_7        );
-                app_2_IOs.RS485_DE_8         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_8        );
-                app_2_IOs.RS485_DE_9         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_9        );
-                app_2_IOs.RS485_DE_1         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_1        );
-                app_2_IOs.RS485_DE_2         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_2        );
-                app_2_IOs.RS485_DE_3         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_3        );
-                app_2_IOs.RS485_DE_4         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_4        );
-                app_2_IOs.RS485_DE_5         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_5        );
-                app_2_IOs.RS485_DE_6         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_6        );             
-            else  -- here we need to add application assignment to the pins
+            if sync_rst then
                 app_2_IOs.FAN_EN1_FPGA       <= '0';
-                app_2_IOs.FAN_CTRL1_FPGA     <= fan_pwm(1);
+                app_2_IOs.FAN_CTRL1_FPGA     <= '0';
                 app_2_IOs.P_IN_STATUS_FPGA   <= '0';
                 app_2_IOs.POD_STATUS_FPGA    <= '0';
                 app_2_IOs.ECTCU_INH_FPGA     <= '0';
                 app_2_IOs.P_OUT_STATUS_FPGA  <= '0';
                 app_2_IOs.CCTCU_INH_FPGA     <= '0';
-                app_2_IOs.SHUTDOWN_OUT_FPGA  <= '0';
-                app_2_IOs.RESET_OUT_FPGA     <= '0';
+                app_2_IOs.SHUTDOWN_OUT_FPGA  <= '1'; -- normally high
+                app_2_IOs.RESET_OUT_FPGA     <= '1'; -- normally high
                 app_2_IOs.SPARE_OUT_FPGA     <= '0';
                 app_2_IOs.ESHUTDOWN_OUT_FPGA <= '0';
                 app_2_IOs.RELAY_1PH_FPGA     <= '0';
                 app_2_IOs.RELAY_3PH_FPGA     <= '0';
                 app_2_IOs.FAN_EN3_FPGA       <= '0';
-                app_2_IOs.FAN_CTRL3_FPGA     <= fan_pwm(3);
+                app_2_IOs.FAN_CTRL3_FPGA     <= '0';
                 app_2_IOs.FAN_EN2_FPGA       <= '0';
-                app_2_IOs.FAN_CTRL2_FPGA     <= fan_pwm(2);
+                app_2_IOs.FAN_CTRL2_FPGA     <= '0';
                 app_2_IOs.EN_PFC_FB          <= '0';
                 app_2_IOs.EN_PSU_1_FB        <= '0';
                 app_2_IOs.EN_PSU_2_FB        <= '0';
@@ -111,6 +76,80 @@ begin
                 app_2_IOs.RS485_DE_4         <= '0';
                 app_2_IOs.RS485_DE_5         <= '0';
                 app_2_IOs.RS485_DE_6         <= '0';             
+            else
+                if registers(GENERAL_CONTROL)(CONTROL_IO_DEBUG_EN) = '1' then
+                    app_2_IOs.FAN_EN1_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN1_FPGA      );
+                    app_2_IOs.FAN_CTRL1_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL1_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM1_ACTIVE) = '0' else fan_pwm(1);
+                    app_2_IOs.P_IN_STATUS_FPGA   <= registers(IO_OUT0)(IO_OUT0_P_IN_STATUS_FPGA  );
+                    app_2_IOs.POD_STATUS_FPGA    <= registers(IO_OUT0)(IO_OUT0_POD_STATUS_FPGA   );
+                    app_2_IOs.ECTCU_INH_FPGA     <= registers(IO_OUT0)(IO_OUT0_ECTCU_INH_FPGA    );
+                    app_2_IOs.P_OUT_STATUS_FPGA  <= registers(IO_OUT0)(IO_OUT0_P_OUT_STATUS_FPGA );
+                    app_2_IOs.CCTCU_INH_FPGA     <= registers(IO_OUT0)(IO_OUT0_CCTCU_INH_FPGA    );
+                    app_2_IOs.SHUTDOWN_OUT_FPGA  <= registers(IO_OUT0)(IO_OUT0_SHUTDOWN_OUT_FPGA );
+                    app_2_IOs.RESET_OUT_FPGA     <= registers(IO_OUT0)(IO_OUT0_RESET_OUT_FPGA    );
+                    app_2_IOs.SPARE_OUT_FPGA     <= registers(IO_OUT0)(IO_OUT0_SPARE_OUT_FPGA    );
+                    app_2_IOs.ESHUTDOWN_OUT_FPGA <= registers(IO_OUT0)(IO_OUT0_ESHUTDOWN_OUT_FPGA);
+                    app_2_IOs.RELAY_1PH_FPGA     <= registers(IO_OUT0)(IO_OUT0_RELAY_1PH_FPGA    );
+                    app_2_IOs.RELAY_3PH_FPGA     <= registers(IO_OUT0)(IO_OUT0_RELAY_3PH_FPGA    );
+                    app_2_IOs.FAN_EN3_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN3_FPGA      );
+                    app_2_IOs.FAN_CTRL3_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL3_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM3_ACTIVE) = '0' else fan_pwm(3);
+                    app_2_IOs.FAN_EN2_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN2_FPGA      );
+                    app_2_IOs.FAN_CTRL2_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL2_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM2_ACTIVE) = '0' else fan_pwm(2);
+                    app_2_IOs.EN_PFC_FB          <= registers(IO_OUT0)(IO_OUT0_EN_PFC_FB         );
+                    app_2_IOs.EN_PSU_1_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_1_FB       );
+                    app_2_IOs.EN_PSU_2_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_2_FB       );
+                    app_2_IOs.EN_PSU_5_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_5_FB       );
+                    app_2_IOs.EN_PSU_6_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_6_FB       );
+                    app_2_IOs.EN_PSU_7_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_7_FB       );
+                    app_2_IOs.EN_PSU_8_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_8_FB       );
+                    app_2_IOs.EN_PSU_9_FB        <= registers(IO_OUT0)(IO_OUT0_EN_PSU_9_FB       );
+                    app_2_IOs.EN_PSU_10_FB       <= registers(IO_OUT0)(IO_OUT0_EN_PSU_10_FB      );
+                    app_2_IOs.RS485_DE_7         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_7        );
+                    app_2_IOs.RS485_DE_8         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_8        );
+                    app_2_IOs.RS485_DE_9         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_9        );
+                    app_2_IOs.RS485_DE_1         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_1        );
+                    app_2_IOs.RS485_DE_2         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_2        );
+                    app_2_IOs.RS485_DE_3         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_3        );
+                    app_2_IOs.RS485_DE_4         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_4        );
+                    app_2_IOs.RS485_DE_5         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_5        );
+                    app_2_IOs.RS485_DE_6         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_6        );             
+                else  -- here we need to add application assignment to the pins
+                    app_2_IOs.FAN_EN1_FPGA       <= power_2_ios.FAN_EN1_FPGA      ;
+                    app_2_IOs.FAN_CTRL1_FPGA     <= fan_pwm(1);   
+                    app_2_IOs.P_IN_STATUS_FPGA   <= power_2_ios.P_IN_STATUS_FPGA  ;
+                    app_2_IOs.POD_STATUS_FPGA    <= power_2_ios.POD_STATUS_FPGA   ;
+                    app_2_IOs.ECTCU_INH_FPGA     <= power_2_ios.ECTCU_INH_FPGA    ;
+                    app_2_IOs.P_OUT_STATUS_FPGA  <= power_2_ios.P_OUT_STATUS_FPGA ;
+                    app_2_IOs.CCTCU_INH_FPGA     <= power_2_ios.CCTCU_INH_FPGA    ;
+                    app_2_IOs.SHUTDOWN_OUT_FPGA  <= power_2_ios.SHUTDOWN_OUT_FPGA ;
+                    app_2_IOs.RESET_OUT_FPGA     <= power_2_ios.RESET_OUT_FPGA    ;
+                    app_2_IOs.SPARE_OUT_FPGA     <= power_2_ios.SPARE_OUT_FPGA    ;
+                    app_2_IOs.ESHUTDOWN_OUT_FPGA <= power_2_ios.ESHUTDOWN_OUT_FPGA;
+                    app_2_IOs.RELAY_1PH_FPGA     <= power_2_ios.RELAY_1PH_FPGA    ;
+                    app_2_IOs.RELAY_3PH_FPGA     <= power_2_ios.RELAY_3PH_FPGA    ;
+                    app_2_IOs.FAN_EN3_FPGA       <= power_2_ios.FAN_EN3_FPGA      ;
+                    app_2_IOs.FAN_CTRL3_FPGA     <= fan_pwm(3);    
+                    app_2_IOs.FAN_EN2_FPGA       <= power_2_ios.FAN_EN2_FPGA      ;
+                    app_2_IOs.FAN_CTRL2_FPGA     <= fan_pwm(2);   
+                    app_2_IOs.EN_PFC_FB          <= power_2_ios.EN_PFC_FB         ;
+                    app_2_IOs.EN_PSU_1_FB        <= power_2_ios.EN_PSU_1_FB       ;
+                    app_2_IOs.EN_PSU_2_FB        <= power_2_ios.EN_PSU_2_FB       ;
+                    app_2_IOs.EN_PSU_5_FB        <= power_2_ios.EN_PSU_5_FB       ;
+                    app_2_IOs.EN_PSU_6_FB        <= power_2_ios.EN_PSU_6_FB       ;
+                    app_2_IOs.EN_PSU_7_FB        <= power_2_ios.EN_PSU_7_FB       ;
+                    app_2_IOs.EN_PSU_8_FB        <= power_2_ios.EN_PSU_8_FB       ;
+                    app_2_IOs.EN_PSU_9_FB        <= power_2_ios.EN_PSU_9_FB       ;
+                    app_2_IOs.EN_PSU_10_FB       <= power_2_ios.EN_PSU_10_FB      ;
+                    app_2_IOs.RS485_DE_1         <= de(0); 
+                    app_2_IOs.RS485_DE_2         <= de(1); 
+                    app_2_IOs.RS485_DE_3         <= de(2); 
+                    app_2_IOs.RS485_DE_4         <= de(3); 
+                    app_2_IOs.RS485_DE_5         <= de(4); 
+                    app_2_IOs.RS485_DE_6         <= de(5);             
+                    app_2_IOs.RS485_DE_7         <= de(6); 
+                    app_2_IOs.RS485_DE_8         <= de(7); 
+                    app_2_IOs.RS485_DE_9         <= de(8); 
+                end if;
             end if;
         end if;
     end process;

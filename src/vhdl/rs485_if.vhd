@@ -18,7 +18,8 @@ entity rs485_if is
         internal_regs_we : out reg_slv_array_t;
         HLS_to_BD        : out HLS_axim_to_interconnect_t;
         BD_to_HLS        : in  HLS_axim_from_interconnect_t;
-        one_ms_interrupt : in  std_logic
+        one_ms_interrupt : in  std_logic;
+        de               : out std_logic_vector(8 downto 0)
     );
 end entity rs485_if;
 
@@ -89,7 +90,9 @@ architecture RTL of rs485_if is
         uarts_d_5 : OUT STD_LOGIC_VECTOR(63 DOWNTO 0);
         uarts_d_6 : OUT STD_LOGIC_VECTOR(63 DOWNTO 0);
         uarts_d_7 : OUT STD_LOGIC_VECTOR(63 DOWNTO 0);
-        uarts_d_8 : OUT STD_LOGIC_VECTOR(63 DOWNTO 0) 
+        uarts_d_8 : OUT STD_LOGIC_VECTOR(63 DOWNTO 0);
+        uart_de   : OUT STD_LOGIC_VECTOR(8 DOWNTO 0); 
+        uart_de_ap_vld : OUT STD_LOGIC
     );
     end component uarts_0;
     
@@ -117,6 +120,8 @@ architecture RTL of rs485_if is
     signal uarts_d_6 : STD_LOGIC_VECTOR(63 DOWNTO 0);
     signal uarts_d_7 : STD_LOGIC_VECTOR(63 DOWNTO 0);
     signal uarts_d_8 : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    signal uart_de : STD_LOGIC_VECTOR(8 DOWNTO 0);
+    signal uart_de_ap_vld : STD_LOGIC;
     
 begin
     sm_pr: process(clk)
@@ -295,10 +300,25 @@ begin
             uarts_d_5          => uarts_d_5,
             uarts_d_6          => uarts_d_6,
             uarts_d_7          => uarts_d_7,
-            uarts_d_8          => uarts_d_8
+            uarts_d_8          => uarts_d_8,
+            uart_de            => uart_de,
+            uart_de_ap_vld     => uart_de_ap_vld
         );
     else generate
         
     end generate gen_hls;
-        
+    
+    sample_de_pr: process(clk)
+    begin
+        if rising_edge(clk) then
+            if sync_rst then
+                de <= (others => '0');
+            else
+                if uart_de_ap_vld then
+                    de <= uart_de;
+                end if;
+            end if;
+        end if;
+    end process;
+    
 end architecture RTL;

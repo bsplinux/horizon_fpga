@@ -21,37 +21,46 @@ entity power_on_off is
 end entity power_on_off;
 
 architecture RTL of power_on_off is
-    type main_sm_t is (idle, start_pwron, wt4_pg_buck, pwron_psus, wt4_all_on, err_n_all_on, go2, go3, power_on, power_dwon, reset);    
-
+    constant MSEC_5    : integer := 5;
+    constant MSEC_50   : integer := 50; -- in miliseconds
+    constant SEC_2_5   : integer := 2500; -- in miliseconds
+    constant SEC_6_DEB : integer := 6000 - MSEC_50; -- 6 sec minus the debauns value
+    constant SEC_10    : integer := 10000;
+    constant SEC_20    : integer := 20000;
+    type main_sm_t is (idle, start_pwron, wt4_pg_buck, pwron_psus, wt4_all_on, err_n_all_on, go2, go3, power_on, poweron_low, reset, power_down);    
+    signal power_on_debaunced : std_logic;
 begin
     
    main_sm_pr: process(clk)
        variable state : main_sm_t := idle;
-       variable cnt : integer range 0 to 1000000 := 0;
-       constant SEC_2_5 : integer := 2500 - 1; -- in miliseconds
+       variable cnt : integer range 0 to SEC_6_DEB := 0;
     begin
         if rising_edge(clk) then
             if sync_rst then
                 state := idle;            
-                power_2_ios.EN_PFC_FB    <= '0';
-                power_2_ios.FAN_EN1_FPGA <= '0';
-                power_2_ios.FAN_EN2_FPGA <= '0';
-                power_2_ios.FAN_EN3_FPGA <= '0';
-                power_2_ios.EN_PSU_1_FB  <= '0';
-                power_2_ios.EN_PSU_2_FB  <= '0';
-                power_2_ios.EN_PSU_5_FB  <= '0';
-                power_2_ios.EN_PSU_6_FB  <= '0';
-                power_2_ios.EN_PSU_7_FB  <= '0';
-                power_2_ios.EN_PSU_8_FB  <= '0';
-                power_2_ios.EN_PSU_9_FB  <= '0';
-                power_2_ios.EN_PSU_10_FB <= '0';
+                power_2_ios.EN_PFC_FB         <= '0';
+                power_2_ios.FAN_EN1_FPGA      <= '0';
+                power_2_ios.FAN_EN2_FPGA      <= '0';
+                power_2_ios.FAN_EN3_FPGA      <= '0';
+                power_2_ios.EN_PSU_1_FB       <= '0';
+                power_2_ios.EN_PSU_2_FB       <= '0';
+                power_2_ios.EN_PSU_5_FB       <= '0';
+                power_2_ios.EN_PSU_6_FB       <= '0';
+                power_2_ios.EN_PSU_7_FB       <= '0';
+                power_2_ios.EN_PSU_8_FB       <= '0';
+                power_2_ios.EN_PSU_9_FB       <= '0';
+                power_2_ios.EN_PSU_10_FB      <= '0';
+                power_2_ios.RESET_OUT_FPGA    <= '1';
+                power_2_ios.SHUTDOWN_OUT_FPGA <= '0';
+                power_2_ios.ECTCU_INH_FPGA    <= '0';
+                power_2_ios.CCTCU_INH_FPGA    <= '0';
                 cnt := 0;
             else
                 -- next state logic
                 case state is 
                     when idle =>
                         -- TODO we may need to wait 6 sec for input to be stable
-                        if registers(IO_IN)(IO_IN_POWERON_FPGA) then
+                        if power_on_debaunced then
                             state := start_pwron;
                         end if;
                     when start_pwron =>
@@ -74,9 +83,6 @@ begin
                         elsif cnt = SEC_2_5 then
                             state := err_n_all_on;
                         end if;
-                        if free_running_1ms then
-                            cnt := cnt + 1;
-                        end if;
                     when err_n_all_on =>
                         state := idle;
                     when go2 =>
@@ -84,47 +90,67 @@ begin
                     when go3 =>
                         null;
                     when power_on =>
-                        null;
-                    when power_dwon =>
-                        null;
+                        if power_on_debaunced = '0' then
+                            state := poweron_low;
+                        end if;
+                    when poweron_low =>
+                        if power_on_debaunced = '1' and cnt < SEC_6_DEB then
+                            state := reset;
+                            cnt := 0;
+                        elsif cnt > SEC_6_DEB then
+                            state := power_down;
+                            cnt := 0;
+                        end if;
                     when reset =>
-                        null;
+                        if cnt = MSEC_5 then 
+                            state := power_on;
+                        end if;
+                    when power_down =>
+                        if cnt = SEC_20 then 
+                            state := idle;
+                        end if;
                 end case;
                 
                 -- output logic
+                power_2_ios.RESET_OUT_FPGA <= '1';
+                power_2_ios.SHUTDOWN_OUT_FPGA <= '1';
                 case state is 
                     when idle =>
                         cnt := 0;
-                        power_2_ios.EN_PFC_FB    <= '0';
-                        power_2_ios.FAN_EN1_FPGA <= '0';
-                        power_2_ios.FAN_EN2_FPGA <= '0';
-                        power_2_ios.FAN_EN3_FPGA <= '0';
-                        power_2_ios.EN_PSU_1_FB  <= '0';
-                        power_2_ios.EN_PSU_2_FB  <= '0';
-                        power_2_ios.EN_PSU_5_FB  <= '0';
-                        power_2_ios.EN_PSU_6_FB  <= '0';
-                        power_2_ios.EN_PSU_7_FB  <= '0';
-                        power_2_ios.EN_PSU_8_FB  <= '0';
-                        power_2_ios.EN_PSU_9_FB  <= '0';
-                        power_2_ios.EN_PSU_10_FB <= '0';
+                        power_2_ios.EN_PFC_FB      <= '0';
+                        power_2_ios.FAN_EN1_FPGA   <= '0';
+                        power_2_ios.FAN_EN2_FPGA   <= '0';
+                        power_2_ios.FAN_EN3_FPGA   <= '0';
+                        power_2_ios.EN_PSU_1_FB    <= '0';
+                        power_2_ios.EN_PSU_2_FB    <= '0';
+                        power_2_ios.EN_PSU_5_FB    <= '0';
+                        power_2_ios.EN_PSU_6_FB    <= '0';
+                        power_2_ios.EN_PSU_7_FB    <= '0';
+                        power_2_ios.EN_PSU_8_FB    <= '0';
+                        power_2_ios.EN_PSU_9_FB    <= '0';
+                        power_2_ios.EN_PSU_10_FB   <= '0';
+                        power_2_ios.ECTCU_INH_FPGA <= '0';
+                        power_2_ios.CCTCU_INH_FPGA <= '0';
                     when start_pwron => 
-                        power_2_ios.EN_PFC_FB    <= '1';
-                        power_2_ios.FAN_EN1_FPGA <= '1';
-                        power_2_ios.FAN_EN2_FPGA <= '1';
-                        power_2_ios.FAN_EN3_FPGA <= '1';
+                        power_2_ios.EN_PFC_FB      <= '1';
+                        power_2_ios.FAN_EN1_FPGA   <= '1';
+                        power_2_ios.FAN_EN2_FPGA   <= '1';
+                        power_2_ios.FAN_EN3_FPGA   <= '1';
                     when wt4_pg_buck =>
                         null;
                     when pwron_psus =>
-                        power_2_ios.EN_PSU_1_FB  <= '1';
-                        power_2_ios.EN_PSU_2_FB  <= '1';
-                        power_2_ios.EN_PSU_5_FB  <= '1';
-                        power_2_ios.EN_PSU_6_FB  <= '1';
-                        power_2_ios.EN_PSU_7_FB  <= '1';
-                        power_2_ios.EN_PSU_8_FB  <= '1';
-                        power_2_ios.EN_PSU_9_FB  <= '1';
-                        power_2_ios.EN_PSU_10_FB <= '1';
+                        power_2_ios.EN_PSU_1_FB    <= '1';
+                        power_2_ios.EN_PSU_2_FB    <= '1';
+                        power_2_ios.EN_PSU_5_FB    <= '1';
+                        power_2_ios.EN_PSU_6_FB    <= '1';
+                        power_2_ios.EN_PSU_7_FB    <= '1';
+                        power_2_ios.EN_PSU_8_FB    <= '1';
+                        power_2_ios.EN_PSU_9_FB    <= '1';
+                        power_2_ios.EN_PSU_10_FB   <= '1';
                     when wt4_all_on =>
-                        null;
+                        if free_running_1ms then
+                            cnt := cnt + 1;
+                        end if;
                     when err_n_all_on =>
                         null;
                     when go2 =>
@@ -132,14 +158,63 @@ begin
                     when go3 =>
                         null;
                     when power_on =>
-                        null;
-                    when power_dwon =>
-                        null;
+                        -- TODO report to log as well
+                        cnt := 0;
+                    when poweron_low =>
+                        if free_running_1ms then
+                            cnt := cnt + 1;
+                        end if;
                     when reset =>
-                        null;
+                        power_2_ios.RESET_OUT_FPGA <= '0';
+                        -- TODO report to log as well
+                        if free_running_1ms then
+                            cnt := cnt + 1;
+                        end if;
+                    when power_down =>
+                        power_2_ios.SHUTDOWN_OUT_FPGA <= '0';
+                        if cnt > SEC_10 then
+                            power_2_ios.EN_PSU_1_FB    <= '0';
+                            power_2_ios.EN_PSU_2_FB    <= '0';
+                            power_2_ios.EN_PSU_5_FB    <= '0';
+                            power_2_ios.EN_PSU_6_FB    <= '0';
+                            power_2_ios.EN_PSU_7_FB    <= '0';
+                            power_2_ios.EN_PSU_8_FB    <= '0';
+                            power_2_ios.EN_PSU_9_FB    <= '0';
+                            power_2_ios.EN_PSU_10_FB   <= '0';
+                            power_2_ios.ECTCU_INH_FPGA <= '0';
+                            power_2_ios.CCTCU_INH_FPGA <= '0';
+                        end if;
+                        -- TODO report to log as well
+                        if free_running_1ms then
+                            cnt := cnt + 1;
+                        end if;
                 end case;
             end if;
         end if;
     end process;
+    
+    process(clk)
+        constant MSEC_50 : integer := 50; -- in miliseconds
+        variable cnt : integer range 0 to MSEC_50 := 0;
+    begin
+        if rising_edge(clk) then
+            if sync_rst then
+                power_on_debaunced <= '0';
+                cnt := 0;
+            else
+                if power_on_debaunced = registers(IO_IN)(IO_IN_POWERON_FPGA) then
+                    cnt := 0;
+                elsif cnt = MSEC_50 then
+                    power_on_debaunced <= registers(IO_IN)(IO_IN_POWERON_FPGA);
+                    cnt := 0;
+                else
+                    if free_running_1ms then
+                         cnt := cnt + 1;
+                    end if;
+                end if;
+            end if;
+        end if;
+    end process;
+    
 
 end architecture RTL;

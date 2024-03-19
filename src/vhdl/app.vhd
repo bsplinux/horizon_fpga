@@ -49,6 +49,7 @@ architecture RTL of app is
     signal stop_log                    : std_logic;
     signal log_ps_intr                 : std_logic_vector(PS_INTR_range);
     signal power_2_ios                 : power_2_ios_t;
+    signal de                          : std_logic_vector(8 downto 0);
 begin
     process(clk)
     begin
@@ -184,7 +185,8 @@ begin
         internal_regs_we => internal_regs_we_rs485,
         HLS_to_BD        => HLS_to_BD,
         BD_to_HLS        => BD_to_HLS,
-        one_ms_interrupt => free_running_1ms
+        one_ms_interrupt => free_running_1ms,
+        de               => de
     );
     
     ios_i: entity work.app_ios
@@ -199,7 +201,8 @@ begin
         ios_2_app        => ios_2_app,
         app_2_ios        => app_2_ios,
         power_2_ios      => power_2_ios,
-        fan_pwm          => fan_pwm
+        fan_pwm          => fan_pwm,
+        de               => de
     );
     
     power_i: entity work.power_on_off

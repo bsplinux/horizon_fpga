@@ -47,7 +47,8 @@ void uarts(
 	volatile unsigned int * axi,
 	//volatile unsigned int regs[NUM_REGS],
 	ap_uint<MAX_UARTS> uart_en,
-	ap_uint<64> uarts_d[MAX_UARTS]
+	ap_uint<64> uarts_d[MAX_UARTS],
+	volatile ap_uint<MAX_UARTS> *uart_de
 )
 {
 	static uart_info_t uarts_info[MAX_UARTS];
@@ -56,6 +57,7 @@ void uarts(
 	unsigned char rx_cnt[RX_SIZE] = {0};
 	unsigned char stat;
 	unsigned char rx_d[MAX_UARTS][RX_SIZE];
+	ap_uint<MAX_UARTS> de_int = {0};
 
 	if (!init_done)
 	{
@@ -86,6 +88,8 @@ void uarts(
 				stat = uart_stat(axi, uarts_info[i]);
 				//if (stat & UART_REG_STAT_TX_EMPTY) -- no need to check for empty after fifo reset
 				{
+					de_int[i] = 1;
+					*uart_de = de_int;
 					uart_write(axi, uarts_info[i], REQUEST_FRAME_COMMAND);
 					uarts_info[i].state = wt4tx;
 				}
@@ -93,7 +97,11 @@ void uarts(
 			case wt4tx:	// wait until data was full sent to target
 				stat = uart_stat(axi, uarts_info[i]);
 				if (stat & UART_REG_STAT_TX_EMPTY) // waiting for fifo to be empty telling us data was sent to UART
+				{
 					uarts_info[i].state = wt4rx;
+					de_int[i] = 0;
+					*uart_de = de_int;
+				}
 				break;
 			case wt4rx: // wait until all data was received
 				stat = uart_stat(axi, uarts_info[i]);

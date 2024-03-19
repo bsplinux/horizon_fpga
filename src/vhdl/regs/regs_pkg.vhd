@@ -239,6 +239,8 @@ package regs_pkg is
     constant CONTROL_RLEASE_REGS                    : integer := 3;
     constant CONTROL_STOP_LOG_ACK                   : integer := 4;
     constant CONTROL_ALIVE_ERROR                    : integer := 5;
+    constant CONTROL_ECTCU_INH                      : integer := 6;
+    constant CONTROL_CCTCU_INH                      : integer := 7;
     -- fields for GENERAL_STATUS
     constant STATUS_REGS_LOCKED                     : integer := 0;
     constant STATUS_STOP_LOG                        : integer := 0;
@@ -341,7 +343,7 @@ package regs_pkg is
                                                                                 
     constant WRITEABLE_REGS : reg_array_t := (
         BITSTREAM_TIME                => X"FFFFFFFF",
-        GENERAL_CONTROL               => X"0000003F",
+        GENERAL_CONTROL               => X"000000FF",
         GENERAL_STATUS                => X"0000000F",
         TIMESTAMP_L                   => X"FFFFFFFF",
         TIMESTAMP_H                   => X"FFFFFFFF",
