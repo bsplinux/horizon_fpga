@@ -29,11 +29,16 @@ architecture RTL of power_on_off is
     constant SEC_20    : integer := 20000;
     type main_sm_t is (idle, start_pwron, wt4_pg_buck, pwron_psus, wt4_all_on, err_n_all_on, go2, go3, power_on, poweron_low, reset, power_down);    
     signal power_on_debaunced : std_logic;
+    signal relay_1p_on_request : std_logic;
+    signal relay_1p_pg : std_logic;
+    signal relay_3p_pg : std_logic;
 begin
     
    main_sm_pr: process(clk)
        variable state : main_sm_t := idle;
-       variable cnt : integer range 0 to SEC_6_DEB := 0;
+       variable cnt : integer range 0 to SEC_20 := 0;
+       constant HIGH_RES_1MSEC: integer := 100_000; -- conting 10 ns a clock
+       variable high_res_cnt: integer range 0 to HIGH_RES_1MSEC := 0;
     begin
         if rising_edge(clk) then
             if sync_rst then
@@ -54,7 +59,10 @@ begin
                 power_2_ios.SHUTDOWN_OUT_FPGA <= '0';
                 power_2_ios.ECTCU_INH_FPGA    <= '0';
                 power_2_ios.CCTCU_INH_FPGA    <= '0';
+                relay_1p_on_request    <= '0';
+                power_2_ios.RELAY_3PH_FPGA    <= '0';
                 cnt := 0;
+                high_res_cnt := 0;
             else
                 -- next state logic
                 case state is 
@@ -72,13 +80,11 @@ begin
                     when pwron_psus =>
                         state := wt4_all_on;
                     when wt4_all_on =>
-                        if registers(IO_IN)(IO_IN_PG_PSU_1_FB) = '1' and registers(IO_IN)(IO_IN_PG_PSU_2_FB) = '1' and
-                           registers(IO_IN)(IO_IN_PG_PSU_5_FB) = '1' and registers(IO_IN)(IO_IN_PG_PSU_6_FB) = '1' and
-                           registers(IO_IN)(IO_IN_PG_PSU_7_FB) = '1' and registers(IO_IN)(IO_IN_PG_PSU_8_FB) = '1' and
-                           registers(IO_IN)(IO_IN_PG_PSU_9_FB) = '1' and registers(IO_IN)(IO_IN_PG_PSU_10_FB) = '1' --and
-                           -- relays should be on as well outputs 3 and 4
-                           then
-                           
+                        if registers(IO_IN)(IO_IN_PG_PSU_1_FB) = '1'          and registers(IO_IN)(IO_IN_PG_PSU_2_FB)  = '1' and
+                                    registers(IO_IN)(IO_IN_PG_PSU_5_FB) = '1' and registers(IO_IN)(IO_IN_PG_PSU_6_FB)  = '1' and
+                                    registers(IO_IN)(IO_IN_PG_PSU_7_FB) = '1' and registers(IO_IN)(IO_IN_PG_PSU_8_FB)  = '1' and
+                                    registers(IO_IN)(IO_IN_PG_PSU_9_FB) = '1' and registers(IO_IN)(IO_IN_PG_PSU_10_FB) = '1' and
+                                    relay_1p_pg = '1' and relay_1p_pg = '1' then
                            state := power_on;
                         elsif cnt = SEC_2_5 then
                             state := err_n_all_on;
@@ -117,6 +123,7 @@ begin
                 case state is 
                     when idle =>
                         cnt := 0;
+                        high_res_cnt := 0;
                         power_2_ios.EN_PFC_FB      <= '0';
                         power_2_ios.FAN_EN1_FPGA   <= '0';
                         power_2_ios.FAN_EN2_FPGA   <= '0';
@@ -131,6 +138,8 @@ begin
                         power_2_ios.EN_PSU_10_FB   <= '0';
                         power_2_ios.ECTCU_INH_FPGA <= '0';
                         power_2_ios.CCTCU_INH_FPGA <= '0';
+                        relay_1p_on_request        <= '0';
+                        power_2_ios.RELAY_3PH_FPGA <= '0';
                     when start_pwron => 
                         power_2_ios.EN_PFC_FB      <= '1';
                         power_2_ios.FAN_EN1_FPGA   <= '1';
@@ -147,6 +156,8 @@ begin
                         power_2_ios.EN_PSU_8_FB    <= '1';
                         power_2_ios.EN_PSU_9_FB    <= '1';
                         power_2_ios.EN_PSU_10_FB   <= '1';
+                        relay_1p_on_request        <= '1';
+                        power_2_ios.RELAY_3PH_FPGA <= '1';
                     when wt4_all_on =>
                         if free_running_1ms then
                             cnt := cnt + 1;
@@ -160,6 +171,13 @@ begin
                     when power_on =>
                         -- TODO report to log as well
                         cnt := 0;
+                        if high_res_cnt = HIGH_RES_1MSEC then
+                            power_2_ios.ECTCU_INH_FPGA <= '1';
+                            power_2_ios.CCTCU_INH_FPGA <= '1';
+                        end if;
+                        if high_res_cnt < HIGH_RES_1MSEC then
+                            high_res_cnt := high_res_cnt + 1;
+                        end if;
                     when poweron_low =>
                         if free_running_1ms then
                             cnt := cnt + 1;
@@ -183,6 +201,8 @@ begin
                             power_2_ios.EN_PSU_10_FB   <= '0';
                             power_2_ios.ECTCU_INH_FPGA <= '0';
                             power_2_ios.CCTCU_INH_FPGA <= '0';
+                            power_2_ios.RELAY_1PH_FPGA <= '0';
+                            power_2_ios.RELAY_3PH_FPGA <= '0';
                         end if;
                         -- TODO report to log as well
                         if free_running_1ms then
@@ -194,7 +214,6 @@ begin
     end process;
     
     process(clk)
-        constant MSEC_50 : integer := 50; -- in miliseconds
         variable cnt : integer range 0 to MSEC_50 := 0;
     begin
         if rising_edge(clk) then
@@ -216,5 +235,10 @@ begin
         end if;
     end process;
     
+    -- TODO
+    --process to take care of
+    --power_2_ios.RELAY_1PH_FPGA
+    --based on relay_1p_on_request
+    --end process;
 
 end architecture RTL;

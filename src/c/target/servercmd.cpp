@@ -88,12 +88,12 @@ int servercmd_start(int server_port, ServerStatus &server_status){
 					printf("Got cmd(%d) tcu_id(%d) on_off(%d)\n\r",pcmd->cmd2.message_id, pcmd->cmd2.tcu_id, pcmd->cmd2.on_off);
 					if (pcmd->cmd2.tcu_id == 0)  //ECTCU
 					{
-						server_status.message.log.message_base.PSU_Status.fields.EC_Inhibit = pcmd->cmd2.on_off;
+						// do not set the status directly it comes from registers //server_status.message.log.message_base.PSU_Status.fields.EC_Inhibit = pcmd->cmd2.on_off;
 						// TODO set register  registers.GENERAL_CONTROL.CONTROL_ECTCU_INH = pcmd->cmd2.on_off;
 					}
 					else if (pcmd->cmd2.tcu_id == 1)  //CCTCU
 					{
-						server_status.message.log.message_base.PSU_Status.fields.CC_Inhibit = pcmd->cmd2.on_off;
+						// do not set the status directly it comes from registers //server_status.message.log.message_base.PSU_Status.fields.CC_Inhibit = pcmd->cmd2.on_off;
 						// TODO set register  registers.GENERAL_CONTROL.CONTROL_CCTCU_INH = pcmd->cmd2.on_off
 					}
 
