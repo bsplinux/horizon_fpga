@@ -59,7 +59,7 @@ begin
                 power_2_ios.SHUTDOWN_OUT_FPGA <= '0';
                 power_2_ios.ECTCU_INH_FPGA    <= '0';
                 power_2_ios.CCTCU_INH_FPGA    <= '0';
-                relay_1p_on_request    <= '0';
+                relay_1p_on_request           <= '0';
                 power_2_ios.RELAY_3PH_FPGA    <= '0';
                 cnt := 0;
                 high_res_cnt := 0;
@@ -201,7 +201,7 @@ begin
                             power_2_ios.EN_PSU_10_FB   <= '0';
                             power_2_ios.ECTCU_INH_FPGA <= '0';
                             power_2_ios.CCTCU_INH_FPGA <= '0';
-                            power_2_ios.RELAY_1PH_FPGA <= '0';
+                            relay_1p_on_request        <= '0';
                             power_2_ios.RELAY_3PH_FPGA <= '0';
                         end if;
                         -- TODO report to log as well
