@@ -22,10 +22,16 @@
 #include <iomanip>
 #include <sstream>
 #include <filesystem>
-namespace fs = std::filesystem;
+#include <atomic>
+#include <cstdio> // Include C standard IO
+
+
+
 
 #include  "socket.h"
 #include  "asynclog.h"
+
+namespace fs = std::filesystem;
 
 //static const int        PACKET_SIZE;    // packet size
 static const int        PACKET_COUNT=10;   // fifo size 
@@ -467,11 +473,15 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
       gfifo   = new  FIFOBuffer(PACKET_COUNT);
       gbuffer = new BufferedFileWriter(new_log_file_name,save_block_size);
       reader_thread_h= std::thread([] { reader_thread(gbuffer,gfifo);});
+	  
       std::thread t([newNumber, &server_status, log_path, gbuffer] {
+	  using namespace std::chrono;		  
            int pkt_count = 0;
            int log_count = 0;
+		   long long interval_micro = 1000; // 1 milliseconds
            int socket = Socket_UDPSocket();
            assert(socket >0);
+		   auto next_time = steady_clock::now() + microseconds(interval_micro);
             // Simulate packet data fill (for illustration, not actually filling data here)
             while(active_task){
                 if (server_status.update_log_name) { // on first keep alive we need to update log file name
@@ -501,8 +511,19 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
                 }
                 //next_time_micro = next_time_micro +1000;
 
-                usleep(1000);
+//                usleep(1000);
+			    auto now = steady_clock::now();
+				auto time2sleep = duration_cast<microseconds>(next_time - now);
+				if (time2sleep > microseconds(0)) {
+					std::this_thread::sleep_for(time2sleep);
+				}
+				else {
+					// worng time was spend
+					printf("%s.%d worng time was spend\n\r",__func__,__LINE__);
+				}
 
+				// Schedule next execution
+				next_time += microseconds(interval_micro);
             }
 			if(socket)
 				Socket_Close(socket);
