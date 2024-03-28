@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 use work.condor_pl_pkg.all;
---use work.sim_pkg.all;
+use work.sim_pkg.all;
 use work.regs_pkg.all;
 
 entity update_log is
@@ -71,7 +71,7 @@ begin
             
     ms_intr_pr: process(clk)
         constant CLKS_IN_US : integer := 100;
-        constant CLKS_IN_MS : integer := CLKS_IN_US * 1000;
+        constant CLKS_IN_MS : integer := set_const(CLKS_IN_US,CLKS_IN_US * 1000,sim_on);-- 1us for simulation 1ms for real world
         variable ms_cnt : integer range 0 to CLKS_IN_MS := 1;
         variable pulse_cnt : integer range 0 to 16 := 1;
         variable ms_tick : std_logic;
