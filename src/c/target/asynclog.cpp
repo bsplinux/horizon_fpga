@@ -30,6 +30,8 @@
 
 #include  "socket.h"
 #include  "asynclog.h"
+#include  "utils.h"
+//#include  "servercmd.h"
 
 namespace fs = std::filesystem;
 
@@ -38,8 +40,12 @@ static const int        PACKET_COUNT=10;   // fifo size
 static int              active_task =0;
 static std::string         g_log_path;
 static std::thread         g_log_hread_h;
+static uint64_t  		   g_disk_size=0;
 //static char g_msg[PACKET_SIZE];
 //static int  g_msg_size = sizeof(g_msg);
+
+
+
 extern ServerStatus server_status;
 
 //static int file_buff_disk(int fd,unsigned char *buffer,int &buffer_offset,void *p_write,unsigned int i_write);
@@ -104,9 +110,11 @@ private:
     unsigned char *buffer;
     unsigned int buffer_offset;
     unsigned int buffer_size;
+	uint64_t write_acc=0;  
     std::mutex mutex;
 
 public:
+	uint64_t get_write_acc() {return write_acc;}
     int file_open_status() {return fd ;}
     int update_file_name(std::string update_fn){
     	//int ret =0;
@@ -124,6 +132,9 @@ public:
             printf("ERROR fail to open %s file (error=%d) \n\r",current_fn.c_str(),fd);
            // return -1;
         }
+		
+		
+		
         if(fd >0)
         	return 0;
         return -1;
@@ -144,6 +155,8 @@ public:
             printf("ERROR fail to open %s file (error=%d) \n\r",current_fn.c_str(),fd);
            // return -1;
         }
+		
+		write_acc =0;
 
     }
 
@@ -211,12 +224,15 @@ public:
 		std::unique_lock<std::mutex> lock(mutex);
 
             int ret = write(fd, buffer, buffer_offset);
+			
             if (ret != buffer_offset) {
                 //std::cerr << "Error flushing buffer to disk" << std::endl;
 printf("%s.%d Flush Fail DIFF(%d) req size(%d) ret(%d)\n\r",__func__,__LINE__,diff,buffer_offset,ret);
                 return false;
             }
+			write_acc += buffer_offset;
             buffer_offset = 0; // Reset buffer offset
+			
         }
         return true;
     }
@@ -424,7 +440,13 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 	directory = log_path;
 	static BufferedFileWriter  *gbuffer=0;
 	static FIFOBuffer          *gfifo  =0;
+	uint64_t disk_size  =0;
+	uint64_t disk_use   =0;
+	uint64_t disk_free  =0; 
+	
+	int ret;
 
+    
 
 	// Check if directory exists and is a directory
 	if (fs::exists(directory) && fs::is_directory(directory)) {
@@ -466,15 +488,17 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 	  } catch (const fs::filesystem_error& e) {
 		  std::cerr << "Error: " << e.what() << std::endl;
 	  }
-
-
+		
+	  
+	        
       active_task = 1;
 
       gfifo   = new  FIFOBuffer(PACKET_COUNT);
       gbuffer = new BufferedFileWriter(new_log_file_name,save_block_size);
       reader_thread_h= std::thread([] { reader_thread(gbuffer,gfifo);});
+	   
 	  
-      std::thread t([newNumber, &server_status, log_path, gbuffer] {
+      std::thread t([newNumber, &server_status, log_path, gbuffer,disk_size] {
 	  using namespace std::chrono;		  
            int pkt_count = 0;
            int log_count = 0;
@@ -494,12 +518,15 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
                 	server_status.update_log_name = false;
                 	//rename(new_log_file_name.c_str(),);
                 }
+				g_disk_size = disk_size - gbuffer->get_write_acc();
                 format_message();
 
                 Packet packet(&server_status.message,sizeof(message_superset_union_t)) ;
                 log_count = (log_count + 1) % server_status.log_mseconds;
                 if(gfifo && log_count == 0 && server_status.log_active){
                     gfifo->write(std::move(packet)); // Push pointer into the queue
+					
+					
                     //printf("%s.%d write paket\n\r",__func__,__LINE__);
                  }
                 pkt_count = (pkt_count + 1) % 10;

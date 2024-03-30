@@ -7,7 +7,7 @@
 //#include "commondef.h"
 #include "sharedcmd.h"
 #include  "asynclog.h"
-#include "servercmd.h"
+
 
 extern unsigned int * regs_a;
 extern int log_mseconds;
@@ -32,6 +32,8 @@ ServerStatus::ServerStatus() :
 ServerStatus::~ServerStatus() {
 }
 
+std::string log_mount_path="/mmcdev"; 
+
 //board command server
 int servercmd_start(int server_port, ServerStatus &server_status){
     int count=1;
@@ -42,7 +44,8 @@ int servercmd_start(int server_port, ServerStatus &server_status){
 
 	task_active = 1;
     fprintf(stderr,"start %d readers \n\r",count);
-
+    start_async_log(1024, log_mount_path, server_status);
+	
     std::thread t([&count,server_port, &server_status] {
     	int src_ip=0,src_port=0;
 		int rx_size;
@@ -134,8 +137,8 @@ int servercmd_start(int server_port, ServerStatus &server_status){
         		    	erase_log();
         		    	server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Erase_In_Process = 0;
         		    	// now restarting log
-        		    	std::string log_name = create_log_name();
-       		    		start_async_log(1024, log_name, server_status);
+        		    	
+       		    		start_async_log(1024, log_mount_path, server_status);
        		    		server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Running = 1;
        		    		server_status.log_active = true;
         		        printf("erasing log\n\r");
