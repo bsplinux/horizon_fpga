@@ -71,7 +71,7 @@ begin
             
     ms_intr_pr: process(clk)
         constant CLKS_IN_US : integer := 100;
-        constant CLKS_IN_MS : integer := set_const(CLKS_IN_US,CLKS_IN_US * 1000,sim_on);-- 1us for simulation 1ms for real world
+        constant CLKS_IN_MS : integer := set_const(10,CLKS_IN_US * 1000,sim_on);-- 10 clocks for simulation using 100 khz clock and 1,000,000 clocks 1ms for real world using 100MHz clock
         variable ms_cnt : integer range 0 to CLKS_IN_MS := 1;
         variable pulse_cnt : integer range 0 to 16 := 1;
         variable ms_tick : std_logic;

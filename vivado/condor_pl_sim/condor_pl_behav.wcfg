@@ -14,13 +14,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
-      <ZoomEndTime time="100.000001 us"></ZoomEndTime>
-      <Cursor1Time time="100.000000 us"></Cursor1Time>
+      <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
+      <ZoomEndTime time="200.001000001 ms"></ZoomEndTime>
+      <Cursor1Time time="39.899948872 ms"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="389"></NameColumnWidth>
-      <ValueColumnWidth column_width="158"></ValueColumnWidth>
+      <ValueColumnWidth column_width="152"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="4" />
    <wvobject fp_name="group245" type="group">
@@ -539,6 +539,7 @@
    <wvobject fp_name="group800" type="group">
       <obj_property name="label">app</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/condor_pl_tb/uut/app_inst/clk" type="logic">
          <obj_property name="ElementShortName">clk</obj_property>
          <obj_property name="ObjectShortName">clk</obj_property>
@@ -684,10 +685,6 @@
          <obj_property name="ElementShortName">sync_rst</obj_property>
          <obj_property name="ObjectShortName">sync_rst</obj_property>
       </wvobject>
-      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/debug_state" type="other">
-         <obj_property name="ElementShortName">debug_state</obj_property>
-         <obj_property name="ObjectShortName">debug_state</obj_property>
-      </wvobject>
       <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/registers" type="array">
          <obj_property name="ElementShortName">registers[0:99][31:0]</obj_property>
          <obj_property name="ObjectShortName">registers[0:99][31:0]</obj_property>
@@ -716,9 +713,25 @@
          <obj_property name="ElementShortName">free_running_1ms</obj_property>
          <obj_property name="ObjectShortName">free_running_1ms</obj_property>
       </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/fans_en" type="logic">
+         <obj_property name="ElementShortName">fans_en</obj_property>
+         <obj_property name="ObjectShortName">fans_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/fans_ok" type="logic">
+         <obj_property name="ElementShortName">fans_ok</obj_property>
+         <obj_property name="ObjectShortName">fans_ok</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/debug_state" type="other">
+         <obj_property name="ElementShortName">debug_state</obj_property>
+         <obj_property name="ObjectShortName">debug_state</obj_property>
+      </wvobject>
       <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/power_on_debaunced" type="logic">
          <obj_property name="ElementShortName">power_on_debaunced</obj_property>
          <obj_property name="ObjectShortName">power_on_debaunced</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/poweron_after26secs" type="logic">
+         <obj_property name="ElementShortName">poweron_after26secs</obj_property>
+         <obj_property name="ObjectShortName">poweron_after26secs</obj_property>
       </wvobject>
       <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/relay_1p_on_request" type="logic">
          <obj_property name="ElementShortName">relay_1p_on_request</obj_property>
@@ -732,17 +745,65 @@
          <obj_property name="ElementShortName">relay_3p_pg</obj_property>
          <obj_property name="ObjectShortName">relay_3p_pg</obj_property>
       </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/input_ovp" type="logic">
+         <obj_property name="ElementShortName">input_ovp</obj_property>
+         <obj_property name="ObjectShortName">input_ovp</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/input_uvp" type="logic">
+         <obj_property name="ElementShortName">input_uvp</obj_property>
+         <obj_property name="ObjectShortName">input_uvp</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/output_ovp" type="logic">
+         <obj_property name="ElementShortName">output_ovp</obj_property>
+         <obj_property name="ObjectShortName">output_ovp</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/fans_on" type="logic">
+         <obj_property name="ElementShortName">fans_on</obj_property>
+         <obj_property name="ObjectShortName">fans_on</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/all_inputs_good" type="logic">
+         <obj_property name="ElementShortName">all_inputs_good</obj_property>
+         <obj_property name="ObjectShortName">all_inputs_good</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/all_in_range" type="logic">
+         <obj_property name="ElementShortName">all_in_range</obj_property>
+         <obj_property name="ObjectShortName">all_in_range</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/keep_fans_on_10min" type="logic">
+         <obj_property name="ElementShortName">keep_fans_on_10min</obj_property>
+         <obj_property name="ObjectShortName">keep_fans_on_10min</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/turn_on_tcu" type="logic">
+         <obj_property name="ElementShortName">turn_on_tcu</obj_property>
+         <obj_property name="ObjectShortName">turn_on_tcu</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/turn_off_tcu" type="logic">
+         <obj_property name="ElementShortName">turn_off_tcu</obj_property>
+         <obj_property name="ObjectShortName">turn_off_tcu</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/temperature_ok" type="logic">
+         <obj_property name="ElementShortName">temperature_ok</obj_property>
+         <obj_property name="ObjectShortName">temperature_ok</obj_property>
+      </wvobject>
       <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/MSEC_5" type="other">
          <obj_property name="ElementShortName">MSEC_5</obj_property>
          <obj_property name="ObjectShortName">MSEC_5</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/MSEC_10" type="other">
+         <obj_property name="ElementShortName">MSEC_10</obj_property>
+         <obj_property name="ObjectShortName">MSEC_10</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/MSEC_20" type="other">
+         <obj_property name="ElementShortName">MSEC_20</obj_property>
+         <obj_property name="ObjectShortName">MSEC_20</obj_property>
       </wvobject>
       <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/MSEC_50" type="other">
          <obj_property name="ElementShortName">MSEC_50</obj_property>
          <obj_property name="ObjectShortName">MSEC_50</obj_property>
       </wvobject>
-      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/SEC_2_5" type="other">
-         <obj_property name="ElementShortName">SEC_2_5</obj_property>
-         <obj_property name="ObjectShortName">SEC_2_5</obj_property>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/SEC_1" type="other">
+         <obj_property name="ElementShortName">SEC_1</obj_property>
+         <obj_property name="ObjectShortName">SEC_1</obj_property>
       </wvobject>
       <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/SEC_6_DEB" type="other">
          <obj_property name="ElementShortName">SEC_6_DEB</obj_property>
@@ -755,6 +816,18 @@
       <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/SEC_20" type="other">
          <obj_property name="ElementShortName">SEC_20</obj_property>
          <obj_property name="ObjectShortName">SEC_20</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/SEC_26" type="other">
+         <obj_property name="ElementShortName">SEC_26</obj_property>
+         <obj_property name="ObjectShortName">SEC_26</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/MIN_10" type="other">
+         <obj_property name="ElementShortName">MIN_10</obj_property>
+         <obj_property name="ObjectShortName">MIN_10</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/uut/app_inst/power_i/HIGH_RES_1MSEC" type="other">
+         <obj_property name="ElementShortName">HIGH_RES_1MSEC</obj_property>
+         <obj_property name="ObjectShortName">HIGH_RES_1MSEC</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

@@ -9,7 +9,7 @@ hls_projects:
 #    IO_BoardOneWire: solution4_nocl
 vivado_project: condor_pl
 steps: 
-    build_hls: true
+    build_hls: false
     reset_runs : true
     build: true
     close: false

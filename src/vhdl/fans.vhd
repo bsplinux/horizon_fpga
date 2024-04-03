@@ -15,6 +15,8 @@ entity fans is
         --regs_reading     : in  reg_slv_array_t;
         --internal_regs    : out reg_array_t;
         --internal_regs_we : out reg_slv_array_t;
+        fans_en          : in  std_logic;
+        fans_ok          : out std_logic;
         fan_pwm          : out std_logic_vector(1 to 3)
         );
 end entity fans;
@@ -22,6 +24,8 @@ end entity fans;
 architecture RTL of fans is
     
 begin
+    fans_ok <= fans_en;
+    
     -- FAN PWM
     fan1_pwm: entity work.pwm
     generic map(

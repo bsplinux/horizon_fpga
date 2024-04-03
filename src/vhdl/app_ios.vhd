@@ -48,7 +48,7 @@ begin
                 app_2_IOs.ECTCU_INH_FPGA     <= '0';
                 app_2_IOs.P_OUT_STATUS_FPGA  <= '0';
                 app_2_IOs.CCTCU_INH_FPGA     <= '0';
-                app_2_IOs.SHUTDOWN_OUT_FPGA  <= '1'; -- normally high
+                app_2_IOs.SHUTDOWN_OUT_FPGA  <= '0';
                 app_2_IOs.RESET_OUT_FPGA     <= '1'; -- normally high
                 app_2_IOs.SPARE_OUT_FPGA     <= '0';
                 app_2_IOs.ESHUTDOWN_OUT_FPGA <= '0';
@@ -156,10 +156,10 @@ begin
 
     process(all)
     begin
-        if registers(GENERAL_CONTROL)(CONTROL_IO_DEBUG_EN) = '1' then
+        --if registers(GENERAL_CONTROL)(CONTROL_IO_DEBUG_EN) = '1' then
             internal_regs_we(IO_IN) <= '1';
             internal_regs(IO_IN)(IO_IN_range) <= IO_IN_s;
-        end if;
+        --end if;
     end process;
 
 end architecture RTL;

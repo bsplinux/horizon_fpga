@@ -65,39 +65,39 @@ architecture RTL of condor_pl_tb is
     signal PH_C_ON_fpga : std_logic := '0';
     
 begin
-    PG_BUCK_FB   <= EN_PFC_FB    after 1 us;
-    PG_PSU_1_FB  <= EN_PSU_1_FB  after 1 us;
-    PG_PSU_2_FB  <= EN_PSU_2_FB  after 1 us;
-    PG_PSU_5_FB  <= EN_PSU_5_FB  after 1 us;
-    PG_PSU_6_FB  <= EN_PSU_6_FB  after 1 us;
-    PG_PSU_7_FB  <= EN_PSU_7_FB  after 1 us;
-    PG_PSU_8_FB  <= EN_PSU_8_FB  after 1 us;
-    PG_PSU_9_FB  <= EN_PSU_9_FB  after 1 us;
-    PG_PSU_10_FB <= EN_PSU_10_FB after 1 us;
+    PG_BUCK_FB   <= EN_PFC_FB    after 10 ms;
+    PG_PSU_1_FB  <= EN_PSU_1_FB  after 10 ms;
+    PG_PSU_2_FB  <= EN_PSU_2_FB  after 11 ms;
+    PG_PSU_5_FB  <= EN_PSU_5_FB  after 12 ms;
+    PG_PSU_6_FB  <= EN_PSU_6_FB  after 13 ms;
+    PG_PSU_7_FB  <= EN_PSU_7_FB  after 14 ms;
+    PG_PSU_8_FB  <= EN_PSU_8_FB  after 15 ms;
+    PG_PSU_9_FB  <= EN_PSU_9_FB  after 16 ms;
+    PG_PSU_10_FB <= EN_PSU_10_FB after 17 ms;
 
     pwer_pr: process
     begin
         POWERON_FPGA <= '0';
-        wait for 10 us;
+        wait for 10 ms;
         POWERON_FPGA <= '1';
-        wait for 1 us;
+        wait for 1 ms;
         POWERON_FPGA <= '0';
-        wait for 1 us;
+        wait for 1 ms;
         POWERON_FPGA <= '1';
-        wait for 10 us;
+        wait for 10 ms;
         
         POWERON_FPGA <= '0';
-        wait for 1 us;
+        wait for 1 ms;
         POWERON_FPGA <= '1';
-        wait for 10 us;
+        wait for 10 ms;
         POWERON_FPGA <= '0';
-        wait for 2 us;
+        wait for 2 ms;
         POWERON_FPGA <= '1';
-        wait for 10 us;
+        wait for 10 ms;
         POWERON_FPGA <= '0';
-        wait for 3 us;
+        wait for 3 ms;
         POWERON_FPGA <= '1';
-        wait for 10 us;
+        wait for 10 ms;
         
         
         wait;    

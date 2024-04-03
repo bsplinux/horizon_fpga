@@ -50,6 +50,7 @@ architecture RTL of app is
     signal log_ps_intr                 : std_logic_vector(PS_INTR_range);
     signal power_2_ios                 : power_2_ios_t;
     signal de                          : std_logic_vector(8 downto 0);
+    signal fans_en, fans_ok            : std_logic;
 begin
     process(clk)
     begin
@@ -122,12 +123,13 @@ begin
         internal_regs_we => internal_regs_we_update_log,
         ps_intr          => log_ps_intr,
         log_regs         => log_regs,
-        stop_log         => stop_log, -- TODO connect this to the actual condition that requests to stop log
+        stop_log         => stop_log,
         stop_log_to_cpu  => stop_log_to_cpu,
         free_running_1ms => free_running_1ms
     );
     ps_intr(PS_INTR_MS)       <= log_ps_intr(PS_INTR_MS)      ;
     ps_intr(PS_INTR_STOP_LOG) <= log_ps_intr(PS_INTR_STOP_LOG);
+    stop_log <= '0';  -- TODO connect this to the actual condition that requests to stop log
     
     ----------------------
     -- misc fields -------
@@ -169,6 +171,8 @@ begin
         clk       => clk,
         sync_rst  => sync_rst,
         registers => registers,
+        fans_en   => fans_en,
+        fans_ok   => fans_ok,
         fan_pwm   => fan_pwm
     );
     
@@ -215,7 +219,9 @@ begin
         internal_regs    => internal_regs_power,
         internal_regs_we => internal_regs_we_power,
         power_2_ios      => power_2_ios,
-        free_running_1ms => free_running_1ms
+        free_running_1ms => free_running_1ms,
+        fans_en          => fans_en,
+        fans_ok          => fans_ok
     );
     
 end architecture RTL;
