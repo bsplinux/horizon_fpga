@@ -22,4 +22,9 @@ public:
 
 int  servercmd_start(int server_port, ServerStatus &server_status);
 void servercmd_stop(ServerStatus &server_status);
+
+void init_message(ServerStatus &server_status);
+void format_message(ServerStatus &server_status);
+
+
 #endif

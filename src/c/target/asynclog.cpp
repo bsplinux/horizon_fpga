@@ -31,7 +31,9 @@
 #include  "socket.h"
 #include  "asynclog.h"
 #include  "utils.h"
-//#include  "servercmd.h"
+#include  "servercmd.h"
+
+#define MAX_ALLOW_FREE_SIZE_B 0x100000
 
 namespace fs = std::filesystem;
 
@@ -40,13 +42,13 @@ static const int        PACKET_COUNT=10;   // fifo size
 static int              active_task =0;
 static std::string         g_log_path;
 static std::thread         g_log_hread_h;
-static uint64_t  		   g_disk_size=0;
+static uint64_t  		   g_disk_free_size=0;
 //static char g_msg[PACKET_SIZE];
 //static int  g_msg_size = sizeof(g_msg);
 
 
 
-extern ServerStatus server_status;
+//extern ServerStatus server_status;
 
 //static int file_buff_disk(int fd,unsigned char *buffer,int &buffer_offset,void *p_write,unsigned int i_write);
 
@@ -285,151 +287,26 @@ static int getLastNumberFromFilename(const fs::path& path) {
     return std::stoi(numberStr);
 }
 
-void init_message()
-{
-	server_status.message.log.header.Log_ID             = 0x12345678;
-	server_status.message.log.header.Log_Payload_Size   = TELEMETRY_BYTES - 1; //the -1 as we do not include the messaage id
-	server_status.message.log.header.GMT_Time           = 0;
-	server_status.message.log.header.Micro_Sec          = 0;
-	server_status.message.log.footer_checksum           = 0;
 
-	server_status.message.log.message_base.VDC_IN       = 0;
-	server_status.message.log.message_base.VAC_IN_PH_A  = 1;
-	server_status.message.log.message_base.VAC_IN_PH_B  = 2;
-	server_status.message.log.message_base.VAC_IN_PH_C  = 3;
-	server_status.message.log.message_base.I_DC_IN      = 4;
-	server_status.message.log.message_base.I_AC_IN_PH_A = 5;
-	server_status.message.log.message_base.I_AC_IN_PH_B = 6;
-	server_status.message.log.message_base.I_AC_IN_PH_C = 7;
-	server_status.message.log.message_base.V_OUT_1      = 8;
-	server_status.message.log.message_base.V_OUT_2      = 9;
-	server_status.message.log.message_base.V_OUT_3_ph1  = 10;
-	server_status.message.log.message_base.V_OUT_3_ph2  = 11;
-	server_status.message.log.message_base.V_OUT_3_ph3  = 12;
-	server_status.message.log.message_base.V_OUT_4      = 13;
-	server_status.message.log.message_base.V_OUT_5      = 14;
-	server_status.message.log.message_base.V_OUT_6      = 15;
-	server_status.message.log.message_base.V_OUT_7      = 16;
-	server_status.message.log.message_base.V_OUT_8      = 17;
-	server_status.message.log.message_base.V_OUT_9      = 18;
-	server_status.message.log.message_base.V_OUT_10     = 19;
-	server_status.message.log.message_base.I_OUT_1      = 20;
-	server_status.message.log.message_base.I_OUT_2      = 21;
-	server_status.message.log.message_base.I_OUT_3_ph1  = 22;
-	server_status.message.log.message_base.I_OUT_3_ph2  = 23;
-	server_status.message.log.message_base.I_OUT_3_ph3  = 24;
-	server_status.message.log.message_base.I_OUT_4      = 25;
-	server_status.message.log.message_base.I_OUT_5      = 26;
-	server_status.message.log.message_base.I_OUT_6      = 27;
-	server_status.message.log.message_base.I_OUT_7      = 28;
-	server_status.message.log.message_base.I_OUT_8      = 29;
-	server_status.message.log.message_base.I_OUT_9      = 30;
-	server_status.message.log.message_base.I_OUT_10     = 31;
-	server_status.message.log.message_base.AC_Power     = 32;
-	server_status.message.log.message_base.Fan_Speed    = 33;
-	server_status.message.log.message_base.Fan1_Speed   = 34;
-	server_status.message.log.message_base.Fan2_Speed   = 35;
-	server_status.message.log.message_base.Fan3_Speed   = 36;
-	server_status.message.log.message_base.Volume_size  = 37;
-	server_status.message.log.message_base.Logfile_size = 38;
-	server_status.message.log.message_base.T1           = 39;
-	server_status.message.log.message_base.T2           = 40;
-	server_status.message.log.message_base.T3           = 41;
-	server_status.message.log.message_base.T4           = 42;
-	server_status.message.log.message_base.T5           = 43;
-	server_status.message.log.message_base.T6           = 44;
-	server_status.message.log.message_base.T7           = 45;
-	server_status.message.log.message_base.T8           = 46;
-	server_status.message.log.message_base.T9           = 47;
-	server_status.message.log.message_base.ETM          = 0xffffff;
-	server_status.message.log.message_base.Major        = 48;
-	server_status.message.log.message_base.Minor        = 49;
-	server_status.message.log.message_base.Build        = 50;
-	server_status.message.log.message_base.Hotfix       = 51;
-	server_status.message.log.message_base.SN           = 52;
-    server_status.message.log.message_base.PSU_Status.word  = 0;
-    server_status.message.log.message_base.Lamp_Ind     = 56;
-    server_status.message.log.message_base.Spare0       = 57;
-    server_status.message.log.message_base.Spare1       = 58;
-    server_status.message.log.message_base.Spare2       = 59;
-    server_status.message.log.message_base.Spare3       = 60;
-    server_status.message.log.message_base.Spare4       = 61;
-    server_status.message.log.message_base.Spare5       = 62;
-    server_status.message.log.message_base.Spare6       = 63;
-    server_status.message.log.message_base.Spare7       = 64;
-    server_status.message.log.message_base.Spare8       = 65;
-    server_status.message.log.message_base.Spare9       = 66;
+static void deleteFile(std::vector<fs::path> &files) {
+	if (!files.empty()) {
+        fs::path fileToDelete = files.front(); // Get the first file
 
-    server_status.message.tele.tele.Message_ID          = MESSAGE_ID_CONST;
+		if (fs::exists(fileToDelete)) { // Ensure the file exists
+			fs::remove(fileToDelete);  // Delete the file
+			std::cout << "File deleted: " << fileToDelete << std::endl;
+		} else {
+			std::cout << "File does not exist: " << fileToDelete << std::endl;
+		}
+        // Now remove the path from the vector
+        files.erase(files.begin()); // Erase the first element
+    } else {
+        std::cout << "No files to delete." << std::endl;
+    }
+	
 }
 
-void format_message()
-{
-	// read status from HW and format correctly for LOG
-	server_status.message.log.header.GMT_Time           ++;
-	server_status.message.log.header.Micro_Sec          ++;
 
-	server_status.message.log.message_base.VDC_IN       ++;
-	server_status.message.log.message_base.VAC_IN_PH_A  ++;
-	server_status.message.log.message_base.VAC_IN_PH_B  ++;
-	server_status.message.log.message_base.VAC_IN_PH_C  ++;
-	server_status.message.log.message_base.I_DC_IN      ++;
-	server_status.message.log.message_base.I_AC_IN_PH_A ++;
-	server_status.message.log.message_base.I_AC_IN_PH_B ++;
-	server_status.message.log.message_base.I_AC_IN_PH_C ++;
-	server_status.message.log.message_base.V_OUT_1      ++;
-	server_status.message.log.message_base.V_OUT_2      ++;
-	server_status.message.log.message_base.V_OUT_3_ph1  ++;
-	server_status.message.log.message_base.V_OUT_3_ph2  ++;
-	server_status.message.log.message_base.V_OUT_3_ph3  ++;
-	server_status.message.log.message_base.V_OUT_4      ++;
-	server_status.message.log.message_base.V_OUT_5      ++;
-	server_status.message.log.message_base.V_OUT_6      ++;
-	server_status.message.log.message_base.V_OUT_7      ++;
-	server_status.message.log.message_base.V_OUT_8      ++;
-	server_status.message.log.message_base.V_OUT_9      ++;
-	server_status.message.log.message_base.V_OUT_10     ++;
-	server_status.message.log.message_base.I_OUT_1      ++;
-	server_status.message.log.message_base.I_OUT_2      ++;
-	server_status.message.log.message_base.I_OUT_3_ph1  ++;
-	server_status.message.log.message_base.I_OUT_3_ph2  ++;
-	server_status.message.log.message_base.I_OUT_3_ph3  ++;
-	server_status.message.log.message_base.I_OUT_4      ++;
-	server_status.message.log.message_base.I_OUT_5      ++;
-	server_status.message.log.message_base.I_OUT_6      ++;
-	server_status.message.log.message_base.I_OUT_7      ++;
-	server_status.message.log.message_base.I_OUT_8      ++;
-	server_status.message.log.message_base.I_OUT_9      ++;
-	server_status.message.log.message_base.I_OUT_10     ++;
-	server_status.message.log.message_base.AC_Power     ++;
-	server_status.message.log.message_base.Fan_Speed    ++;
-	server_status.message.log.message_base.Fan1_Speed   ++;
-	server_status.message.log.message_base.Fan2_Speed   ++;
-	server_status.message.log.message_base.Fan3_Speed   ++;
-	server_status.message.log.message_base.Volume_size  ++;
-	server_status.message.log.message_base.Logfile_size ++;
-	server_status.message.log.message_base.T1           ++;
-	server_status.message.log.message_base.T2           ++;
-	server_status.message.log.message_base.T3           ++;
-	server_status.message.log.message_base.T4           ++;
-	server_status.message.log.message_base.T5           ++;
-	server_status.message.log.message_base.T6           ++;
-	server_status.message.log.message_base.T7           ++;
-	server_status.message.log.message_base.T8           ++;
-	server_status.message.log.message_base.T9           ++;
-	//server_status.message.log.message_base.ETM          = 0;
-	server_status.message.log.message_base.Major        ++;
-	server_status.message.log.message_base.Minor        ++;
-	server_status.message.log.message_base.Build        ++;
-	server_status.message.log.message_base.Hotfix       ++;
-	server_status.message.log.message_base.SN           ++;
-    //server_status.message.log.message_base.PSU_Status.word   = 0;
-    server_status.message.log.message_base.Lamp_Ind     ++;
-
-    // calculate checksum
-	server_status.message.log.footer_checksum           ++;
-
-}
 
 int start_async_log(int save_block_size,std::string log_path, ServerStatus &server_status ){
 	fs::path directory ;
@@ -440,13 +317,9 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 	directory = log_path;
 	static BufferedFileWriter  *gbuffer=0;
 	static FIFOBuffer          *gfifo  =0;
-	uint64_t disk_size  =0;
-	uint64_t disk_use   =0;
-	uint64_t disk_free  =0; 
-	
 	int ret;
 
-    
+    init_message(server_status);
 
 	// Check if directory exists and is a directory
 	if (fs::exists(directory) && fs::is_directory(directory)) {
@@ -477,7 +350,7 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 	 std::string new_file_name = getCurrentTimeFormatted() + "-" + formatNumber(newNumber);
 	 std::cout << "The new filename will be: " << new_file_name << std::endl;
 	 std::string new_log_file_name = log_path + "/" + new_file_name;
-
+	
 	 // Create a directory
 	 try {
 		  if (fs::create_directory(log_path)) {
@@ -498,14 +371,24 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
       reader_thread_h= std::thread([] { reader_thread(gbuffer,gfifo);});
 	   
 	  
-      std::thread t([newNumber, &server_status, log_path, gbuffer,disk_size] {
+      std::thread t([newNumber, &server_status, log_path, gbuffer,&files] {
 	  using namespace std::chrono;		  
            int pkt_count = 0;
            int log_count = 0;
 		   long long interval_micro = 1000; // 1 milliseconds
+		   uint64_t disk_size  =0;
+		   uint64_t disk_use   =0;
+		   uint64_t disk_free  =0; 		   
            int socket = Socket_UDPSocket();
            assert(socket >0);
+		   int ret = storage_get_info(log_path,disk_size,disk_use,disk_free);	
+		   if(ret !=0){
+				printf("%s.%d ERROR Fail To get disk size on mount %s\n\r",__func__,__LINE__,log_path.c_str());
+		  }	
+	
 		   auto next_time = steady_clock::now() + microseconds(interval_micro);
+		   
+		   
             // Simulate packet data fill (for illustration, not actually filling data here)
             while(active_task){
                 if (server_status.update_log_name) { // on first keep alive we need to update log file name
@@ -518,8 +401,13 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
                 	server_status.update_log_name = false;
                 	//rename(new_log_file_name.c_str(),);
                 }
-				g_disk_size = disk_size - gbuffer->get_write_acc();
-                format_message();
+				g_disk_free_size = disk_free - gbuffer->get_write_acc();
+				if(g_disk_free_size < MAX_ALLOW_FREE_SIZE_B){
+					std::thread deleteThread([&files] { deleteFile(files); });  // Same here, copy capture
+					deleteThread.detach();  
+				}
+				
+                format_message(server_status);
 
                 Packet packet(&server_status.message,sizeof(message_superset_union_t)) ;
                 log_count = (log_count + 1) % server_status.log_mseconds;

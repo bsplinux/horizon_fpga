@@ -1,4 +1,38 @@
+#include <sys/stat.h>
+#include <sys/statfs.h>
+#include <mutex>
+#include <sstream>
+#include <filesystem>
+#include <atomic>
+#include <cstdio> // Include C standard IO
+#include  "socket.h"
+#include  "asynclog.h"
+#include  "utils.h"
+#include  "servercmd.h"
+
+namespace fs = std::filesystem;
+
+
 #include "utils.h"
+
+
+int is_path_exist(const char *path){
+
+    struct stat stat_f;
+
+	if((stat(path,&stat_f) == 0)){
+		return 1;
+	}	
+	return 0;
+}
+
+int is_path_exist(const std::string path){
+	int ret;
+	ret = is_path_exist(path.c_str());
+
+	return ret;
+}
+
 
 
 int is_mounted(char *mount_point){
