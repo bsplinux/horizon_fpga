@@ -434,16 +434,13 @@ begin
                 all_inputs_good <= '0';
                 if registers(IO_IN)(IO_IN_PG_BUCK_FB  ) and fans_ok and
                                registers(IO_IN)(IO_IN_PG_PSU_1_FB ) and
-                               registers(IO_IN)(IO_IN_PG_PSU_2_FB ) and
-                               registers(IO_IN)(IO_IN_PG_PSU_5_FB ) and
-                               registers(IO_IN)(IO_IN_PG_PSU_6_FB ) and
-                               registers(IO_IN)(IO_IN_PG_PSU_7_FB ) and
-                               registers(IO_IN)(IO_IN_PG_PSU_8_FB ) and
-                               registers(IO_IN)(IO_IN_PG_PSU_9_FB ) and
-                               registers(IO_IN)(IO_IN_PG_PSU_10_FB) and
-                               registers(IO_IN)(IO_IN_PG_PSU_1_FB ) and
-                               registers(IO_IN)(IO_IN_PG_PSU_1_FB ) and
-                               registers(IO_IN)(IO_IN_PG_PSU_1_FB ) and
+--                               registers(IO_IN)(IO_IN_PG_PSU_2_FB ) and
+--                               registers(IO_IN)(IO_IN_PG_PSU_5_FB ) and
+--                               registers(IO_IN)(IO_IN_PG_PSU_6_FB ) and
+--                               registers(IO_IN)(IO_IN_PG_PSU_7_FB ) and
+--                               registers(IO_IN)(IO_IN_PG_PSU_8_FB ) and
+--                               registers(IO_IN)(IO_IN_PG_PSU_9_FB ) and
+--                               registers(IO_IN)(IO_IN_PG_PSU_10_FB) and
                                relay_1p_pg and relay_3p_pg then
                     all_inputs_good <= '1';
                 end if;                   
