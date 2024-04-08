@@ -14,15 +14,18 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
-      <ZoomEndTime time="200.001000001 ms"></ZoomEndTime>
-      <Cursor1Time time="39.899948872 ms"></Cursor1Time>
+      <ZoomStartTime time="1,166.666833334 ms"></ZoomStartTime>
+      <ZoomEndTime time="8,166.667833334 ms"></ZoomEndTime>
+      <Cursor1Time time="5,900.450000000 ms"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="389"></NameColumnWidth>
-      <ValueColumnWidth column_width="152"></ValueColumnWidth>
+      <ValueColumnWidth column_width="146"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="4" />
+   <wave_markers>
+      <marker time="5950550000000" label="" />
+   </wave_markers>
    <wvobject fp_name="group245" type="group">
       <obj_property name="label">tb</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -130,6 +133,10 @@
       <wvobject fp_name="/condor_pl_tb/PG_BUCK_FB" type="logic">
          <obj_property name="ElementShortName">PG_BUCK_FB</obj_property>
          <obj_property name="ObjectShortName">PG_BUCK_FB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/condor_pl_tb/pg_off" type="logic">
+         <obj_property name="ElementShortName">pg_off</obj_property>
+         <obj_property name="ObjectShortName">pg_off</obj_property>
       </wvobject>
       <wvobject fp_name="/condor_pl_tb/EN_PSU_1_FB" type="logic">
          <obj_property name="ElementShortName">EN_PSU_1_FB</obj_property>
@@ -539,7 +546,6 @@
    <wvobject fp_name="group800" type="group">
       <obj_property name="label">app</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject fp_name="/condor_pl_tb/uut/app_inst/clk" type="logic">
          <obj_property name="ElementShortName">clk</obj_property>
          <obj_property name="ObjectShortName">clk</obj_property>

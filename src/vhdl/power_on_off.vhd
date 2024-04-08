@@ -116,7 +116,8 @@ begin
                     when e_shutdown =>
                         state := e_shutdowning;
                     when e_shutdowning =>
-                        if cnt = MSEC_50 then
+                        if cnt = MSEC_50 + 1 then
+                            cnt := 0;
                             if all_in_range_s = '0' then 
                                 state := e_shtdwn_wt_ok;
                             else -- e shutdown doe to power good / fan falure then wait for poweron down then up
@@ -140,8 +141,10 @@ begin
                             state := e_shutdown;
                         elsif power_on_debaunced = '1' and cnt < SEC_6_DEB then
                             state := reset;
+                            cnt := 0;
                         elsif cnt > SEC_6_DEB then
                             state := power_down;
+                            cnt := 0;
                         end if;
                     when reset =>
                         if all_inputs_good = '0' or all_in_range = '0' then
@@ -150,7 +153,7 @@ begin
                             state := power_on;
                         end if;
                     when power_down =>
-                        if all_inputs_good = '0' or all_in_range = '0' then
+                        if all_in_range = '0' then
                             state := e_shutdown;
                         elsif cnt = SEC_20 then 
                             state := idle;
@@ -227,6 +230,7 @@ begin
                         cnt := 0;
                         all_in_range_s := all_in_range;
                         keep_fans_on_10min <= '1';
+                        fans_on <= '0';
                     when e_shutdowning =>
                         power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                         if cnt  = MSEC_10 then
@@ -244,9 +248,7 @@ begin
                             turn_off_tcu <= '1';
                         end if;
                         
-                        if cnt = MSEC_50 then
-                            cnt := 0;
-                        elsif free_running_1ms then
+                        if free_running_1ms then
                             cnt := cnt + 1;
                         end if;
                     when e_shtdwn_wt_ok => 
@@ -259,11 +261,7 @@ begin
                         cnt := 0;
                         turn_on_tcu <= '1';
                     when poweron_low =>
-                        if power_on_debaunced = '1' and cnt < SEC_6_DEB then
-                            cnt := 0;
-                        elsif cnt > SEC_6_DEB then
-                            cnt := 0;
-                        elsif free_running_1ms then
+                        if free_running_1ms then
                             cnt := cnt + 1;
                         end if;
                     when reset =>
@@ -275,6 +273,8 @@ begin
                         if cnt < SEC_10 then
                             power_2_ios.SHUTDOWN_OUT_FPGA <= '1';
                         else
+                            power_2_ios.EN_PFC_FB      <= '0';
+                            fans_on <= '0';
                             keep_fans_on_10min <= '1';
                             power_2_ios.EN_PSU_1_FB    <= '0';
                             power_2_ios.EN_PSU_2_FB    <= '0';
@@ -360,7 +360,7 @@ begin
     -- for now naive implementation
     power_2_ios.RELAY_1PH_FPGA <= relay_1p_on_request;
     temperature_ok <= '1';
-    input_ovp <= '0';
+    input_ovp <= registers(IO_IN)(IO_IN_FAN_HALL1_FPGA);-- SIMULATING out of range
     output_ovp <= '0';
     input_uvp <= '0';
     relay_1p_pg <= '1';
@@ -434,13 +434,13 @@ begin
                 all_inputs_good <= '0';
                 if registers(IO_IN)(IO_IN_PG_BUCK_FB  ) and fans_ok and
                                registers(IO_IN)(IO_IN_PG_PSU_1_FB ) and
---                               registers(IO_IN)(IO_IN_PG_PSU_2_FB ) and
---                               registers(IO_IN)(IO_IN_PG_PSU_5_FB ) and
---                               registers(IO_IN)(IO_IN_PG_PSU_6_FB ) and
---                               registers(IO_IN)(IO_IN_PG_PSU_7_FB ) and
---                               registers(IO_IN)(IO_IN_PG_PSU_8_FB ) and
---                               registers(IO_IN)(IO_IN_PG_PSU_9_FB ) and
---                               registers(IO_IN)(IO_IN_PG_PSU_10_FB) and
+                               registers(IO_IN)(IO_IN_PG_PSU_2_FB ) and
+                               registers(IO_IN)(IO_IN_PG_PSU_5_FB ) and
+                               registers(IO_IN)(IO_IN_PG_PSU_6_FB ) and
+                               registers(IO_IN)(IO_IN_PG_PSU_7_FB ) and
+                               registers(IO_IN)(IO_IN_PG_PSU_8_FB ) and
+                               registers(IO_IN)(IO_IN_PG_PSU_9_FB ) and
+                               registers(IO_IN)(IO_IN_PG_PSU_10_FB) and
                                relay_1p_pg and relay_3p_pg then
                     all_inputs_good <= '1';
                 end if;                   

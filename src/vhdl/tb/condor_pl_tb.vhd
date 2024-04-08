@@ -64,9 +64,10 @@ architecture RTL of condor_pl_tb is
     signal PH_B_ON_fpga : std_logic := '0';
     signal PH_C_ON_fpga : std_logic := '0';
     
+    signal pg_off : std_logic;
 begin
     PG_BUCK_FB   <= EN_PFC_FB    after 10 ms;
-    PG_PSU_1_FB  <= EN_PSU_1_FB  after 10 ms;
+    PG_PSU_1_FB  <= pg_off and EN_PSU_1_FB  ;--after 10 ms;
     PG_PSU_2_FB  <= EN_PSU_2_FB  after 11 ms;
     PG_PSU_5_FB  <= EN_PSU_5_FB  after 12 ms;
     PG_PSU_6_FB  <= EN_PSU_6_FB  after 13 ms;
@@ -77,30 +78,43 @@ begin
 
     pwer_pr: process
     begin
-        POWERON_FPGA <= '0';
-        wait for 10 ms;
-        POWERON_FPGA <= '1';
-        wait for 1 ms;
-        POWERON_FPGA <= '0';
-        wait for 1 ms;
-        POWERON_FPGA <= '1';
-        wait for 10 ms;
+        pg_off <= '1';
+        FAN_HALL1_FPGA <= '0';-- for sumulation using it for out of range 
         
         POWERON_FPGA <= '0';
+        wait for 100 ms;
+        POWERON_FPGA <= '1';
+        wait for 1 sec;
+        POWERON_FPGA <= '0';
+        wait for 51 ms;
+        POWERON_FPGA <= '1';
+        wait for 100 ms;
+        POWERON_FPGA <= '0';
+        wait for 49 ms;
+        POWERON_FPGA <= '1';
+        wait for 100 ms;
+        POWERON_FPGA <= '0';
+        wait for 2000 ms;
+        POWERON_FPGA <= '1';
+        wait for 1000 ms;
+        pg_off <= '0';
         wait for 1 ms;
-        POWERON_FPGA <= '1';
-        wait for 10 ms;
+        pg_off <= '1';
+        wait for 100 ms;
         POWERON_FPGA <= '0';
-        wait for 2 ms;
+        wait for 99 ms;
         POWERON_FPGA <= '1';
-        wait for 10 ms;
+        wait for 100 ms;
         POWERON_FPGA <= '0';
-        wait for 3 ms;
+        wait for 100 ms;
         POWERON_FPGA <= '1';
-        wait for 10 ms;
+        wait for 1000 ms;
+        -- generate out of range
+        FAN_HALL1_FPGA <= '1';-- for sumulation using it for out of range 
+        wait for 100 ms;
+        FAN_HALL1_FPGA <= '0';-- for sumulation using it for out of range 
         
-        
-        wait;    
+        wait;
     end process;
     
 
