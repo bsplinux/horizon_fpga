@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x2B040DEA43CD98E9",
+      "boundary_crc": "0x2B040DEADB45B6B8",
       "device": "xa7z020clg400-1Q",
       "gen_directory": "../../../../condor_pl.gen/sources_1/bd/design_1",
       "name": "design_1",
@@ -357,7 +357,7 @@
             "value": "32"
           },
           "FREQ_HZ": {
-            "value": "1e+08",
+            "value": "100000000",
             "value_src": "user_prop"
           },
           "HAS_BRESP": {
@@ -635,7 +635,7 @@
             "value_src": "default_prop"
           },
           "FREQ_HZ": {
-            "value": "1e+08",
+            "value": "100000000",
             "value_src": "user_prop"
           },
           "FREQ_TOLERANCE_HZ": {
@@ -795,7 +795,7 @@
             "value": "100.000000"
           },
           "PCW_ACT_FPGA1_PERIPHERAL_FREQMHZ": {
-            "value": "25.000000"
+            "value": "40.000000"
           },
           "PCW_ACT_FPGA2_PERIPHERAL_FREQMHZ": {
             "value": "10.000000"
@@ -885,7 +885,7 @@
             "value": "100000000"
           },
           "PCW_CLK1_FREQ": {
-            "value": "25000000"
+            "value": "40000000"
           },
           "PCW_CLK2_FREQ": {
             "value": "10000000"
@@ -1197,7 +1197,7 @@
             "value": "100"
           },
           "PCW_FPGA1_PERIPHERAL_FREQMHZ": {
-            "value": "25"
+            "value": "40"
           },
           "PCW_FPGA2_PERIPHERAL_FREQMHZ": {
             "value": "33.333333"
@@ -3061,6 +3061,12 @@
           "C_NUM_SS_BITS": {
             "value": "1"
           },
+          "C_NUM_TRANSFER_BITS": {
+            "value": "16"
+          },
+          "C_SCK_RATIO": {
+            "value": "2"
+          },
           "C_SPI_MODE": {
             "value": "0"
           },
@@ -3194,6 +3200,12 @@
           "C_NUM_SS_BITS": {
             "value": "1"
           },
+          "C_NUM_TRANSFER_BITS": {
+            "value": "16"
+          },
+          "C_SCK_RATIO": {
+            "value": "2"
+          },
           "C_SPI_MODE": {
             "value": "0"
           },
@@ -3211,6 +3223,12 @@
         "parameters": {
           "C_NUM_SS_BITS": {
             "value": "1"
+          },
+          "C_NUM_TRANSFER_BITS": {
+            "value": "16"
+          },
+          "C_SCK_RATIO": {
+            "value": "2"
           },
           "C_SPI_MODE": {
             "value": "0"

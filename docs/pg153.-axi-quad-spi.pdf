@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <link rel="icon" href="https://docs.amd.com/favicon.ico">
+        
+        
+        
+        
+        <title>AMD Technical Information Portal</title>
+        <link id="FT-boot-styles" rel="stylesheet" href="https://docs.amd.com/stylesheets/bootstrap.css?v=710a2d51">
+        <link id="FT-application-styles" rel="stylesheet" href="https://docs.amd.com/stylesheets/fluidtopicsclient.css?v=2c817cf0">
+        <link id="FT-customization-styles" rel="stylesheet" href="https://docs.amd.com/stylesheets/customizations.css?v=313501dd">
+        <script src="https://docs.amd.com/scripts/bootstrap.js?v=45c259e4"></script><script src="https://docs.amd.com/scripts/fluidtopics.min.js?v=8ebee680"></script><script src="https://docs.amd.com/scripts/globals.min.js?v=7a562f0b"></script><script src="https://docs.amd.com/scripts/ft-app-context-dependencies.webapp.js?v=f915805d"></script><script src="https://docs.amd.com/fluidtopicsclient.nocache.js"></script>
+        <link rel="preload" as="image" href="https://docs.amd.com/internal/api/webapp/splash-image?v=9d225e32">
+        
+    </head>
+    <body class="FT-version-4-3">
+        <div id="FT-application-loader">
+            <div>
+                <img aria-hidden="true" src="https://docs.amd.com/internal/api/webapp/splash-image?v=9d225e32" alt="Loading Application...">
+                <span>Loading Application...</span>
+            </div>
+        </div>
+        <div id="FT-tenant-custom-header"><script type="text/javascript" src="/public/jquery.min.js"></script>
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="018e385a-b0e8-78c4-aafd-aade1110ca89" ></script>
+<script src="//download.amd.com/js/analytics/analyticsinit.js"></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for docs.xilinx.com -->
+       
+       <!-- Google Tag Manager --> 
+       <script type="text/plain" class="optanon-category-C0002">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-5RHQV7');</script> 
+       <!-- End Google Tag Manager --> 
+       
+       <!-- Marketo Munchkin --> 
+       <script type="text/plain" class="optanon-category-C0002"> 
+       (function() { 
+       var didInit = false; 
+       function initMunchkin() { 
+       if(didInit === false) { 
+       didInit = true; 
+       Munchkin.init('409\u002DWYX\u002D724'); 
+       } 
+       } 
+       var s = document.createElement('script'); 
+       s.type = 'text/javascript'; 
+       s.async = true; 
+       s.src = '//munchkin.marketo.net/munchkin.js'; 
+       s.onreadystatechange = function() { 
+       if (this.readyState == 'complete' || this.readyState == 'loaded') { 
+       initMunchkin(); 
+       } 
+       }; 
+       s.onload = initMunchkin; 
+       document.getElementsByTagName('head')[0].appendChild(s); 
+       })(); 
+       </script> 
+       <!-- Marketo Munchkin end -->
+<!-- OneTrust Cookies Consent Notice (Production CDN, xilinx.com, en-GB) end -->
+<div class="header-container">
+	<div class="banner">
+	<div class="callout-banner">&nbsp;&nbsp;&nbsp;
+	<a id="amd_icon" href="https://www.amd.com/"><img src="/public/header/amd-header-logo.svg" title="AMD Inc"></a>
+	<div id="pipeline">|</div>
+	<a id="home_link" href="/">Technical Information Portal</a>&nbsp; 
+	</div>	
+</div>	
+</div> </div>
+        <script id="FT-tenant-custom-js" src="https://docs.amd.com/scripts/custom.js?v=912a5e5f"></script>
+        <noscript>Your web browser must have JavaScript enabled in order for this application to display correctly.</noscript>
+    </body>
+</html>
