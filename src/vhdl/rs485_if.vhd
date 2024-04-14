@@ -122,6 +122,7 @@ architecture RTL of rs485_if is
     signal uarts_d_8 : STD_LOGIC_VECTOR(63 DOWNTO 0);
     signal uart_de : STD_LOGIC_VECTOR(8 DOWNTO 0);
     signal uart_de_ap_vld : STD_LOGIC;
+    signal one_ms_error : std_logic;
     
 begin
     sm_pr: process(clk)
@@ -134,6 +135,7 @@ begin
                 state := idle;
                 ap_start <= '0';
                 allow_hls := false;
+                one_ms_error <= '0';
             else
                 allow_hls := false;
                 if registers(UARTS_CONTROL)(UARTS_CONTROL_EN_RANGE) /= "000000000" then
@@ -147,13 +149,13 @@ begin
                         state := wt_rdy;
                     end if;
                 when wt_rdy =>
-                    if ap_done then
+                    if ap_done or one_ms_interrupt then
                         state := idle;
                     elsif ap_ready then
                         state := wt_done;
                     end if;
                 when wt_done =>
-                    if ap_done then
+                    if ap_done or one_ms_interrupt then
                         state := idle;
                     end if;
                 end case;
@@ -165,20 +167,35 @@ begin
                     null;
                 when wt_rdy =>
                     ap_start <= '1';
+                    if one_ms_interrupt = '1' then
+                        one_ms_error <= '1';
+                    end if;
                 when wt_done =>
-                    null;
+                    if one_ms_interrupt = '1' then
+                        one_ms_error <= '1';
+                    end if;
                 end case;
+                
+                if registers(UARTS_CONTROL)(UARTS_CONTROL_1MS_ERR_CLR) and regs_updating(UARTS_CONTROL) then
+                    one_ms_error <= '0';
+                end if;
+            
             end if;
         end if;
     end process;
 
     rst_pr: process(clk)
+        variable one_ms_error_s : std_logic;
     begin
         if rising_edge(clk) then
             if sync_rst then
                 hls_rstn <= '0';
             else
-                hls_rstn <= not (sync_rst or (registers(UARTS_CONTROL)(UARTS_CONTROL_RST) and regs_updating(UARTS_CONTROL)));
+                if (one_ms_error_s = '0' and one_ms_error = '1') or sync_rst = '1' or 
+                    (registers(UARTS_CONTROL)(UARTS_CONTROL_RST) = '1' and regs_updating(UARTS_CONTROL) = '1') then
+                        hls_rstn <= '0';
+                end if;                
+                one_ms_error_s := one_ms_error;
             end if;
         end if;
     end process;
@@ -228,6 +245,7 @@ begin
         
         internal_regs_we(UARTS_STATUS) <= '1';
         internal_regs(UARTS_STATUS)(UARTS_STATUS_BUSY) <= not ap_idle;
+        internal_regs(UARTS_STATUS)(UARTS_STATUS_1MS_ERR) <= one_ms_error;
         
     end process;
     

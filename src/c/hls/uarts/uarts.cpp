@@ -7,7 +7,6 @@ void uart_fifo_rst(
 {
 	unsigned int a = info.adr + UART_REG_CTRL;
 	axi[a/sizeof(int)] = UART_REG_CTRL_RST_FIFO;
-	axi[a/sizeof(int)] = 0;
 }
 
 unsigned char uart_stat (
@@ -85,7 +84,7 @@ void uarts(
 			switch (uarts_info[i].state) {
 			case idle: // send word to uart asking for data
 				uart_fifo_rst(axi, uarts_info[i]);
-				stat = uart_stat(axi, uarts_info[i]);
+				//stat = uart_stat(axi, uarts_info[i]); -- no need to check status after fifo reset
 				//if (stat & UART_REG_STAT_TX_EMPTY) -- no need to check for empty after fifo reset
 				{
 					de_int[i] = 1;
@@ -98,18 +97,32 @@ void uarts(
 				stat = uart_stat(axi, uarts_info[i]);
 				if (stat & UART_REG_STAT_TX_EMPTY) // waiting for fifo to be empty telling us data was sent to UART
 				{
-					uarts_info[i].state = wt4rx;
+					uarts_info[i].state = wt4rx_dummy;
 					de_int[i] = 0;
 					*uart_de = de_int;
 				}
 				break;
+			case wt4rx_dummy: // first byte is an echo of tx command and is not read rx data (the connection of the PCB is using shared line for rx and tx)
+				stat = uart_stat(axi, uarts_info[i]);
+				if (stat & UART_REG_STAT_RX_VALID)
+				{
+					volatile unsigned char dummy = uart_read(axi, uarts_info[i]);
+					uarts_info[i].state = wt4rx;
+				}
+				break;
 			case wt4rx: // wait until all data was received
 				stat = uart_stat(axi, uarts_info[i]);
-				if (stat & UART_REG_STAT_RX_VALID & rx_cnt[i] < RX_SIZE)
-					rx_d[i][rx_cnt[i]++] = uart_read(axi, uarts_info[i]);
-				if (rx_cnt[i] == (RX_SIZE)) // last byte which is also crc byte
-					// TODO, do I check CRC?
-					uarts_info[i].state = data_valid;
+				if (stat & UART_REG_STAT_RX_VALID)
+				{
+					if (rx_cnt[i] < RX_SIZE)
+						rx_d[i][rx_cnt[i]++] = uart_read(axi, uarts_info[i]);
+					else if (rx_cnt[i] == (RX_SIZE)) // last byte which is also crc byte
+					{
+						volatile unsigned char dummy = uart_read(axi, uarts_info[i]);
+						// note, we do not check CRC?
+						uarts_info[i].state = data_valid;
+					}
+				}
 				break;
 			case data_valid:  // read all data and normalize it, then write it to registers
 				// todo this part, for now we send the data as is out not to registers

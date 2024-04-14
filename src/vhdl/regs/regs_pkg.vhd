@@ -319,13 +319,15 @@ package regs_pkg is
     -- fields for UARTS_CONTROL
     subtype UARTS_CONTROL_EN_RANGE                  is integer range 8 downto 0;
     constant UARTS_CONTROL_RST                      : integer := 9;
+    constant UARTS_CONTROL_1MS_ERR_CLR              : integer := 10;
     -- fields for UARTS_STATUS
-    constant UARTS_STATUS_BUSY                      : integer := 0;        
+    constant UARTS_STATUS_BUSY                      : integer := 0;  
+    constant UARTS_STATUS_1MS_ERR                   : integer := 1;      
     --------------------------------------------------------------------------------    
     -- initial values for parameters 
     --------------------------------------------------------------------------------    
     constant REGS_VERSION_CONST     : std_logic_vector(full_reg_range) := X"00000001"; -- version 00.01:   
-    constant FPGA_VERSION_CONST     : std_logic_vector(full_reg_range) := X"00010001"; -- version (major,minor,revision,0) : 0,1,0,0
+    constant FPGA_VERSION_CONST     : std_logic_vector(full_reg_range) := X"00010003"; -- version (major,minor,revision,0) : 0,1,0,0
     --------------------------------------------------------------------------------------------------------    
     -- Registers - Constants to declere reset values and used register (and bits) for logic minimization
     --------------------------------------------------------------------------------------------------------
@@ -418,8 +420,8 @@ package regs_pkg is
         PWM2_HIGH                     => X"FFFFFFFF",
         PWM3_LOW                      => X"FFFFFFFF",
         PWM3_HIGH                     => X"FFFFFFFF",
-        UARTS_CONTROL                 => X"0000003F",
-        UARTS_STATUS                  => X"00000001",
+        UARTS_CONTROL                 => X"0000007F",
+        UARTS_STATUS                  => X"00000003",
         UART_RAW0_L                   => X"FFFFFFFF",
         UART_RAW0_H                   => X"FFFFFFFF",
         UART_RAW1_L                   => X"FFFFFFFF",

@@ -23,10 +23,9 @@
 #define UART_REG_STAT_PRTY_ERR  0x80
 
 #define REQUEST_FRAME_COMMAND 0xAA
-// RX_SIZE including last byte CRC
-#define RX_SIZE 9
+#define RX_SIZE 8
 
-enum uart_state {disable, idle, wt4tx, wt4rx, data_valid, done};
+enum uart_state {disable, idle, wt4tx, wt4rx_dummy, wt4rx, data_valid, done};
 
 typedef struct {
 	unsigned char num;
