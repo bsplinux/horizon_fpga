@@ -13,6 +13,7 @@ set_part {xa7z020-clg400-1Q}
 create_clock -period 10 -name default
 config_export -display_name uarts -format ip_catalog -output ../vivado/repo/uarts.zip -rtl verilog -vendor Growings
 config_interface -m_axi_addr64=0
+config_rtl -reset state
 source "./uarts/solution1/directives.tcl"
 csim_design -setup
 csynth_design

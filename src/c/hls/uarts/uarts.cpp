@@ -74,7 +74,7 @@ void uarts(
 
 	main_loop: for(;;)
 	{
-		for(int i = 0; i < MAX_UARTS; i++)
+		uarts_loop: for(int i = 0; i < MAX_UARTS; i++)
 		{
 			if (uarts_info[i].state == disable)
 				uarts_busy[i] = 0;
@@ -84,14 +84,10 @@ void uarts(
 			switch (uarts_info[i].state) {
 			case idle: // send word to uart asking for data
 				uart_fifo_rst(axi, uarts_info[i]);
-				//stat = uart_stat(axi, uarts_info[i]); -- no need to check status after fifo reset
-				//if (stat & UART_REG_STAT_TX_EMPTY) -- no need to check for empty after fifo reset
-				{
-					de_int[i] = 1;
-					*uart_de = de_int;
-					uart_write(axi, uarts_info[i], REQUEST_FRAME_COMMAND);
-					uarts_info[i].state = wt4tx;
-				}
+				de_int[i] = 1;
+				*uart_de = de_int;
+				uart_write(axi, uarts_info[i], REQUEST_FRAME_COMMAND);
+				uarts_info[i].state = wt4tx;
 				break;
 			case wt4tx:	// wait until data was full sent to target
 				stat = uart_stat(axi, uarts_info[i]);

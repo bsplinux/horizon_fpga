@@ -11,8 +11,10 @@ add_files -tb ../src/c/hls/spis/spis_tb.cpp -cflags "-Wno-unknown-pragmas"
 open_solution "solution1" -flow_target vivado
 set_part {xa7z020-clg400-1Q}
 create_clock -period 10 -name default
-#source "./spis/solution1/directives.tcl"
-csim_design
+config_rtl -reset state
+config_export -display_name spis -format ip_catalog -output ../vivado/repo/spis.zip -rtl verilog -vendor Growings
+source "./spis/solution1/directives.tcl"
+csim_design -setup
 csynth_design
 cosim_design
 export_design -format ip_catalog

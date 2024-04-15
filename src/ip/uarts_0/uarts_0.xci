@@ -3,7 +3,7 @@
   "ip_inst": {
     "xci_name": "uarts_0",
     "component_reference": "Growings:hls:uarts:1.0",
-    "ip_revision": "2113459393",
+    "ip_revision": "2113515775",
     "gen_directory": ".",
     "parameters": {
       "component_parameters": {
@@ -54,7 +54,7 @@
       },
       "runtime_parameters": {
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
-        "IPREVISION": [ { "value": "2113459393" } ],
+        "IPREVISION": [ { "value": "2113515775" } ],
         "MANAGED": [ { "value": "TRUE" } ],
         "OUTPUTDIR": [ { "value": "." } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],
@@ -74,6 +74,7 @@
         "uarts_d_6_ap_vld": [ { "direction": "out" } ],
         "uarts_d_7_ap_vld": [ { "direction": "out" } ],
         "uarts_d_8_ap_vld": [ { "direction": "out" } ],
+        "uart_de_ap_vld": [ { "direction": "out" } ],
         "ap_clk": [ { "direction": "in" } ],
         "ap_rst_n": [ { "direction": "in" } ],
         "ap_start": [ { "direction": "in" } ],
@@ -129,7 +130,8 @@
         "uarts_d_5": [ { "direction": "out", "size_left": "63", "size_right": "0" } ],
         "uarts_d_6": [ { "direction": "out", "size_left": "63", "size_right": "0" } ],
         "uarts_d_7": [ { "direction": "out", "size_left": "63", "size_right": "0" } ],
-        "uarts_d_8": [ { "direction": "out", "size_left": "63", "size_right": "0" } ]
+        "uarts_d_8": [ { "direction": "out", "size_left": "63", "size_right": "0" } ],
+        "uart_de": [ { "direction": "out", "size_left": "8", "size_right": "0" } ]
       },
       "interfaces": {
         "ap_clk": {
@@ -364,6 +366,17 @@
           },
           "port_maps": {
             "DATA": [ { "physical_name": "uarts_d_8" } ]
+          }
+        },
+        "uart_de": {
+          "vlnv": "xilinx.com:signal:data:1.0",
+          "abstraction_type": "xilinx.com:signal:data_rtl:1.0",
+          "mode": "master",
+          "parameters": {
+            "LAYERED_METADATA": [ { "value": "undef", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ]
+          },
+          "port_maps": {
+            "DATA": [ { "physical_name": "uart_de" } ]
           }
         }
       },

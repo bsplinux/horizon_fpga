@@ -6,10 +6,10 @@ hls_output_location: ../vivado/repo
 hls_vendor: Growings
 hls_projects:
     uarts: solution1
-#    IO_BoardOneWire: solution4_nocl
+    spis: solution1
 vivado_project: condor_pl
 steps: 
-    build_hls: false
+    build_hls: true
     reset_runs : true
     build: true
     close: false

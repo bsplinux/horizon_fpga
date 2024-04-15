@@ -360,7 +360,7 @@ begin
     -- for now naive implementation
     power_2_ios.RELAY_1PH_FPGA <= relay_1p_on_request;
     temperature_ok <= '1';
-    input_ovp <= registers(IO_IN)(IO_IN_FAN_HALL1_FPGA);-- SIMULATING out of range
+    input_ovp <= '0';--registers(IO_IN)(IO_IN_FAN_HALL1_FPGA);-- SIMULATING out of range
     output_ovp <= '0';
     input_uvp <= '0';
     relay_1p_pg <= '1';

@@ -11,7 +11,8 @@ package condor_pl_pkg is
     type log_reg_array_t is array (log_regs_range) of std_logic_vector(full_reg_range);
 
     subtype rs485_regs_range is regs_names_t range UARTS_CONTROL to UART_RAW8_H;
-
+    subtype spi_regs_range is regs_names_t range SPIS_CONTROL to SPI_RAW2_HG;
+    
     type ios_2_app_t is record
         POWERON_FPGA     : std_logic;      
         FAN_PG1_FPGA     : std_logic;      
@@ -205,7 +206,7 @@ package condor_pl_pkg is
         aruser      : std_logic_vector(15 downto 0);
         awuser      : std_logic_vector(15 downto 0);
     end record HLS_axim_to_interconnect_t;
-    --type HLS_axim_to_interconnect_array_t is array (natural range <>) of HLS_axim_to_interconnect_t;
+    type HLS_axim_to_interconnect_array_t is array (natural range <>) of HLS_axim_to_interconnect_t;
     
     type HLS_axim_from_interconnect_t is record
         awready     : STD_LOGIC;
@@ -220,7 +221,7 @@ package condor_pl_pkg is
         --bid         : STD_LOGIC_VECTOR(5 downto 0);
         --rid         : STD_LOGIC_VECTOR(5 downto 0);
     end record HLS_axim_from_interconnect_t;
-    --type HLS_axim_from_interconnect_array_t is array (natural range <>) of HLS_axim_from_interconnect_t;
+    type HLS_axim_from_interconnect_array_t is array (natural range <>) of HLS_axim_from_interconnect_t;
 
 
     function ios_2_app_vec(x: ios_2_app_t) return std_logic_vector;

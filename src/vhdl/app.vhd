@@ -1,7 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use ieee.std_logic_unsigned.all;
+use ieee.numeric_std_unsigned.all;
 
 use work.condor_pl_pkg.all;
 use work.sim_pkg.all;
@@ -24,8 +24,8 @@ entity app is
         ios_2_app        : in  ios_2_app_t;
         app_2_ios        : out app_2_ios_t;
         ps_intr          : out std_logic_vector(PS_INTR_range);
-        HLS_to_BD        : out HLS_axim_to_interconnect_t;
-        BD_to_HLS        : in  HLS_axim_from_interconnect_t
+        HLS_to_BD        : out HLS_axim_to_interconnect_array_t(1 downto 0);
+        BD_to_HLS        : in  HLS_axim_from_interconnect_array_t(1 downto 0)
         
     );
 end entity app;
@@ -36,6 +36,8 @@ architecture RTL of app is
     signal internal_regs_we_update_log : reg_slv_array_t;
     signal internal_regs_rs485         : reg_array_t;
     signal internal_regs_we_rs485      : reg_slv_array_t;
+    signal internal_regs_spis          : reg_array_t;
+    signal internal_regs_we_spis       : reg_slv_array_t;
     signal internal_regs_ios           : reg_array_t;
     signal internal_regs_we_ios        : reg_slv_array_t;
     signal internal_regs_power         : reg_array_t;
@@ -84,6 +86,11 @@ begin
                 for i in rs485_regs_range loop
                     internal_regs_we(i) <= internal_regs_we_rs485(i);
                     internal_regs(i) <= internal_regs_rs485(i);
+                end loop;
+                    
+                for i in spi_regs_range loop
+                    internal_regs_we(i) <= internal_regs_we_spis(i);
+                    internal_regs(i) <= internal_regs_spis(i);
                 end loop;
                     
             end if;
@@ -187,10 +194,24 @@ begin
         --regs_reading     => regs_reading,
         internal_regs    => internal_regs_rs485,
         internal_regs_we => internal_regs_we_rs485,
-        HLS_to_BD        => HLS_to_BD,
-        BD_to_HLS        => BD_to_HLS,
+        HLS_to_BD        => HLS_to_BD(0),
+        BD_to_HLS        => BD_to_HLS(0),
         one_ms_interrupt => free_running_1ms,
         de               => de
+    );
+    
+    spis_i: entity work.spis_if
+    generic map(HLS_EN => HLS_EN)
+    port map(
+        clk              => clk,
+        sync_rst         => sync_rst,
+        registers        => registers,
+        regs_updating    => regs_updating,
+        --regs_reading     => regs_reading,
+        internal_regs    => internal_regs_spis,
+        internal_regs_we => internal_regs_we_spis,
+        HLS_to_BD        => HLS_to_BD(1),
+        BD_to_HLS        => BD_to_HLS(1)
     );
     
     ios_i: entity work.app_ios
