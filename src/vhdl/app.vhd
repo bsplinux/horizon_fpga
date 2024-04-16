@@ -53,6 +53,7 @@ architecture RTL of app is
     signal power_2_ios                 : power_2_ios_t;
     signal de                          : std_logic_vector(8 downto 0);
     signal fans_en, fans_ok            : std_logic;
+    signal zero_cross                  : std_logic;
 begin
     process(clk)
     begin
@@ -211,7 +212,8 @@ begin
         internal_regs    => internal_regs_spis,
         internal_regs_we => internal_regs_we_spis,
         HLS_to_BD        => HLS_to_BD(1),
-        BD_to_HLS        => BD_to_HLS(1)
+        BD_to_HLS        => BD_to_HLS(1),
+        zero_cross       => zero_cross
     );
     
     ios_i: entity work.app_ios
@@ -242,7 +244,8 @@ begin
         power_2_ios      => power_2_ios,
         free_running_1ms => free_running_1ms,
         fans_en          => fans_en,
-        fans_ok          => fans_ok
+        fans_ok          => fans_ok,
+        zero_cross       => zero_cross
     );
     
 end architecture RTL;

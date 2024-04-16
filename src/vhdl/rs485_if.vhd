@@ -192,6 +192,7 @@ begin
                 hls_rstn <= '0';
                 one_ms_error_s := '0';
             else
+                hls_rstn <= '1';
                 if (one_ms_error_s = '0' and one_ms_error = '1') or sync_rst = '1' or 
                     (registers(UARTS_CONTROL)(UARTS_CONTROL_RST) = '1' and regs_updating(UARTS_CONTROL) = '1') then
                         hls_rstn <= '0';

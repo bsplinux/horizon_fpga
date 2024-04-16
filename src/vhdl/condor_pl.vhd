@@ -13,7 +13,7 @@ entity condor_pl is
         SYNTHESIS_TIME       : std_logic_vector(31 downto 0) := X"DEADBEEF";
         SIM_INPUT_FILE_NAME  : string                        := "no_file";
         SIM_OUTPUT_FILE_NAME : string                        := "no_file";
-        HLS_EN               : boolean                       := false
+        HLS_EN               : boolean                       := true
     );
     Port ( 
         DDR_addr : inout STD_LOGIC_VECTOR ( 14 downto 0 );

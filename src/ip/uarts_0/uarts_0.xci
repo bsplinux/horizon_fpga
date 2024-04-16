@@ -3,7 +3,7 @@
   "ip_inst": {
     "xci_name": "uarts_0",
     "component_reference": "Growings:hls:uarts:1.0",
-    "ip_revision": "2113515775",
+    "ip_revision": "2113517322",
     "gen_directory": ".",
     "parameters": {
       "component_parameters": {
@@ -54,7 +54,7 @@
       },
       "runtime_parameters": {
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
-        "IPREVISION": [ { "value": "2113515775" } ],
+        "IPREVISION": [ { "value": "2113517322" } ],
         "MANAGED": [ { "value": "TRUE" } ],
         "OUTPUTDIR": [ { "value": "." } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],

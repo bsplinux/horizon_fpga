@@ -17,7 +17,8 @@ entity spis_if is
         internal_regs    : out reg_array_t;
         internal_regs_we : out reg_slv_array_t;
         HLS_to_BD        : out HLS_axim_to_interconnect_t;
-        BD_to_HLS        : in  HLS_axim_from_interconnect_t
+        BD_to_HLS        : in  HLS_axim_from_interconnect_t;
+        zero_cross       : out std_logic
     );
 end entity spis_if;
 
@@ -182,6 +183,7 @@ begin
             if sync_rst then
                 hls_rstn <= '0';
             else
+                hls_rstn <= '1';
                 if sync_rst = '1' or (registers(SPIS_CONTROL)(SPIS_CONTROL_RST) = '1' and regs_updating(SPIS_CONTROL) = '1') then
                     hls_rstn <= '0';
                 end if;                
@@ -277,6 +279,65 @@ begin
             spis_d_1           => spis_d_1, -- has 4 chans
             spis_d_2           => spis_d_2  -- has 8 chans
         );
+    
+        zero_cross_sm_pr: process(clk)
+            type zc_sm is (idle, plus1, plus2, plus3, zc);
+            variable state : zc_sm;
+            variable v : unsigned(11 downto 0);
+            constant MID  : unsigned(11 downto 0) := X"800";
+            constant HIGH : unsigned(11 downto 0) := MID + 102;
+        begin
+            if rising_edge(clk) then
+                if sync_rst then
+                    zero_cross <= '0';
+                    state := idle;
+                else
+                    if spis_d_2_ap_vld = '1' then  -- sm operates every time we have a new sample
+                        v := unsigned(spis_d_2(27 downto 16)); -- take chan 1 
+                        
+                        -- next state logic
+                        case state is 
+                            when idle =>
+                                if v < HIGH and v > MID then
+                                    state := plus1;
+                                end if;
+                            when plus1 =>
+                                if v < HIGH and v > MID then
+                                    state := plus2;
+                                else
+                                    state := idle;
+                                end if;
+                            when plus2 =>
+                                if v < HIGH and v > MID then
+                                    state := plus3;
+                                else
+                                    state := idle;
+                                end if;
+                            when plus3 =>
+                                if v < HIGH and v > MID then
+                                    state := plus3;
+                                elsif  v <= MID then
+                                    state := zc;
+                                else
+                                    state := idle;
+                                end if;
+                            when zc =>
+                                state := idle;
+                        end case;
+                        
+                        -- output logic
+                        zero_cross <= '0';
+                        case state is 
+                            when zc =>
+                                zero_cross <= '0';
+                            when others =>
+                                null;
+                        end case;
+                    end if;
+                end if;
+            end if;
+        end process;
+            
     else generate
         
     end generate gen_hls;

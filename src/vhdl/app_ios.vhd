@@ -48,10 +48,10 @@ begin
                 app_2_IOs.ECTCU_INH_FPGA     <= '0';
                 app_2_IOs.P_OUT_STATUS_FPGA  <= '0';
                 app_2_IOs.CCTCU_INH_FPGA     <= '0';
-                app_2_IOs.SHUTDOWN_OUT_FPGA  <= '0';
+                app_2_IOs.SHUTDOWN_OUT_FPGA  <= '1'; -- normally high
                 app_2_IOs.RESET_OUT_FPGA     <= '1'; -- normally high
                 app_2_IOs.SPARE_OUT_FPGA     <= '0';
-                app_2_IOs.ESHUTDOWN_OUT_FPGA <= '0';
+                app_2_IOs.ESHUTDOWN_OUT_FPGA <= '1'; -- normally high
                 app_2_IOs.RELAY_1PH_FPGA     <= '0';
                 app_2_IOs.RELAY_3PH_FPGA     <= '0';
                 app_2_IOs.FAN_EN3_FPGA       <= '0';

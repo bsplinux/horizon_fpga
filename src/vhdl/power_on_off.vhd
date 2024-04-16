@@ -19,7 +19,8 @@ entity power_on_off is
         free_running_1ms : in  std_logic;
         -- fans
         fans_en          : out std_logic;
-        fans_ok          : in  std_logic
+        fans_ok          : in  std_logic;
+        zero_cross       : in  std_logic
     );
 end entity power_on_off;
 
@@ -30,6 +31,7 @@ architecture RTL of power_on_off is
     constant MSEC_10   : integer := set_const(10,10,sim_on); -- in miliseconds
     constant MSEC_20   : integer := set_const(20,20,sim_on); -- in miliseconds
     constant MSEC_50   : integer := set_const(50,50,sim_on); -- in miliseconds
+    constant MSEC_51   : integer := set_const(51,51,sim_on); -- in miliseconds
     constant SEC_1     : integer := set_const(100,1000,sim_on); -- in miliseconds
     constant SEC_6_DEB : integer := set_const(600,6000 - MSEC_50,sim_on); -- 6 sec minus the debauns value (0.6 sec for sim)
     constant SEC_10    : integer := set_const(1000,10000,sim_on); -- 10 sec (1 sec for sim)
@@ -76,10 +78,10 @@ begin
                 power_2_ios.EN_PSU_9_FB        <= '0';
                 power_2_ios.EN_PSU_10_FB       <= '0';
                 power_2_ios.RESET_OUT_FPGA     <= '1';
-                power_2_ios.SHUTDOWN_OUT_FPGA  <= '0';
+                power_2_ios.SHUTDOWN_OUT_FPGA  <= '1';
                 relay_1p_on_request            <= '0';
                 power_2_ios.RELAY_3PH_FPGA     <= '0';
-                power_2_ios.ESHUTDOWN_OUT_FPGA <= '0';
+                power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                 cnt := 0;
                 fans_on <= '0';
                 turn_on_tcu <= '0';
@@ -174,8 +176,8 @@ begin
                 
                 -- output logic
                 power_2_ios.RESET_OUT_FPGA <= '1';
-                power_2_ios.SHUTDOWN_OUT_FPGA <= '0';
-                power_2_ios.ESHUTDOWN_OUT_FPGA <= '0';
+                power_2_ios.SHUTDOWN_OUT_FPGA <= '1';
+                power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                 turn_on_tcu <= '0';
                 turn_off_tcu <= '0';
                 keep_fans_on_10min <= '0';
@@ -222,7 +224,7 @@ begin
                             cnt := cnt + 1;
                         end if;
                     when e_shutdown =>
-                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '0';
                         power_2_ios.EN_PSU_1_FB <= '0';
                         power_2_ios.EN_PSU_9_FB <= '0';
                         relay_1p_on_request        <= '0';
@@ -232,7 +234,7 @@ begin
                         keep_fans_on_10min <= '1';
                         fans_on <= '0';
                     when e_shutdowning =>
-                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '0';
                         if cnt  = MSEC_10 then
                             power_2_ios.EN_PSU_2_FB <= '0';
                             power_2_ios.EN_PSU_6_FB <= '0';
@@ -245,6 +247,8 @@ begin
                         if cnt = MSEC_50 then
                             power_2_ios.EN_PSU_5_FB <= '0';
                             power_2_ios.EN_PFC_FB   <= '0';
+                        end if;
+                        if cnt = MSEC_51 then
                             turn_off_tcu <= '1';
                         end if;
                         
@@ -271,7 +275,7 @@ begin
                         end if;
                     when power_down =>
                         if cnt < SEC_10 then
-                            power_2_ios.SHUTDOWN_OUT_FPGA <= '1';
+                            power_2_ios.SHUTDOWN_OUT_FPGA <= '0';
                         else
                             power_2_ios.EN_PFC_FB      <= '0';
                             fans_on <= '0';
@@ -358,7 +362,6 @@ begin
     --based on relay_1p_on_request
     --end process;
     -- for now naive implementation
-    power_2_ios.RELAY_1PH_FPGA <= relay_1p_on_request;
     temperature_ok <= '1';
     input_ovp <= '0';--registers(IO_IN)(IO_IN_FAN_HALL1_FPGA);-- SIMULATING out of range
     output_ovp <= '0';
@@ -366,6 +369,24 @@ begin
     relay_1p_pg <= '1';
     relay_3p_pg <= '1';
         
+    zero_cross_pr: process(clk)
+        
+    begin
+        if rising_edge(clk) then
+            if sync_rst then
+                power_2_ios.RELAY_1PH_FPGA <= '0';
+            else
+                if relay_1p_on_request = '0' then
+                    power_2_ios.RELAY_1PH_FPGA <= '0';
+                else
+                    if zero_cross then
+                        power_2_ios.RELAY_1PH_FPGA <= '1';
+                    end if;
+                end if;
+            end if;
+        end if;
+    end process;
+    
     all_in_ragne_pr: process(clk)
     begin
         if rising_edge(clk) then
@@ -376,7 +397,6 @@ begin
     -- on off either from SM after edge detector + 1 ms delay
     -- or from command from UDP
     tcu_on_off_pr: process(clk)
-        variable cnt : std_logic;
         variable high_res_cnt: integer range 0 to HIGH_RES_1MSEC := 0;
         variable wait_for_on : std_logic;
         variable reg_ectcu, reg_cctcu : std_logic;
