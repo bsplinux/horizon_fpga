@@ -54,6 +54,7 @@ architecture RTL of app is
     signal de                          : std_logic_vector(8 downto 0);
     signal fans_en, fans_ok            : std_logic;
     signal zero_cross                  : std_logic;
+    signal uvp_error                   : std_logic;
 begin
     process(clk)
     begin
@@ -245,7 +246,17 @@ begin
         free_running_1ms => free_running_1ms,
         fans_en          => fans_en,
         fans_ok          => fans_ok,
-        zero_cross       => zero_cross
+        zero_cross       => zero_cross,
+        uvp_error        => uvp_error
     );
+    
+    uvp_i: entity work.uvp
+    port map(
+        clk       => clk,
+        sync_rst  => sync_rst,
+        registers => registers,
+        uvp_error => uvp_error
+    );
+    
     
 end architecture RTL;

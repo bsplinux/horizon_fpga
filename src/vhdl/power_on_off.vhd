@@ -20,7 +20,8 @@ entity power_on_off is
         -- fans
         fans_en          : out std_logic;
         fans_ok          : in  std_logic;
-        zero_cross       : in  std_logic
+        zero_cross       : in  std_logic;
+        uvp_error        : in  std_logic
     );
 end entity power_on_off;
 
@@ -47,7 +48,6 @@ architecture RTL of power_on_off is
     signal relay_1p_pg : std_logic;
     signal relay_3p_pg : std_logic;
     signal input_ovp : std_logic;
-    signal input_uvp : std_logic;
     signal output_ovp : std_logic;
     signal fans_on : std_logic; -- TODO drive fans from somewere
     signal all_inputs_good : std_logic; -- TODO drive this from somewere  
@@ -365,7 +365,6 @@ begin
     temperature_ok <= '1';
     input_ovp <= '0';--registers(IO_IN)(IO_IN_FAN_HALL1_FPGA);-- SIMULATING out of range
     output_ovp <= '0';
-    input_uvp <= '0';
     relay_1p_pg <= '1';
     relay_3p_pg <= '1';
         
@@ -390,7 +389,7 @@ begin
     all_in_ragne_pr: process(clk)
     begin
         if rising_edge(clk) then
-            all_in_range <= not input_ovp and not input_uvp and not output_ovp;
+            all_in_range <= not input_ovp and not uvp_error and not output_ovp;
         end if;
     end process;
     

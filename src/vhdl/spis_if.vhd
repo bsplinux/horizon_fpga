@@ -81,6 +81,19 @@ architecture RTL of spis_if is
     );
     END COMPONENT;
     
+    COMPONENT rms_0
+    PORT (
+        sample_ap_vld : IN STD_LOGIC;
+        d_out_ap_vld : OUT STD_LOGIC;
+        ap_clk : IN STD_LOGIC;
+        ap_rst : IN STD_LOGIC;
+        sample : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
+        n : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+        zero_cross : IN STD_LOGIC;
+        d_out : OUT STD_LOGIC_VECTOR(11 DOWNTO 0) 
+    );
+    END COMPONENT;
+
     signal spis_d_0_ap_vld : STD_LOGIC;
     signal spis_d_1_ap_vld : STD_LOGIC;
     signal spis_d_2_ap_vld : STD_LOGIC;
@@ -94,6 +107,16 @@ architecture RTL of spis_if is
     signal spis_d_2 : STD_LOGIC_VECTOR(127 DOWNTO 0);
     signal one100_us_error : std_logic;
     signal one100_us_tick: std_logic;
+    
+    signal zero_cross_error : std_logic;
+    signal n : std_logic_vector(7 downto 0);
+    
+    signal d_out0_ap_vld : STD_LOGIC;
+    signal d_out0 : STD_LOGIC_VECTOR(11 DOWNTO 0);
+    signal d_out1_ap_vld : STD_LOGIC;
+    signal d_out1 : STD_LOGIC_VECTOR(11 DOWNTO 0);
+    signal d_out2_ap_vld : STD_LOGIC;
+    signal d_out2 : STD_LOGIC_VECTOR(11 DOWNTO 0);
 begin
     us100_tick_pr: process(clk)
         constant CLKS_IN_100US : integer := set_const(2,10000,sim_on);-- 2 clocks for simulation using 100 khz clock and 10,000 clocks 100 us for real world using 100MHz clock
@@ -218,6 +241,13 @@ begin
         internal_regs(SPIS_STATUS)(SPIS_STATUS_BUSY) <= not ap_idle;
         internal_regs(SPIS_STATUS)(SPIS_STATUS_100US_ERR) <= one100_us_error;
         
+        internal_regs_we(VSNS_PH1) <= d_out0_ap_vld;
+        internal_regs_we(VSNS_PH2) <= d_out1_ap_vld;
+        internal_regs_we(VSNS_PH3) <= d_out2_ap_vld;
+        internal_regs(VSNS_PH1)(VSNS_PH_V) <= d_out0;
+        internal_regs(VSNS_PH2)(VSNS_PH_V) <= d_out1;
+        internal_regs(VSNS_PH3)(VSNS_PH_V) <= d_out2;
+        
     end process;
     
     gen_hls: if HLS_EN generate
@@ -280,63 +310,54 @@ begin
             spis_d_2           => spis_d_2  -- has 8 chans
         );
     
-        zero_cross_sm_pr: process(clk)
-            type zc_sm is (idle, plus1, plus2, plus3, zc);
-            variable state : zc_sm;
-            variable v : unsigned(11 downto 0);
-            constant MID  : unsigned(11 downto 0) := X"800";
-            constant HIGH : unsigned(11 downto 0) := MID + 102;
-        begin
-            if rising_edge(clk) then
-                if sync_rst then
-                    zero_cross <= '0';
-                    state := idle;
-                else
-                    if spis_d_2_ap_vld = '1' then  -- sm operates every time we have a new sample
-                        v := unsigned(spis_d_2(27 downto 16)); -- take chan 1 
-                        
-                        -- next state logic
-                        case state is 
-                            when idle =>
-                                if v < HIGH and v > MID then
-                                    state := plus1;
-                                end if;
-                            when plus1 =>
-                                if v < HIGH and v > MID then
-                                    state := plus2;
-                                else
-                                    state := idle;
-                                end if;
-                            when plus2 =>
-                                if v < HIGH and v > MID then
-                                    state := plus3;
-                                else
-                                    state := idle;
-                                end if;
-                            when plus3 =>
-                                if v < HIGH and v > MID then
-                                    state := plus3;
-                                elsif  v <= MID then
-                                    state := zc;
-                                else
-                                    state := idle;
-                                end if;
-                            when zc =>
-                                state := idle;
-                        end case;
-                        
-                        -- output logic
-                        zero_cross <= '0';
-                        case state is 
-                            when zc =>
-                                zero_cross <= '0';
-                            when others =>
-                                null;
-                        end case;
-                    end if;
-                end if;
-            end if;
-        end process;
+        zero_cross_i: entity work.zero_cross
+        port map(
+            clk              => clk,
+            sync_rst         => sync_rst,
+            d                => spis_d_2(27 downto 16),
+            d_valid          => spis_d_2_ap_vld,
+            zero_cross       => zero_cross,
+            zero_cross_error => zero_cross_error,
+            n                => n
+        );
+        
+        rms_i0: rms_0
+        port map(
+            sample_ap_vld => spis_d_2_ap_vld,
+            d_out_ap_vld  => d_out0_ap_vld,
+            ap_clk        => clk,
+            ap_rst        => sync_rst,
+            sample        => spis_d_2(27 downto 16),
+            n             => n,
+            zero_cross    => zero_cross,
+            d_out         => d_out0
+        );
+        
+        rms_i1: rms_0
+        port map(
+            sample_ap_vld => spis_d_2_ap_vld,
+            d_out_ap_vld  => d_out1_ap_vld,
+            ap_clk        => clk,
+            ap_rst        => sync_rst,
+            sample        => spis_d_2(43 downto 32),
+            n             => n,
+            zero_cross    => zero_cross,
+            d_out         => d_out1
+        );
+        
+        rms_i2: rms_0
+        port map(
+            sample_ap_vld => spis_d_2_ap_vld,
+            d_out_ap_vld  => d_out2_ap_vld,
+            ap_clk        => clk,
+            ap_rst        => sync_rst,
+            sample        => spis_d_2(59 downto 48),
+            n             => n,
+            zero_cross    => zero_cross,
+            d_out         => d_out2
+        );
+        
+        
             
     else generate
         

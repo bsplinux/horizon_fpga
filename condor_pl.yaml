@@ -7,6 +7,7 @@ hls_vendor: Growings
 hls_projects:
     uarts: solution1
     spis: solution1
+    rms: solution1
 vivado_project: condor_pl
 steps: 
     build_hls: true

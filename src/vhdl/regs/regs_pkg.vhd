@@ -115,6 +115,9 @@ package regs_pkg is
         SPI_RAW2_DC        ,
         SPI_RAW2_FE        ,
         SPI_RAW2_HG        ,
+        VSNS_PH1           ,
+        VSNS_PH2           ,
+        VSNS_PH3           ,
         NO_REG
     );
     -- NUM_REGS is the neto no. of registers if there are holes there should be another constant for the address space size 
@@ -224,7 +227,7 @@ package regs_pkg is
          97 => UART_RAW8_L        ,
          98 => UART_RAW8_H        ,
          99 => SPIS_CONTROL       ,
-        100 => SPIS_STATUS       ,
+        100 => SPIS_STATUS        ,
         101 => SPI_RAW0_BA        ,
         102 => SPI_RAW0_DC        ,
         103 => SPI_RAW1_BA        ,
@@ -233,6 +236,9 @@ package regs_pkg is
         106 => SPI_RAW2_DC        ,
         107 => SPI_RAW2_FE        ,
         108 => SPI_RAW2_HG        ,
+        109 => VSNS_PH1           ,
+        110 => VSNS_PH2           ,
+        111 => VSNS_PH3           ,
         others => NO_REG
     );   
          
@@ -357,6 +363,8 @@ package regs_pkg is
     subtype SPI_RAWX_XX_H_D_RANGE                  is integer range 27 downto 16;   
     subtype SPI_RAWX_XX_H_ID_RANGE                 is integer range 31 downto 28;   
     subtype SPI_RAWX_XX_H_RANGE                    is integer range 31 downto 16;   
+    -- fields for VSNS_PHX
+    subtype VSNS_PH_V                              is integer range 11 downto 0;
     --------------------------------------------------------------------------------    
     -- initial values for parameters 
     --------------------------------------------------------------------------------    
@@ -485,6 +493,9 @@ package regs_pkg is
         SPI_RAW2_DC                   => X"FFFFFFFF",
         SPI_RAW2_FE                   => X"FFFFFFFF",
         SPI_RAW2_HG                   => X"FFFFFFFF",
+        VSNS_PH1                      => X"00000FFF",
+        VSNS_PH2                      => X"00000FFF",
+        VSNS_PH3                      => X"00000FFF",
         others                        => X"00000000" -- constant regs are not writable
     );
     
@@ -582,6 +593,9 @@ package regs_pkg is
         SPI_RAW2_DC        => '1',
         SPI_RAW2_FE        => '1',
         SPI_RAW2_HG        => '1',
+        VSNS_PH1           => '1',
+        VSNS_PH2           => '1',
+        VSNS_PH3           => '1',
         others             => '0'
     );
 
@@ -612,7 +626,6 @@ package regs_pkg is
     function "or" (left, right: reg_slv_array_t) return reg_slv_array_t;
     function "and" (left, right: reg_slv_arrays_t) return reg_slv_arrays_t;
     function "or" (left, right: reg_slv_arrays_t) return reg_slv_arrays_t;
-    
     
 end;
 
@@ -659,6 +672,5 @@ package body regs_pkg is
         end loop;
         return o;
     end;
-    
     
 end regs_pkg;
