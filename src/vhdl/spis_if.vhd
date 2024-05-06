@@ -18,7 +18,7 @@ entity spis_if is
         internal_regs_we : out reg_slv_array_t;
         HLS_to_BD        : out HLS_axim_to_interconnect_t;
         BD_to_HLS        : in  HLS_axim_from_interconnect_t;
-        zero_cross       : out std_logic
+        z_cross          : out std_logic
     );
 end entity spis_if;
 
@@ -316,7 +316,7 @@ begin
             sync_rst         => sync_rst,
             d                => spis_d_2(27 downto 16),
             d_valid          => spis_d_2_ap_vld,
-            zero_cross       => zero_cross,
+            zero_cross       => z_cross,
             zero_cross_error => zero_cross_error,
             n                => n
         );
@@ -329,7 +329,7 @@ begin
             ap_rst        => sync_rst,
             sample        => spis_d_2(27 downto 16),
             n             => n,
-            zero_cross    => zero_cross,
+            zero_cross    => z_cross,
             d_out         => d_out0
         );
         
@@ -341,7 +341,7 @@ begin
             ap_rst        => sync_rst,
             sample        => spis_d_2(43 downto 32),
             n             => n,
-            zero_cross    => zero_cross,
+            zero_cross    => z_cross,
             d_out         => d_out1
         );
         
@@ -353,7 +353,7 @@ begin
             ap_rst        => sync_rst,
             sample        => spis_d_2(59 downto 48),
             n             => n,
-            zero_cross    => zero_cross,
+            zero_cross    => z_cross,
             d_out         => d_out2
         );
         

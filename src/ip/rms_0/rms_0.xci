@@ -2,8 +2,8 @@
   "schema": "xilinx.com:schema:json_instance:1.0",
   "ip_inst": {
     "xci_name": "rms_0",
-    "component_reference": "Growings:hls:rms:1.0",
-    "ip_revision": "2113540065",
+    "component_reference": "Growings:hls:rms:1.2",
+    "ip_revision": "2113545910",
     "gen_directory": ".",
     "parameters": {
       "component_parameters": {
@@ -29,7 +29,7 @@
       },
       "runtime_parameters": {
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
-        "IPREVISION": [ { "value": "2113540065" } ],
+        "IPREVISION": [ { "value": "2113545910" } ],
         "MANAGED": [ { "value": "TRUE" } ],
         "OUTPUTDIR": [ { "value": "." } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],

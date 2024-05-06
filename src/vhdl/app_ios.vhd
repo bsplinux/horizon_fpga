@@ -19,7 +19,8 @@ entity app_ios is
         app_2_ios        : out app_2_ios_t;
         power_2_ios      : in  power_2_ios_t;
         fan_pwm          : in  std_logic_vector(1 to 3);
-        de               : in  std_logic_vector(8 downto 0)
+        de               : in  std_logic_vector(8 downto 0);
+        lamp_stat        : in  std_logic
     );
 end entity app_ios;
 
@@ -117,7 +118,7 @@ begin
                     app_2_IOs.FAN_EN1_FPGA       <= power_2_ios.FAN_EN1_FPGA      ;
                     app_2_IOs.FAN_CTRL1_FPGA     <= fan_pwm(1);   
                     app_2_IOs.P_IN_STATUS_FPGA   <= power_2_ios.P_IN_STATUS_FPGA  ;
-                    app_2_IOs.POD_STATUS_FPGA    <= power_2_ios.POD_STATUS_FPGA   ;
+                    app_2_IOs.POD_STATUS_FPGA    <= lamp_stat;
                     app_2_IOs.ECTCU_INH_FPGA     <= power_2_ios.ECTCU_INH_FPGA    ;
                     app_2_IOs.P_OUT_STATUS_FPGA  <= power_2_ios.P_OUT_STATUS_FPGA ;
                     app_2_IOs.CCTCU_INH_FPGA     <= power_2_ios.CCTCU_INH_FPGA    ;

@@ -23,7 +23,7 @@ end entity zero_cross;
 architecture RTL of zero_cross is
 begin
         zero_cross_sm_pr: process(clk)
-            type zc_sm is (idle, positive, zc, zc_err);
+            type zc_sm is (idle, wt_pos, positive, zc, zc_err);
             variable state : zc_sm;
             variable v : std_logic_vector(D_SIZE - 1 downto 0);
             variable cnt : integer range 0 to 2**N_SIZE - 1 := 0;
@@ -44,13 +44,15 @@ begin
                         -- next state logic
                         case state is 
                             when idle =>
+                                state := wt_pos;
+                            when wt_pos =>
                                 if cnt >= CNT_MIN - 1 and v > MID then
                                     state := positive;
+                                elsif cnt >= CNT_MAX - 1 then
+                                    state := zc_err;
                                 end if;
                             when positive =>
-                                if v > MID then
-                                    state := positive;
-                                elsif  v <= MID then
+                                if v <= MID then
                                     state := zc;
                                 elsif CNT >= CNT_MAX - 1 then
                                     state := zc_err;

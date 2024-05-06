@@ -8,3 +8,4 @@ set_directive_interface -mode ap_vld "rms" sample
 set_directive_top -name rms "rms"
 set_directive_interface -mode ap_ctrl_none "rms"
 set_directive_pipeline -off=true "rms/main_loop"
+set_directive_interface -register "rms" d_out

@@ -3,12 +3,13 @@
 
 float update_rms(float rms, ap_uint<12> sample)
 {
+	const float calc = (6.72e-3 * 4096/3);
 	float res = 0;
 	if (sample > 2048)
 		res = sample - 2048;
 	else
 		res = 2048 - sample;
-	res = res / (6.72e-3 * 4096/3);
+	res = res / calc;
 	res = res * res;
 	res += rms;
 

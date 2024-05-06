@@ -11,9 +11,9 @@ add_files -tb ../src/c/hls/rms/rms_tb.cpp -cflags "-Wno-unknown-pragmas"
 open_solution "solution1" -flow_target vivado
 set_part {xa7z020-clg400-1Q}
 create_clock -period 10 -name default
-config_export -display_name rms -format ip_catalog -output ../vivado/repo/rms.zip -rtl verilog -vendor Growings
+config_export -display_name rms -format ip_catalog -output ../vivado/repo/rms.zip -rtl verilog -vendor Growings -version 1.2 -vivado_clock 10
 source "./rms/solution1/directives.tcl"
 csim_design
 csynth_design
 cosim_design
-export_design -format ip_catalog
+export_design -flow syn -rtl verilog -format ip_catalog -output ../vivado/repo/rms.zip

@@ -55,6 +55,12 @@ architecture RTL of app is
     signal fans_en, fans_ok            : std_logic;
     signal zero_cross                  : std_logic;
     signal uvp_error                   : std_logic;
+    signal lamp_stat                   : std_logic;
+    signal PSU_status                  : std_logic_vector(PSU_Status_range);
+    signal PSU_status_uvp              : std_logic_vector(PSU_Status_range);
+    signal PSU_status_uvp_mask         : std_logic_vector(PSU_Status_range);
+    signal PSU_status_pwr_on           : std_logic_vector(PSU_Status_range);
+    signal PSU_status_pwr_on_mask      : std_logic_vector(PSU_Status_range);
 begin
     process(clk)
     begin
@@ -95,10 +101,18 @@ begin
                     internal_regs(i) <= internal_regs_spis(i);
                 end loop;
                     
+                internal_regs_we(LOG_PSU_STATUS_L) <= '1';
+                internal_regs_we(LOG_PSU_STATUS_H) <= '1';
+                internal_regs(LOG_PSU_STATUS_L) <= PSU_status(31 downto 0);
+                internal_regs(LOG_PSU_STATUS_H) <= PSU_status(63 downto 32);
+                    
             end if;
         end if;
     end process;
 
+    PSU_status <=  (PSU_status_uvp and PSU_status_uvp_mask) or
+                   (PSU_status_pwr_on and PSU_status_pwr_on_mask);   
+    
     timer_pr : process(clk)
     begin
         if rising_edge(clk) then
@@ -214,7 +228,7 @@ begin
         internal_regs_we => internal_regs_we_spis,
         HLS_to_BD        => HLS_to_BD(1),
         BD_to_HLS        => BD_to_HLS(1),
-        zero_cross       => zero_cross
+        z_cross          => zero_cross
     );
     
     ios_i: entity work.app_ios
@@ -230,7 +244,8 @@ begin
         app_2_ios        => app_2_ios,
         power_2_ios      => power_2_ios,
         fan_pwm          => fan_pwm,
-        de               => de
+        de               => de,
+        lamp_stat        => lamp_stat
     );
     
     power_i: entity work.power_on_off
@@ -247,15 +262,27 @@ begin
         fans_en          => fans_en,
         fans_ok          => fans_ok,
         zero_cross       => zero_cross,
-        uvp_error        => uvp_error
+        uvp_error        => uvp_error,
+        PSU_Status      => PSU_Status_pwr_on,
+        PSU_Status_mask => PSU_Status_pwr_on_mask
     );
     
     uvp_i: entity work.uvp
     port map(
+        clk             => clk,
+        sync_rst        => sync_rst,
+        registers       => registers,
+        uvp_error       => uvp_error,
+        PSU_Status      => PSU_Status_uvp,
+        PSU_Status_mask => PSU_Status_uvp_mask
+    );
+    
+    lamp_i: entity work.lamp
+    port map(
         clk       => clk,
         sync_rst  => sync_rst,
         registers => registers,
-        uvp_error => uvp_error
+        lamp_stat => lamp_stat
     );
     
     

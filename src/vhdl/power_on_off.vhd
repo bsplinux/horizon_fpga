@@ -21,7 +21,9 @@ entity power_on_off is
         fans_en          : out std_logic;
         fans_ok          : in  std_logic;
         zero_cross       : in  std_logic;
-        uvp_error        : in  std_logic
+        uvp_error        : in  std_logic;
+        PSU_Status       : out std_logic_vector(PSU_Status_range);
+        PSU_Status_mask  : out std_logic_vector(PSU_Status_range)
     );
 end entity power_on_off;
 
@@ -55,6 +57,8 @@ architecture RTL of power_on_off is
     signal keep_fans_on_10min : std_logic; -- from main sm to fans control can be active althugh state could be idle or others. 
     signal turn_on_tcu, turn_off_tcu : std_logic;
     signal temperature_ok : std_logic;
+    signal power_on_ok : std_logic;
+    signal during_power_down : std_logic;
 begin
     internal_regs <= (others => X"00000000");
     internal_regs_we <= (others => '0');
@@ -88,6 +92,8 @@ begin
                 turn_off_tcu <= '0';
                 all_in_range_s := '0';
                 keep_fans_on_10min <= '0';
+                power_on_ok <= '0';
+                during_power_down <= '0';
             else
                 -- next state logic
                 case state is 
@@ -181,6 +187,8 @@ begin
                 turn_on_tcu <= '0';
                 turn_off_tcu <= '0';
                 keep_fans_on_10min <= '0';
+                power_on_ok <= '0';
+                during_power_down <= '0';
                 case state is 
                     when idle =>
                         cnt := 0;
@@ -262,6 +270,7 @@ begin
                             cnt := cnt + 1;
                         end if;
                     when power_on =>
+                        power_on_ok <= '1';
                         cnt := 0;
                         turn_on_tcu <= '1';
                     when poweron_low =>
@@ -274,6 +283,7 @@ begin
                             cnt := cnt + 1;
                         end if;
                     when power_down =>
+                        during_power_down <= '1';
                         if cnt < SEC_10 then
                             power_2_ios.SHUTDOWN_OUT_FPGA <= '0';
                         else
@@ -502,4 +512,32 @@ begin
         end if;
     end process;
     power_2_ios.SPARE_OUT_FPGA <= '0';
+    
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            PSU_Status <= (others => '0');
+            PSU_Status(psu_status_Power_Out_Status)    <= power_on_ok;
+            PSU_Status(psu_status_CC_TCU_Inhibit)      <= power_2_ios.CCTCU_INH_FPGA;
+            PSU_Status(psu_status_EC_TCU_Inhibit)      <= power_2_ios.ECTCU_INH_FPGA;
+            PSU_Status(psu_status_Reset)               <= not power_2_ios.RESET_OUT_FPGA;
+            PSU_Status(psu_status_Shutdown)            <= not power_2_ios.SHUTDOWN_OUT_FPGA;
+            PSU_Status(psu_status_Emergency_Shutdown)  <= not power_2_ios.ESHUTDOWN_OUT_FPGA;
+            PSU_Status(psu_status_System_Off)          <= during_power_down;
+            PSU_Status(psu_status_ON_OFF_Switch_State) <= power_on_debaunced;
+        end if;
+    end process;
+
+    PSU_Status_mask <= (
+        psu_status_Power_Out_Status    => '1',
+        psu_status_CC_TCU_Inhibit      => '1',
+        psu_status_EC_TCU_Inhibit      => '1',
+        psu_status_Reset               => '1',
+        psu_status_Shutdown            => '1',
+        psu_status_Emergency_Shutdown  => '1',
+        psu_status_System_Off          => '1',
+        psu_status_ON_OFF_Switch_State => '1',
+        others                         => '0'
+    );
+    
 end architecture RTL;

@@ -267,6 +267,10 @@ package regs_pkg is
     constant CONTROL_ALIVE_ERROR                    : integer := 5;
     constant CONTROL_ECTCU_INH                      : integer := 6;
     constant CONTROL_CCTCU_INH                      : integer := 7;
+    constant CONTROL_UVP_EN_PH1                     : integer := 8;
+    constant CONTROL_UVP_EN_PH2                     : integer := 9;
+    constant CONTROL_UVP_EN_PH3                     : integer := 10;
+    constant CONTROL_UVP_EN_DC                      : integer := 11;
     -- fields for GENERAL_STATUS
     constant STATUS_REGS_LOCKED                     : integer := 0;
     constant STATUS_STOP_LOG                        : integer := 0;
@@ -368,8 +372,9 @@ package regs_pkg is
     --------------------------------------------------------------------------------    
     -- initial values for parameters 
     --------------------------------------------------------------------------------    
-    constant REGS_VERSION_CONST     : std_logic_vector(full_reg_range) := X"00000002"; 
-    constant FPGA_VERSION_CONST     : std_logic_vector(full_reg_range) := X"00010005"; 
+    constant REGS_VERSION_CONST     : std_logic_vector(full_reg_range) := X"00000002";
+    constant FPGA_VERSION_CONST     : std_logic_vector(full_reg_range) := X"00010006"; 
+    -- 1.6  added uvp and lamp status partial implementation
     --------------------------------------------------------------------------------------------------------    
     -- Registers - Constants to declere reset values and used register (and bits) for logic minimization
     --------------------------------------------------------------------------------------------------------
@@ -377,7 +382,9 @@ package regs_pkg is
     constant REGISTERS_INIT : reg_array_t := (
         REGS_VERSION    => REGS_VERSION_CONST,
         FPGA_VERSION    => FPGA_VERSION_CONST,
-        --UARTS_CONTROL   => X"00000001", -- default enable uart 0
+        GENERAL_CONTROL => X"00000F00",  -- ebable 4 uvp checks
+        UARTS_CONTROL   => X"0000001F",  -- enable all uarts
+        SPIS_CONTROL    => X"00000007",  -- enable all spis
         others          => X"00000000"
     );
     
@@ -388,7 +395,7 @@ package regs_pkg is
                                                                                 
     constant WRITEABLE_REGS : reg_array_t := (
         BITSTREAM_TIME                => X"FFFFFFFF",
-        GENERAL_CONTROL               => X"000000FF",
+        GENERAL_CONTROL               => X"00000FFF",
         GENERAL_STATUS                => X"0000000F",
         TIMESTAMP_L                   => X"FFFFFFFF",
         TIMESTAMP_H                   => X"FFFFFFFF",
