@@ -61,6 +61,7 @@ architecture RTL of app is
     signal PSU_status_uvp_mask         : std_logic_vector(PSU_Status_range);
     signal PSU_status_pwr_on           : std_logic_vector(PSU_Status_range);
     signal PSU_status_pwr_on_mask      : std_logic_vector(PSU_Status_range);
+    signal lamp_temp                   : std_logic;
 begin
     process(clk)
     begin
@@ -85,6 +86,46 @@ begin
                 
                 internal_regs_we(IO_IN) <= internal_regs_we_ios(IO_IN);
                 internal_regs(IO_IN) <= internal_regs_ios(IO_IN);
+                
+                if registers(GENERAL_CONTROL)(CONTROL_IO_DEBUG_EN) = '0' then
+                    internal_regs_we(IO_OUT0) <= '1';
+                    internal_regs_we(IO_OUT1) <= '1';
+                    internal_regs(IO_OUT0)(IO_OUT0_FAN_EN1_FPGA      ) <= app_2_IOs.FAN_EN1_FPGA      ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_FAN_CTRL1_FPGA    ) <= app_2_IOs.FAN_CTRL1_FPGA    ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_P_IN_STATUS_FPGA  ) <= app_2_IOs.P_IN_STATUS_FPGA  ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_POD_STATUS_FPGA   ) <= app_2_IOs.POD_STATUS_FPGA   ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_ECTCU_INH_FPGA    ) <= app_2_IOs.ECTCU_INH_FPGA    ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_P_OUT_STATUS_FPGA ) <= app_2_IOs.P_OUT_STATUS_FPGA ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_CCTCU_INH_FPGA    ) <= app_2_IOs.CCTCU_INH_FPGA    ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_SHUTDOWN_OUT_FPGA ) <= app_2_IOs.SHUTDOWN_OUT_FPGA ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_RESET_OUT_FPGA    ) <= app_2_IOs.RESET_OUT_FPGA    ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_SPARE_OUT_FPGA    ) <= app_2_IOs.SPARE_OUT_FPGA    ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_ESHUTDOWN_OUT_FPGA) <= app_2_IOs.ESHUTDOWN_OUT_FPGA; 
+                    internal_regs(IO_OUT0)(IO_OUT0_RELAY_1PH_FPGA    ) <= app_2_IOs.RELAY_1PH_FPGA    ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_RELAY_3PH_FPGA    ) <= app_2_IOs.RELAY_3PH_FPGA    ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_FAN_EN3_FPGA      ) <= app_2_IOs.FAN_EN3_FPGA      ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_FAN_CTRL3_FPGA    ) <= app_2_IOs.FAN_CTRL3_FPGA    ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_FAN_EN2_FPGA      ) <= app_2_IOs.FAN_EN2_FPGA      ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_FAN_CTRL2_FPGA    ) <= app_2_IOs.FAN_CTRL2_FPGA    ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_EN_PFC_FB         ) <= app_2_IOs.EN_PFC_FB         ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_EN_PSU_1_FB       ) <= app_2_IOs.EN_PSU_1_FB       ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_EN_PSU_2_FB       ) <= app_2_IOs.EN_PSU_2_FB       ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_EN_PSU_5_FB       ) <= app_2_IOs.EN_PSU_5_FB       ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_EN_PSU_6_FB       ) <= app_2_IOs.EN_PSU_6_FB       ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_EN_PSU_7_FB       ) <= app_2_IOs.EN_PSU_7_FB       ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_EN_PSU_8_FB       ) <= app_2_IOs.EN_PSU_8_FB       ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_EN_PSU_9_FB       ) <= app_2_IOs.EN_PSU_9_FB       ; 
+                    internal_regs(IO_OUT0)(IO_OUT0_EN_PSU_10_FB      ) <= app_2_IOs.EN_PSU_10_FB      ; 
+                    internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_7        ) <= app_2_IOs.RS485_DE_7        ; 
+                    internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_8        ) <= app_2_IOs.RS485_DE_8        ; 
+                    internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_9        ) <= app_2_IOs.RS485_DE_9        ; 
+                    internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_1        ) <= app_2_IOs.RS485_DE_1        ; 
+                    internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_2        ) <= app_2_IOs.RS485_DE_2        ; 
+                    internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_3        ) <= app_2_IOs.RS485_DE_3        ; 
+                    internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_4        ) <= app_2_IOs.RS485_DE_4        ; 
+                    internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_5        ) <= app_2_IOs.RS485_DE_5        ; 
+                    internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_6        ) <= app_2_IOs.RS485_DE_6        ;            
+                end if;
                 
                 for i in log_regs_range loop
                     internal_regs_we(i) <= internal_regs_we_update_log(i);
@@ -245,7 +286,7 @@ begin
         power_2_ios      => power_2_ios,
         fan_pwm          => fan_pwm,
         de               => de,
-        lamp_stat        => lamp_stat
+        lamp_stat        => lamp_temp--lamp_stat
     );
     
     power_i: entity work.power_on_off
@@ -264,7 +305,8 @@ begin
         zero_cross       => zero_cross,
         uvp_error        => uvp_error,
         PSU_Status      => PSU_Status_pwr_on,
-        PSU_Status_mask => PSU_Status_pwr_on_mask
+        PSU_Status_mask => PSU_Status_pwr_on_mask,
+        lamp_temp       => lamp_temp
     );
     
     uvp_i: entity work.uvp

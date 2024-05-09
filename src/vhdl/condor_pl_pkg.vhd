@@ -169,6 +169,27 @@ package condor_pl_pkg is
 
     subtype PSU_Status_range is integer range 63 downto 0;
     
+    constant limit_uvp                              : integer := 0;
+    constant limit_uvp_ph1                          : integer := 1;
+    constant limit_uvp_ph2                          : integer := 2;
+    constant limit_uvp_ph3                          : integer := 3;
+    constant limit_uvp_dc                           : integer := 4;
+    constant limit_stat_p_in                        : integer := 5;
+    constant limit_stat_p_out                       : integer := 5;
+    constant limit_stat_115_ac_in                   : integer := 5;
+    constant limit_stat_28_dc_in                    : integer := 5;
+    constant limit_stat_115_ac_out                  : integer := 5;
+    constant limit_stat_dc1_out                     : integer := 5;
+    constant limit_stat_dc2_out                     : integer := 5;
+    constant limit_stat_dc5_out                     : integer := 5;
+    constant limit_stat_dc6_out                     : integer := 5;
+    constant limit_stat_dc7_out                     : integer := 5;
+    constant limit_stat_dc8_out                     : integer := 5;
+    constant limit_stat_dc9_out                     : integer := 5;
+    constant limit_stat_dc10_out                    : integer := 5;
+    constant limit_dummy                            : integer := 6;
+    subtype limits_range is integer range limit_dummy - 1 downto 0;
+
     -- ps interrupts index
     constant PS_INTR_MS                             : integer := 0;
     constant PS_INTR_UPDATE_FLASH                   : integer := 1;

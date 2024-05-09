@@ -70,5 +70,4 @@ if {[ext_files_exist]} {
 start_gui
 update_ips $params
 if $build_project {	gen_outputs $reset_runs}
-if $gen_multiboot { gen_multiboot $bin_type }
 if $close_when_done {exit}
