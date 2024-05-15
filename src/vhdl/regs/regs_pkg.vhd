@@ -373,7 +373,7 @@ package regs_pkg is
     -- initial values for parameters 
     --------------------------------------------------------------------------------    
     constant REGS_VERSION_CONST     : std_logic_vector(full_reg_range) := X"00000002";
-    constant FPGA_VERSION_CONST     : std_logic_vector(full_reg_range) := X"00010006"; 
+    constant FPGA_VERSION_CONST     : std_logic_vector(full_reg_range) := X"00000007"; 
     -- 1.6  added uvp and lamp status partial implementation
     --------------------------------------------------------------------------------------------------------    
     -- Registers - Constants to declere reset values and used register (and bits) for logic minimization

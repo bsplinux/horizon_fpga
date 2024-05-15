@@ -3,7 +3,7 @@
   "ip_inst": {
     "xci_name": "spis_0",
     "component_reference": "Growings:hls:spis:1.1",
-    "ip_revision": "2113545910",
+    "ip_revision": "2113558641",
     "gen_directory": ".",
     "parameters": {
       "component_parameters": {
@@ -54,7 +54,7 @@
       },
       "runtime_parameters": {
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
-        "IPREVISION": [ { "value": "2113545910" } ],
+        "IPREVISION": [ { "value": "2113558641" } ],
         "MANAGED": [ { "value": "TRUE" } ],
         "OUTPUTDIR": [ { "value": "." } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],
