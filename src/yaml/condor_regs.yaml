@@ -1,0 +1,342 @@
+define: &registers_version 0x00010003
+
+#first define the registers one by one
+reg_version: &reg_version
+  fpga_access : false
+  cpu_access : false
+  fields:
+    rev_minor: "15:0"
+    rev_major: "31:16"
+  
+reg_compile_time: &reg_compile_time
+  fpga_access : false
+  cpu_access : false
+  fields:
+    HOUR: "7:0"
+    YEAR: "15:8"
+    MONTH: "23:16"
+    DAY: "31:24"
+  
+reg_general_control: &reg_general_control
+  fpga_access: false
+  cpu_access: true
+  fields:
+    SW_RESET     : 0
+    IO_DEBUG_EN  : 1
+    EN_1MS_INTR  : 2
+    RLEASE_REGS  : 3
+    STOP_LOG_ACK : 4
+    ALIVE_ERROR  : 5
+    ECTCU_INH    : 6
+    CCTCU_INH    : 7
+    UVP_EN_PH1   : 8
+    UVP_EN_PH2   : 9
+    UVP_EN_PH3   : 10
+    UVP_EN_DC    : 11
+  used_bits: "11:0"
+
+reg_general_status: &reg_general_status 
+  fpga_access: true
+  cpu_access: false
+  fields:
+    REGS_LOCKED: 0
+    STOP_LOG   : 1
+  used_bits: "1:0"
+
+reg_d_int: &reg_d_int
+  fpga_access: true
+  cpu_access: false
+  used_bits: "31:0"
+
+reg_empty: &reg_empty
+    cpu_access: false
+
+reg_d: &reg_d
+  fpga_access: false
+  cpu_access: true
+  used_bits: "31:0"
+  
+reg_bdir: &reg_bdir
+  fpga_access: true
+  cpu_access: true
+  used_bits: "31:0"
+  
+reg_io_in: &reg_io_in
+  fpga_access: true
+  cpu_access: false
+  fields:
+    POWERON_FPGA    :   0 
+    FAN_PG1_FPGA    :   1 
+    FAN_HALL1_FPGA  :   2 
+    FAN_PG3_FPGA    :   3 
+    FAN_HALL3_FPGA  :   4 
+    FAN_PG2_FPGA    :   5 
+    FAN_HALL2_FPGA  :   6 
+    PG_BUCK_FB      :   7 
+    PG_PSU_1_FB     :   8 
+    PG_PSU_2_FB     :   9 
+    PG_PSU_5_FB     :  10 
+    PG_PSU_6_FB     :  11 
+    PG_PSU_7_FB     :  12 
+    PG_PSU_8_FB     :  13 
+    PG_PSU_9_FB     :  14 
+    PG_PSU_10_FB    :  15 
+    lamp_status_fpga:  16 
+    PH_A_ON_fpga    :  17 
+    PH_B_ON_fpga    :  18 
+    PH_C_ON_fpga    :  19
+    range           : "19:0"
+  used_bits: "19:0"
+  
+reg_io_out0: &reg_io_out0
+  fpga_access: false
+  cpu_access: true
+  fields:
+    FAN_EN1_FPGA       :  0
+    FAN_CTRL1_FPGA     :  1
+    P_IN_STATUS_FPGA   :  2
+    POD_STATUS_FPGA    :  3
+    ECTCU_INH_FPGA     :  4
+    P_OUT_STATUS_FPGA  :  5
+    CCTCU_INH_FPGA     :  6
+    SHUTDOWN_OUT_FPGA  :  7
+    RESET_OUT_FPGA     :  8
+    SPARE_OUT_FPGA     :  9
+    ESHUTDOWN_OUT_FPGA : 10
+    RELAY_1PH_FPGA     : 11
+    RELAY_3PH_FPGA     : 12
+    FAN_EN3_FPGA       : 13
+    FAN_CTRL3_FPGA     : 14
+    FAN_EN2_FPGA       : 15
+    FAN_CTRL2_FPGA     : 16
+    EN_PFC_FB          : 17
+    EN_PSU_1_FB        : 18
+    EN_PSU_2_FB        : 19
+    EN_PSU_5_FB        : 20
+    EN_PSU_6_FB        : 21
+    EN_PSU_7_FB        : 22
+    EN_PSU_8_FB        : 23
+    EN_PSU_9_FB        : 24
+    EN_PSU_10_FB       : 25 
+    range              : "25:0"
+  used_bits: "25:0"
+  
+reg_io_out1: &reg_io_out1
+  fpga_access: false
+  cpu_access: true
+  fields:
+    RS485_DE_7 : 0
+    RS485_DE_8 : 1
+    RS485_DE_9 : 2
+    RS485_DE_1 : 3
+    RS485_DE_2 : 4
+    RS485_DE_3 : 5
+    RS485_DE_4 : 6
+    RS485_DE_5 : 7
+    RS485_DE_6 : 8
+    range      : "8:0"
+  used_bits: "8:0"
+
+reg_sn_eti: &reg_sn_eti
+  fpga_access: false
+  cpu_access: true
+  fields:
+    SN        : "7:0"
+    SET_SN    : 8              
+    RESET_ETI : 9              
+  used_bits: "9:0"
+
+reg_pwm_ctl: &reg_pwm_ctl
+  fpga_access: false
+  cpu_access: true
+  fields:
+    PWM1_ACTIVE     : 0
+    PWM1_START_HIGH : 1
+    PWM2_ACTIVE     : 2
+    PWM2_START_HIGH : 3
+    PWM3_ACTIVE     : 4
+    PWM3_START_HIGH : 5  
+  used_bits: "5:0"
+
+reg_uarts_ctl: &reg_uarts_ctl
+  fpga_access: false
+  cpu_access: true
+  fields:
+    UARTS_CONTROL_EN_RANGE    : "8:0" 
+    UARTS_CONTROL_RST         :  9               
+    UARTS_CONTROL_1MS_ERR_CLR : 10              
+  used_bits: "10:0"
+  init: 0x1F
+
+reg_uarts_status: &reg_uarts_status
+  fpga_access: true
+  cpu_access: false
+  fields:
+    BUSY    : 0 
+    1MS_ERR : 1      
+  used_bits: "1:0"
+
+reg_spis_ctl: &reg_spis_ctl
+  fpga_access: false
+  cpu_access: true
+  fields:
+    SPIS_CONTROL_EN_RANGE      : "2:0" 
+    SPIS_CONTROL_RST           : 3               
+    SPIS_CONTROL_100US_ERR_CLR : 4                 
+  used_bits: "4:0"
+  init: 0x7
+
+reg_spis_status: &reg_spis_status
+  fpga_access: true
+  cpu_access: false
+  fields:
+    BUSY    : 0 
+    100US_ERR : 1      
+  used_bits: "1:0"
+
+reg_spi_raw: &reg_spi_raw
+  fpga_access: true
+  cpu_access: false
+  fields:
+    L_D_RANGE   : "11:0" 
+    L_ID_RANGE  : "15:12"
+    L_RANGE     : "15:0" 
+    H_D_RANGE   : "27:16"
+    H_ID_RANGE  : "31:28"
+    H_RANGE     : "31:16"
+  used_bits: "31:0"  
+    
+reg_vsns_ph: &reg_vsns_ph
+  fpga_access: true
+  cpu_access: false
+  fields:
+    PH_V   : "11:0" 
+  used_bits: "11:0"  
+
+# list of registers and blocks of registers with their address
+regs:
+  - REGS_VERSION: *reg_version
+    i: auto
+    init: *registers_version
+  - FPGA_VERSION: *reg_version
+    i: auto
+  - COMPILE_TIME: *reg_compile_time
+    i: auto
+  - BITSTREAM_TIME: *reg_d_int
+    i: auto
+  - GENERAL_CONTROL: *reg_general_control
+    i: auto
+    init: 0xF00
+  - GENERAL_STATUS: *reg_general_status
+    i: auto
+  - TIMESTAMP_L: *reg_d_int
+    i: auto
+  - TIMESTAMP_H: *reg_d_int
+    i: auto
+  - IO_IN: *reg_io_in
+    i: auto
+  - IO_OUT0: *reg_io_out0
+    i: auto
+  - IO_OUT1: *reg_io_out1
+    i: auto
+  - SN_ETI            : *reg_sn_eti 
+  - LOG_MESSAGE_ID    : *reg_d_int
+  - LOG_VDC_IN        : *reg_d_int
+  - LOG_VAC_IN_PH_A   : *reg_d_int
+  - LOG_VAC_IN_PH_B   : *reg_d_int
+  - LOG_VAC_IN_PH_C   : *reg_d_int
+  - LOG_I_DC_IN       : *reg_d_int
+  - LOG_I_AC_IN_PH_A  : *reg_d_int
+  - LOG_I_AC_IN_PH_B  : *reg_d_int
+  - LOG_I_AC_IN_PH_C  : *reg_d_int
+  - LOG_V_OUT_1       : *reg_d_int
+  - LOG_V_OUT_2       : *reg_d_int
+  - LOG_V_OUT_3_PH1   : *reg_d_int
+  - LOG_V_OUT_3_PH2   : *reg_d_int
+  - LOG_V_OUT_3_PH3   : *reg_d_int
+  - LOG_V_OUT_4       : *reg_d_int
+  - LOG_V_OUT_5       : *reg_d_int
+  - LOG_V_OUT_6       : *reg_d_int
+  - LOG_V_OUT_7       : *reg_d_int
+  - LOG_V_OUT_8       : *reg_d_int
+  - LOG_V_OUT_9       : *reg_d_int
+  - LOG_V_OUT_10      : *reg_d_int
+  - LOG_I_OUT_1       : *reg_d_int
+  - LOG_I_OUT_2       : *reg_d_int
+  - LOG_I_OUT_3_PH1   : *reg_d_int
+  - LOG_I_OUT_3_PH2   : *reg_d_int
+  - LOG_I_OUT_3_PH3   : *reg_d_int
+  - LOG_I_OUT_4       : *reg_d_int
+  - LOG_I_OUT_5       : *reg_d_int
+  - LOG_I_OUT_6       : *reg_d_int
+  - LOG_I_OUT_7       : *reg_d_int
+  - LOG_I_OUT_8       : *reg_d_int
+  - LOG_I_OUT_9       : *reg_d_int
+  - LOG_I_OUT_10      : *reg_d_int
+  - LOG_AC_POWER      : *reg_d_int
+  - LOG_FAN_SPEED     : *reg_d_int
+  - LOG_FAN1_SPEED    : *reg_d_int
+  - LOG_FAN2_SPEED    : *reg_d_int
+  - LOG_FAN3_SPEED    : *reg_d_int
+  - LOG_VOLUME_SIZE_L : *reg_d_int
+  - LOG_VOLUME_SIZE_H : *reg_d_int
+  - LOG_LOGFILE_SIZE_L: *reg_d_int
+  - LOG_LOGFILE_SIZE_H: *reg_d_int
+  - LOG_T1            : *reg_d_int
+  - LOG_T2            : *reg_d_int
+  - LOG_T3            : *reg_d_int
+  - LOG_T4            : *reg_d_int
+  - LOG_T5            : *reg_d_int
+  - LOG_T6            : *reg_d_int
+  - LOG_T7            : *reg_d_int
+  - LOG_T8            : *reg_d_int
+  - LOG_T9            : *reg_d_int
+  - LOG_ETM           : *reg_bdir
+  - LOG_MAJOR         : *reg_d_int
+  - LOG_MINOR         : *reg_d_int
+  - LOG_BUILD         : *reg_d_int
+  - LOG_HOTFIX        : *reg_d_int
+  - LOG_SN            : *reg_bdir
+  - LOG_PSU_STATUS_L  : *reg_d_int
+  - LOG_PSU_STATUS_H  : *reg_d_int
+  - LOG_LAMP_IND      : *reg_d_int
+  - PWM_CTL           : *reg_pwm_ctl
+  - PWM1_LOW          : *reg_d
+  - PWM1_HIGH         : *reg_d
+  - PWM2_LOW          : *reg_d
+  - PWM2_HIGH         : *reg_d
+  - PWM3_LOW          : *reg_d
+  - PWM3_HIGH         : *reg_d
+  - UARTS_CONTROL     : *reg_uarts_ctl
+  - UARTS_STATUS      : *reg_uarts_status
+  - UART_RAW0_L       : *reg_d_int
+  - UART_RAW0_H       : *reg_d_int
+  - UART_RAW1_L       : *reg_d_int
+  - UART_RAW1_H       : *reg_d_int
+  - UART_RAW2_L       : *reg_d_int
+  - UART_RAW2_H       : *reg_d_int
+  - UART_RAW3_L       : *reg_d_int
+  - UART_RAW3_H       : *reg_d_int
+  - UART_RAW4_L       : *reg_d_int
+  - UART_RAW4_H       : *reg_d_int
+  - UART_RAW5_L       : *reg_d_int
+  - UART_RAW5_H       : *reg_d_int
+  - UART_RAW6_L       : *reg_d_int
+  - UART_RAW6_H       : *reg_d_int
+  - UART_RAW7_L       : *reg_d_int
+  - UART_RAW7_H       : *reg_d_int
+  - UART_RAW8_L       : *reg_d_int
+  - UART_RAW8_H       : *reg_d_int
+  - SPIS_CONTROL      : *reg_spis_ctl
+  - SPIS_STATUS       : *reg_spis_status
+  - SPI_RAW0_BA       : *reg_spi_raw
+  - SPI_RAW0_DC       : *reg_spi_raw
+  - SPI_RAW1_BA       : *reg_spi_raw
+  - SPI_RAW1_DC       : *reg_spi_raw
+  - SPI_RAW2_BA       : *reg_spi_raw
+  - SPI_RAW2_DC       : *reg_spi_raw
+  - SPI_RAW2_FE       : *reg_spi_raw
+  - SPI_RAW2_HG       : *reg_spi_raw
+  - VSNS_PH1          : *reg_vsns_ph
+  - VSNS_PH2          : *reg_vsns_ph
+  - VSNS_PH3          : *reg_vsns_ph
