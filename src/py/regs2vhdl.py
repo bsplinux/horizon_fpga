@@ -9,6 +9,7 @@ from datetime import datetime
 # 4. add timestam of creation of pkg in a comment
 # 5. work out an option to set specific registers init from vhdl and not yaml 
 # done: 6. don't require the i: in the register list defaluting to auto
+# done: 7. add alingment to help visibility (added using str.r/ljust(20/30) but not using str.r/ljust(20/30)[:20/30] to preserve name even if it is longer than expected)
 
 def regs2vhdl(regs_def, vhdl_file_name):
     vhdl_f = open(vhdl_file_name, 'w')
@@ -32,7 +33,7 @@ def regs2vhdl(regs_def, vhdl_file_name):
     vhdl_f.write("  type regs_names_t is (\n")
     for reg in regs_def['regs']:
         reg_name = next(iter(reg))
-        vhdl_f.write("      " + reg_name + ",\n")
+        vhdl_f.write("      " + reg_name.ljust(20) + ",\n")
     vhdl_f.write("      NO_REG\n  );\n")
     
     # build address space:
@@ -49,12 +50,6 @@ def regs2vhdl(regs_def, vhdl_file_name):
                 addr_space = reg['i'] + 1
         else: 
             addr_space = addr_space + 1
-#    for reg in regs_def['regs']:
-#        if 'i' in regs_def['regs'][reg]: 
-#            if reg['i'] == 'auto':
-#                addr_space = addr_space + 1
-#            else:
-#                addr_space = reg['i'] + 1
     vhdl_f.write("  constant REGS_SPACE_SIZE : natural := " + str(addr_space) + ";\n\n")
     vhdl_f.write("  type regs_a_t is array(REGS_SPACE_SIZE - 1 downto 0) of regs_names_t;\n")
     #     write address space
@@ -69,13 +64,7 @@ def regs2vhdl(regs_def, vhdl_file_name):
                 i = reg['i']
         else: 
             i = i + 1
-#    for reg in regs_def['regs']:
-#        if reg['i'] == 'auto':
-#            i = i + 1
-#        else:
-#            i = reg['i']
-        #reg_name = next(iter(reg))
-        vhdl_f.write("      " + str(i) + " => " + reg + ",\n")
+        vhdl_f.write("      " + str(i).rjust(3) + " => " + reg.ljust(20) + ",\n")
     vhdl_f.write("      others => NO_REG\n  );\n\n")
     
     # adding some array types
@@ -94,12 +83,12 @@ def regs2vhdl(regs_def, vhdl_file_name):
         if 'fields' in regs_def['regs'][reg_index][reg].keys():
             vhdl_f.write("  -- fields for " + reg + '\n')
             for field, val in regs_def['regs'][reg_index][reg]['fields'].items():
+                reg_field = reg + '_' + field
                 if isinstance(val,str):
                     i = re.findall(r'\d+', val)
-                    vhdl_f.write("  subtype " + reg + '_' + field + ' is integer range ' + i[0] + ' downto ' + i[1] + ';\n')
+                    vhdl_f.write("  subtype  " + reg_field.ljust(30) + ' is integer range ' + i[0].rjust(2) + ' downto ' + i[1].rjust(2) + ';\n')
                 else:
-                    vhdl_f.write("  constant " + reg + '_' + field + ' : integer := ' + str(val) + ';\n')
-                #print(field, val)
+                    vhdl_f.write("  constant " + reg_field.ljust(30) + ' : integer := ' + str(val).rjust(2) + ';\n')
 
     # registers reset value
     vhdl_f.write("\n  ----------------------------------------------------------------------------------\n")  
@@ -119,8 +108,8 @@ def regs2vhdl(regs_def, vhdl_file_name):
             init_val = regs_def['regs'][reg_index]['init']
         if init_val != 0:
             hex_init = "%0.8X" % init_val
-            vhdl_f.write("    " + reg + " => X\"" + hex_init + '\",\n')
-    vhdl_f.write("    others => X\"00000000\"\n  );\n\n")
+            vhdl_f.write("    " + reg.ljust(20) + " => X\"" + hex_init + '\",\n')
+    vhdl_f.write("    others               => X\"00000000\"\n  );\n\n")
 
     # registers that can be read
     vhdl_f.write("  ----------------------------------------------------------------------------------\n")  
@@ -151,8 +140,8 @@ def regs2vhdl(regs_def, vhdl_file_name):
             for bit in all_bits:
                 used |= (1<<int(bit))
                 hex_writable = "%0.8X" % used
-            vhdl_f.write("    " + reg + " => X\"" + hex_writable + '\",\n')
-    vhdl_f.write("    others => X\"00000000\"\n  );\n\n")
+            vhdl_f.write("    " + reg.ljust(20) + " => X\"" + hex_writable + '\",\n')
+    vhdl_f.write("    others               => X\"00000000\"\n  );\n\n")
 
    # registers writeable by FPGA
     vhdl_f.write("  ----------------------------------------------------------------------------------\n")  
@@ -165,8 +154,8 @@ def regs2vhdl(regs_def, vhdl_file_name):
         if 'fpga_access' in regs_def['regs'][reg_index][reg].keys():
             accss = regs_def['regs'][reg_index][reg]['fpga_access']
             if str(accss).lower() == 'true':
-                vhdl_f.write("    " + reg + " => '1',\n")
-    vhdl_f.write("    others => '0'\n  );\n\n")
+                vhdl_f.write("    " + reg.ljust(20) + " => '1',\n")
+    vhdl_f.write("    others               => '0'\n  );\n\n")
 
     # registers writeable by CPU
     vhdl_f.write("  ----------------------------------------------------------------------------------\n")  
@@ -179,8 +168,8 @@ def regs2vhdl(regs_def, vhdl_file_name):
         if 'cpu_access' in regs_def['regs'][reg_index][reg].keys():
             accss = regs_def['regs'][reg_index][reg]['cpu_access']
             if str(accss).lower() == 'true':
-                vhdl_f.write("    " + reg + " => '1',\n")
-    vhdl_f.write("    others => '0'\n  );\n\n")
+                vhdl_f.write("    " + reg.ljust(20) + " => '1',\n")
+    vhdl_f.write("    others               => '0'\n  );\n\n")
 
     vhdl_f.write("  --------------------------------------------------------------------------------------------------------\n")    
     vhdl_f.write("  -- Functions\n")

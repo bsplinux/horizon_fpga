@@ -5,8 +5,8 @@ reg_version: &reg_version
   fpga_access : false
   cpu_access : false
   fields:
-    rev_minor: "15:0"
-    rev_major: "31:16"
+    REV_MINOR: "15:0"
+    REV_MAJOR: "31:16"
   
 reg_compile_time: &reg_compile_time
   fpga_access : false
@@ -89,7 +89,7 @@ reg_io_in: &reg_io_in
   used_bits: "19:0"
   
 reg_io_out0: &reg_io_out0
-  fpga_access: false
+  fpga_access: true
   cpu_access: true
   fields:
     FAN_EN1_FPGA       :  0
@@ -122,7 +122,7 @@ reg_io_out0: &reg_io_out0
   used_bits: "25:0"
   
 reg_io_out1: &reg_io_out1
-  fpga_access: false
+  fpga_access: true
   cpu_access: true
   fields:
     RS485_DE_7 : 0
@@ -162,9 +162,9 @@ reg_uarts_ctl: &reg_uarts_ctl
   fpga_access: false
   cpu_access: true
   fields:
-    UARTS_CONTROL_EN_RANGE    : "8:0" 
-    UARTS_CONTROL_RST         :  9               
-    UARTS_CONTROL_1MS_ERR_CLR : 10              
+    EN_RANGE    : "8:0" 
+    RST         :  9               
+    1MS_ERR_CLR : 10              
   used_bits: "10:0"
   init: 0x1F
 
@@ -180,9 +180,9 @@ reg_spis_ctl: &reg_spis_ctl
   fpga_access: false
   cpu_access: true
   fields:
-    SPIS_CONTROL_EN_RANGE      : "2:0" 
-    SPIS_CONTROL_RST           : 3               
-    SPIS_CONTROL_100US_ERR_CLR : 4                 
+    EN_RANGE      : "2:0" 
+    RST           : 3               
+    100US_ERR_CLR : 4                 
   used_bits: "4:0"
   init: 0x7
 
