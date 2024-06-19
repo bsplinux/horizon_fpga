@@ -78,7 +78,7 @@ begin
                 app_2_IOs.RS485_DE_5         <= '0';
                 app_2_IOs.RS485_DE_6         <= '0';             
             else
-                if registers(GENERAL_CONTROL)(CONTROL_IO_DEBUG_EN) = '1' then
+                if registers(GENERAL_CONTROL)(GENERAL_CONTROL_IO_DEBUG_EN) = '1' then
                     app_2_IOs.FAN_EN1_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN1_FPGA      );
                     app_2_IOs.FAN_CTRL1_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL1_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM1_ACTIVE) = '0' else fan_pwm(1);
                     app_2_IOs.P_IN_STATUS_FPGA   <= registers(IO_OUT0)(IO_OUT0_P_IN_STATUS_FPGA  );

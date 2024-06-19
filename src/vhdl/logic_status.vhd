@@ -67,9 +67,9 @@ begin
                 stat_dc9_out  <= '0';
                 stat_dc10_out <= '0';
 
-                if ((unsigned(registers(VSNS_PH1)(VSNS_PH_V)) > 108) and (unsigned(registers(VSNS_PH1)(VSNS_PH_V)) < 118)) and
-                   ((unsigned(registers(VSNS_PH2)(VSNS_PH_V)) > 108) and (unsigned(registers(VSNS_PH2)(VSNS_PH_V)) < 118)) and
-                   ((unsigned(registers(VSNS_PH3)(VSNS_PH_V)) > 108) and (unsigned(registers(VSNS_PH3)(VSNS_PH_V)) < 118))  then
+                if ((unsigned(registers(VSNS_PH1)(VSNS_PH1_PH_V)) > 108) and (unsigned(registers(VSNS_PH1)(VSNS_PH1_PH_V)) < 118)) and
+                   ((unsigned(registers(VSNS_PH2)(VSNS_PH2_PH_V)) > 108) and (unsigned(registers(VSNS_PH2)(VSNS_PH2_PH_V)) < 118)) and
+                   ((unsigned(registers(VSNS_PH3)(VSNS_PH3_PH_V)) > 108) and (unsigned(registers(VSNS_PH3)(VSNS_PH2_PH_V)) < 118))  then
                    stat_115_ac_in   <= '1';
                 end if;
                 

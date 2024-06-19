@@ -76,8 +76,8 @@ begin
 
                 -- general status
                 internal_regs_we(GENERAL_STATUS) <= '1';
-                internal_regs(GENERAL_STATUS)(STATUS_REGS_LOCKED) <= internal_regs_update_log(GENERAL_STATUS)(STATUS_REGS_LOCKED);
-                internal_regs(GENERAL_STATUS)(STATUS_STOP_LOG)    <= stop_log_to_cpu;
+                internal_regs(GENERAL_STATUS)(GENERAL_STATUS_REGS_LOCKED) <= internal_regs_update_log(GENERAL_STATUS)(GENERAL_STATUS_REGS_LOCKED);
+                internal_regs(GENERAL_STATUS)(GENERAL_STATUS_STOP_LOG)    <= stop_log_to_cpu;
                 -- timestamp
                 internal_regs_we(TIMESTAMP_L) <= '1';
                 internal_regs(TIMESTAMP_L)    <= timer(31 downto 0);
@@ -87,7 +87,7 @@ begin
                 internal_regs_we(IO_IN) <= internal_regs_we_ios(IO_IN);
                 internal_regs(IO_IN) <= internal_regs_ios(IO_IN);
                 
-                if registers(GENERAL_CONTROL)(CONTROL_IO_DEBUG_EN) = '0' then
+                if registers(GENERAL_CONTROL)(GENERAL_CONTROL_IO_DEBUG_EN) = '0' then
                     internal_regs_we(IO_OUT0) <= '1';
                     internal_regs_we(IO_OUT1) <= '1';
                     internal_regs(IO_OUT0)(IO_OUT0_FAN_EN1_FPGA      ) <= app_2_IOs.FAN_EN1_FPGA      ; 
@@ -169,8 +169,8 @@ begin
                 sw_reset    <= '0';
                 sw_rst_save := '0';
             else
-                sw_reset    <= registers(GENERAL_CONTROL)(CONTROL_SW_RESET) and not sw_rst_save;
-                sw_rst_save := registers(GENERAL_CONTROL)(CONTROL_SW_RESET);
+                sw_reset    <= registers(GENERAL_CONTROL)(GENERAL_CONTROL_SW_RESET) and not sw_rst_save;
+                sw_rst_save := registers(GENERAL_CONTROL)(GENERAL_CONTROL_SW_RESET);
             end if;
         end if;
     end process;

@@ -44,7 +44,7 @@ begin
                 cnt := 0;
                 p1_error <= '1';
             else
-                v := to_integer(unsigned(registers(VSNS_PH1)(VSNS_PH_V)));
+                v := 0; --FIXME to_integer(unsigned(registers(VSNS_PH1)(VSNS_PH1_PH_V)));
                 -- next state logic
                 case state is 
                     when idle =>
@@ -91,7 +91,7 @@ begin
                     when error =>
                         cnt := 0;
                 end case;
-                if registers(GENERAL_CONTROL)(CONTROL_UVP_EN_PH1) = '0' then
+                if registers(GENERAL_CONTROL)(GENERAL_CONTROL_UVP_EN_PH1) = '0' then
                     p1_error <= '0';
                 end if;
             end if;
@@ -110,7 +110,7 @@ begin
                 cnt := 0;
                 p2_error <= '1';
             else
-                v := to_integer(unsigned(registers(VSNS_PH2)(VSNS_PH_V)));
+                v := 0; -- FIXME to_integer(unsigned(registers(VSNS_PH2)(VSNS_PH2_PH_V)));
                 -- next state logic
                 case state is 
                     when idle =>
@@ -157,7 +157,7 @@ begin
                     when error =>
                         cnt := 0;
                 end case;
-                if registers(GENERAL_CONTROL)(CONTROL_UVP_EN_PH2) = '0' then
+                if registers(GENERAL_CONTROL)(GENERAL_CONTROL_UVP_EN_PH2) = '0' then
                     p2_error <= '0';
                 end if;
             end if;
@@ -176,7 +176,7 @@ begin
                 cnt := 0;
                 p3_error <= '1';
             else
-                v := to_integer(unsigned(registers(VSNS_PH3)(VSNS_PH_V)));
+                v := 0; -- FIXME to_integer(unsigned(registers(VSNS_PH3)(VSNS_PH3_PH_V)));
                 -- next state logic
                 case state is 
                     when idle =>
@@ -223,7 +223,7 @@ begin
                     when error =>
                         cnt := 0;
                 end case;
-                if registers(GENERAL_CONTROL)(CONTROL_UVP_EN_PH3) = '0' then
+                if registers(GENERAL_CONTROL)(GENERAL_CONTROL_UVP_EN_PH3) = '0' then
                     p3_error <= '0';
                 end if;
             end if;
@@ -291,7 +291,7 @@ begin
                     when error =>
                         cnt := 0;
                 end case;
-                if registers(GENERAL_CONTROL)(CONTROL_UVP_EN_DC) = '0' then
+                if registers(GENERAL_CONTROL)(GENERAL_CONTROL_UVP_EN_DC) = '0' then
                     dc_error <= '0';
                 end if;
             end if;

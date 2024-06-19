@@ -35,7 +35,7 @@ begin
         internal_regs <= (others => X"00000000");
         
         internal_regs_we(GENERAL_STATUS) <= '1';
-        internal_regs(GENERAL_STATUS)(STATUS_REGS_LOCKED) <= regs_locked;
+        internal_regs(GENERAL_STATUS)(GENERAL_STATUS_REGS_LOCKED) <= regs_locked;
         
         for i in log_regs_range loop
             internal_regs_we(i) <= not regs_locked;
@@ -57,7 +57,7 @@ begin
                 if regs_reading(LOG_MESSAGE_ID) then
                     regs_locked <= '1';
                 elsif regs_reading(LOG_LAMP_IND) = '1' or
-                      (registers(GENERAL_CONTROL)(CONTROL_RLEASE_REGS) = '1' and regs_updating(GENERAL_CONTROL) = '1') then
+                      (registers(GENERAL_CONTROL)(GENERAL_CONTROL_RLEASE_REGS) = '1' and regs_updating(GENERAL_CONTROL) = '1') then
                     regs_locked <= '0';
                 end if;
                 --if regs_locked = '0' and regs_locked_s = '1' then
@@ -101,7 +101,7 @@ begin
                     pulse_cnt := pulse_cnt - 1;
                     ms_pulse <= '1';
                 end if;
-                if registers(GENERAL_CONTROL)(CONTROL_EN_1MS_INTR) = '1' then
+                if registers(GENERAL_CONTROL)(GENERAL_CONTROL_EN_1MS_INTR) = '1' then
                     intr_ms <= ms_pulse;
                 end if;
                 free_running_1ms <= ms_tick;
@@ -117,7 +117,7 @@ begin
                 intr_stop_log <= '0';
             else
                 intr_stop_log <= '0';
-                if registers(GENERAL_CONTROL)(CONTROL_STOP_LOG_ACK) = '1' and regs_updating(GENERAL_CONTROL) = '1' then
+                if registers(GENERAL_CONTROL)(GENERAL_CONTROL_STOP_LOG_ACK) = '1' and regs_updating(GENERAL_CONTROL) = '1' then
                     stop_log_to_cpu <= '0';
                 elsif stop_log = '1' then
                     intr_stop_log <= '1';

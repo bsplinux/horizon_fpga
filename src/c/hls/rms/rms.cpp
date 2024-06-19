@@ -1,15 +1,10 @@
 #include <hls_math.h>
 #include <ap_int.h>
 
-float update_rms(float rms, ap_uint<12> sample)
+float update_rms(float rms, ap_uint<16> sample)
 {
-	const float calc = (6.72e-3 * 4096/3);
-	float res = 0;
-	if (sample > 2048)
-		res = sample - 2048;
-	else
-		res = 2048 - sample;
-	res = res / calc;
+	float res;
+	res = sample;
 	res = res * res;
 	res += rms;
 
@@ -26,10 +21,10 @@ float finilize_rms(float rms, unsigned char n)
 
 
 void rms(
-	volatile ap_uint<12> sample,
+	volatile ap_uint<16> sample,
 	volatile unsigned char n,
 	volatile bool zero_cross,
-	ap_uint<12> *d_out
+	ap_uint<16> *d_out
 		)
 {
 	float old_rms[2] = {0};
@@ -37,7 +32,7 @@ void rms(
 
 	main_loop: for(;;)
 	{
-		ap_uint<12> s = sample; // waiting infinitly for new samples
+		ap_uint<16> s = sample; // waiting infinitly for new samples
 
 		rms = update_rms(rms, s);
 		if (zero_cross)

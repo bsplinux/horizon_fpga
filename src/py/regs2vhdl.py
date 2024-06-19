@@ -6,12 +6,13 @@ from datetime import datetime
 # 1. unpack registers block
 # done: 2. allow reset value of registr to come from reg definision (implemented already) or from register list allowing same type of register to have different initialization (overriding init from reg definition)
 # done: 3. set registers version in script if that register exists - actually nothing to do as we can use "define: &registers_version 0x00010003" and then "init: *registers_version"
-# 4. add timestam of creation of pkg in a comment
-# 5. work out an option to set specific registers init from vhdl and not yaml 
+# done: 4. add timestam of creation of pkg in a comment
+# done: 5. work out an option to set specific registers init from vhdl and not yaml 
 # done: 6. don't require the i: in the register list defaluting to auto
 # done: 7. add alingment to help visibility (added using str.r/ljust(20/30) but not using str.r/ljust(20/30)[:20/30] to preserve name even if it is longer than expected)
+# 8. allow more than 2 access (fpga,cpu) - implement this only on first use case
 
-def regs2vhdl(regs_def, vhdl_file_name):
+def regs2vhdl(regs_def, vhdl_file_name, yaml_file_name):
     vhdl_f = open(vhdl_file_name, 'w')
     package_name = Path(vhdl_file_name).stem
     
@@ -19,6 +20,8 @@ def regs2vhdl(regs_def, vhdl_file_name):
     current_time = datetime.now().strftime("%d-%m-%Y %H:%M")
     vhdl_f.write('------------------------------------------------------------------------------------------\n')
     vhdl_f.write('-- Registers VHDL package created from yaml definition of registers at ' + current_time + ' --\n')
+    vhdl_f.write('--   python function: regs2vhdl.py                                                      --\n')
+    vhdl_f.write('--   yaml file name: ' +  yaml_file_name.ljust(33) + '                                  --\n')
     vhdl_f.write('------------------------------------------------------------------------------------------\n\n')
     # VHDL context close:
     vhdl_f.write("library ieee;\n")
@@ -43,11 +46,11 @@ def regs2vhdl(regs_def, vhdl_file_name):
     addr_space = 0
     for reg_index in range(len(regs_def['regs'])):
         reg = next(iter(regs_def['regs'][reg_index]))
-        if 'i' in regs_def['regs'][reg_index][reg]:
-            if reg['i'] == 'auto':
+        if 'i' in regs_def['regs'][reg_index]:
+            if regs_def['regs'][reg_index]['i'] == 'auto':
                 addr_space = addr_space + 1
             else:
-                addr_space = reg['i'] + 1
+                addr_space = regs_def['regs'][reg_index]['i'] + 1
         else: 
             addr_space = addr_space + 1
     vhdl_f.write("  constant REGS_SPACE_SIZE : natural := " + str(addr_space) + ";\n\n")
@@ -57,11 +60,11 @@ def regs2vhdl(regs_def, vhdl_file_name):
     i = -1
     for reg_index in range(len(regs_def['regs'])):
         reg = next(iter(regs_def['regs'][reg_index]))
-        if 'i' in regs_def['regs'][reg_index][reg]:
-            if reg['i'] == 'auto':
+        if 'i' in regs_def['regs'][reg_index]:
+            if regs_def['regs'][reg_index]['i'] == 'auto':
                 i = i + 1
             else:
-                i = reg['i']
+                i = regs_def['regs'][reg_index]['i']
         else: 
             i = i + 1
         vhdl_f.write("      " + str(i).rjust(3) + " => " + reg.ljust(20) + ",\n")
@@ -174,20 +177,12 @@ def regs2vhdl(regs_def, vhdl_file_name):
     vhdl_f.write("  --------------------------------------------------------------------------------------------------------\n")    
     vhdl_f.write("  -- Functions\n")
     vhdl_f.write("  --------------------------------------------------------------------------------------------------------\n")
-    vhdl_f.write("  function update_synthesis_time(val: std_logic_vector(full_reg_range)) return reg_array_t;\n")
     vhdl_f.write("  function \"and\" (left, right: reg_slv_array_t) return reg_slv_array_t;\n")
     vhdl_f.write("  function \"or\" (left, right: reg_slv_array_t) return reg_slv_array_t;\n")
     vhdl_f.write("  function \"and\" (left, right: reg_slv_arrays_t) return reg_slv_arrays_t;\n")
     vhdl_f.write("  function \"or\" (left, right: reg_slv_arrays_t) return reg_slv_arrays_t;\n")
-    vhdl_f.write("\nend;\n                                                                                            )\n")
+    vhdl_f.write("\nend;\n\n")
     vhdl_f.write("package body regs_pkg is\n")
-    vhdl_f.write("       function update_synthesis_time(val: std_logic_vector(full_reg_range)) return reg_array_t is\n")
-    vhdl_f.write("           variable init_new : reg_array_t := REGISTERS_INIT;\n")
-    vhdl_f.write("       begin\n")
-    vhdl_f.write("           init_new(COMPILE_TIME) := val;\n")
-    vhdl_f.write("           return init_new;        \n")
-    vhdl_f.write("       end;    \n")
-    vhdl_f.write("       \n")
     vhdl_f.write("       function \"and\" (left, right: reg_slv_array_t) return reg_slv_array_t is\n")
     vhdl_f.write("           variable o : reg_slv_array_t;\n")
     vhdl_f.write("       begin\n")

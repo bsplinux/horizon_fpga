@@ -8,6 +8,7 @@ entity regs is
         AXI_ADDR_SIZE           : integer := 10; 
         UART_ADDR_SIZE          : integer := 10; 
         SYNTHESIS_TIME          : std_logic_vector := X"00000000";
+        FPGA_VERSION_C          : std_logic_vector := X"00000000";
         SIM_INPUT_FILE_NAME     : string := "no_file";
         SIM_OUTPUT_FILE_NAME    : string := "no_file"
     );
@@ -37,8 +38,16 @@ entity regs is
 end entity regs;
 
 architecture arch of regs is
+    function update_synthesis_time(compile_t: std_logic_vector(full_reg_range) ; fpga_v: std_logic_vector(full_reg_range)) return reg_array_t is
+       variable init_new : reg_array_t := REGISTERS_INIT;
+    begin
+       init_new(COMPILE_TIME) := compile_t;
+       init_new(FPGA_VERSION) := fpga_v;
+       return init_new;        
+    end;    
+
     constant NUM_REG_SETS           : integer := 3;
-    constant REGISTERS_INIT_NEW     : reg_array_t := update_synthesis_time(SYNTHESIS_TIME); 
+    constant REGISTERS_INIT_NEW     : reg_array_t := update_synthesis_time(SYNTHESIS_TIME,FPGA_VERSION_C); 
     signal bank_regs_in             : reg_arrays_t(NUM_REG_SETS - 1 downto 0);
     signal regs_from_axi            : reg_array_t;
     signal regs_from_uart           : reg_array_t;

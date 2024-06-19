@@ -4,6 +4,8 @@ use ieee.std_logic_1164.all;
 use work.regs_pkg.all;
 
 package condor_pl_pkg is
+    constant FPGA_VERSION_CONST : std_logic_vector(full_reg_range) := X"00010008"; -- version (major,minor)
+    
     constant UART_A_SIZE        : integer := 12;
     constant AXI_A_SIZE         : integer := 12;
     
@@ -11,7 +13,7 @@ package condor_pl_pkg is
     type log_reg_array_t is array (log_regs_range) of std_logic_vector(full_reg_range);
 
     subtype rs485_regs_range is regs_names_t range UARTS_CONTROL to UART_RAW8_H;
-    subtype spi_regs_range is regs_names_t range SPIS_CONTROL to VSNS_PH3;
+    subtype spi_regs_range is regs_names_t range SPIS_CONTROL to SPI_RMS_OUT4_sns;
     
     type ios_2_app_t is record
         POWERON_FPGA     : std_logic;      
