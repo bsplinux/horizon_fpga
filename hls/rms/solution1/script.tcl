@@ -16,4 +16,4 @@ source "./rms/solution1/directives.tcl"
 csim_design
 csynth_design
 cosim_design
-export_design -flow syn -rtl verilog -format ip_catalog -output ../vivado/repo/rms.zip
+export_design -rtl verilog -format ip_catalog -output ../vivado/repo/rms.zip

@@ -91,6 +91,8 @@ architecture RTL of spis_if is
         sample : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         n : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
         zero_cross : IN STD_LOGIC;
+        zero_cross_ap_ack : out std_logic;
+        zero_cross_ap_vld : in std_logic;
         d_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) 
     );
     END COMPONENT;
@@ -398,6 +400,11 @@ begin
     
     -- a2d values to V / A values and rms calclulations:
     sample2v_gen: for i in sample2v_range generate
+        signal zero_cross : std_logic;
+        signal zero_cross_ap_ack : std_logic;
+        signal zero_cross_ap_vld : std_logic;
+    begin
+        
         sample2v_i: entity work.sample2v
         port map(
             clk          => clk,
@@ -416,15 +423,42 @@ begin
             ap_rst        => sync_rst,
             sample        => X"0" & v_vec(i),
             n             => n,
-            zero_cross    => z_cross,
+            zero_cross    => zero_cross,
+            zero_cross_ap_ack => zero_cross_ap_ack,
+            zero_cross_ap_vld => zero_cross_ap_vld,
             d_out(11 downto 0) => v_rms_vec(i),
             d_out(15 downto 12) => open
         );
+        process(clk)
+            variable z_cross_s: std_logic;
+        begin
+            if rising_edge(clk) then
+                if sync_rst then
+                    zero_cross <= '0';
+                    z_cross_s := '0';
+                    zero_cross_ap_vld <= '0';
+                else
+                    if z_cross and not z_cross_s then
+                        zero_cross <= '1';
+                        zero_cross_ap_vld <= '1';
+                    elsif zero_cross_ap_ack then
+                        zero_cross <= '0';
+                    end if;
+                    z_cross_s := z_cross;    
+                end if;
+            end if;
+        end process;
+        
     end generate sample2v_gen;
     sample2v_vec <= (spis_d_2(123 downto 112), spis_d_2(107 downto 96), spis_d_2(91 downto 80), spis_d_2(75 downto 64), spis_d_2(43 downto 32), spis_d_2(27 downto 16), spis_d_2(11 downto 0));
     sample2v_valid_vec <= spis_d_2_ap_vld & spis_d_2_ap_vld & spis_d_2_ap_vld & spis_d_2_ap_vld & spis_d_2_ap_vld & spis_d_2_ap_vld & spis_d_2_ap_vld;
     
     sample2a_gen: for i in sample2a_range generate
+        signal zero_cross : std_logic;
+        signal zero_cross_ap_ack : std_logic;
+        signal zero_cross_ap_vld : std_logic;
+    begin
+        
         sample2a_i: entity work.sample2a
         port map(
             clk          => clk,
@@ -443,9 +477,32 @@ begin
             ap_rst        => sync_rst,
             sample        => a_vec(i),
             n             => n,
-            zero_cross    => z_cross,
+            zero_cross    => zero_cross,
+            zero_cross_ap_ack => zero_cross_ap_ack,
+            zero_cross_ap_vld => zero_cross_ap_vld,
             d_out         => a_rms_vec(i)
         );
+        
+        process(clk)
+            variable z_cross_s: std_logic;
+        begin
+            if rising_edge(clk) then
+                if sync_rst then
+                    zero_cross <= '0';
+                    z_cross_s := '0';
+                    zero_cross_ap_vld <= '0';
+                else
+                    if z_cross and not z_cross_s then
+                        zero_cross <= '1';
+                        zero_cross_ap_vld <= '1';
+                    elsif zero_cross_ap_ack then
+                        zero_cross <= '0';
+                    end if;
+                    z_cross_s := z_cross;    
+                end if;
+            end if;                
+        end process;
+        
     end generate sample2a_gen;
     sample2a_vec <= (spis_d_0(59 downto 48), spis_d_0(43 downto 32), spis_d_0(27 downto 16), spis_d_0(11 downto 0), spis_d_2(59 downto 48));
     sample2a_valid_vec <= spis_d_0_ap_vld & spis_d_0_ap_vld & spis_d_0_ap_vld & spis_d_0_ap_vld & spis_d_2_ap_vld;

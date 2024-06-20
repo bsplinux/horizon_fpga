@@ -32,7 +32,7 @@ begin
                 valid <= (others => '0');
                 a <= (others => '0');
             else
-                sample_s <= signed("0000" & sample & X"0000");
+                sample_s <= signed(X"00000" & sample);
                 mult <= sample_s * K;
                 a_int <= mult(31 downto 0) + N;
                 a_var := std_logic_vector(a_int);

@@ -3,7 +3,7 @@
   "ip_inst": {
     "xci_name": "rms_0",
     "component_reference": "Growings:hls:rms:1.2",
-    "ip_revision": "2113608943",
+    "ip_revision": "2113610411",
     "gen_directory": ".",
     "parameters": {
       "component_parameters": {
@@ -29,7 +29,7 @@
       },
       "runtime_parameters": {
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
-        "IPREVISION": [ { "value": "2113608943" } ],
+        "IPREVISION": [ { "value": "2113610411" } ],
         "MANAGED": [ { "value": "TRUE" } ],
         "OUTPUTDIR": [ { "value": "." } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],
@@ -41,6 +41,8 @@
     "boundary": {
       "ports": {
         "sample_ap_vld": [ { "direction": "in" } ],
+        "zero_cross_ap_vld": [ { "direction": "in" } ],
+        "zero_cross_ap_ack": [ { "direction": "out" } ],
         "d_out_ap_vld": [ { "direction": "out" } ],
         "ap_clk": [ { "direction": "in" } ],
         "ap_rst": [ { "direction": "in" } ],

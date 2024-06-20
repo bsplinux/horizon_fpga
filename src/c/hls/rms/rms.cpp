@@ -21,9 +21,9 @@ float finilize_rms(float rms, unsigned char n)
 
 
 void rms(
-	volatile ap_uint<16> sample,
-	volatile unsigned char n,
-	volatile bool zero_cross,
+	volatile ap_uint<16> * sample,
+	volatile unsigned char * n,
+	volatile bool * zero_cross,
 	ap_uint<16> *d_out
 		)
 {
@@ -32,12 +32,12 @@ void rms(
 
 	main_loop: for(;;)
 	{
-		ap_uint<16> s = sample; // waiting infinitly for new samples
+		ap_uint<16> s = *sample; // waiting infinitly for new samples
 
 		rms = update_rms(rms, s);
-		if (zero_cross)
+		if (*zero_cross)
 		{
-			rms = finilize_rms(rms, n);
+			rms = finilize_rms(rms, *n);
 			*d_out = (rms + old_rms[0] + old_rms[1])/3;
 			old_rms[1] = old_rms[0];
 			old_rms[0] = rms;
