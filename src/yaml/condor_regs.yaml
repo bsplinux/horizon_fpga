@@ -85,7 +85,7 @@ reg_io_in: &reg_io_in
     PH_A_ON_fpga    :  17 
     PH_B_ON_fpga    :  18 
     PH_C_ON_fpga    :  19
-    range           : "19:0"
+    #range           : "19:0"
   used_bits: "19:0"
   
 reg_io_out0: &reg_io_out0
@@ -118,7 +118,7 @@ reg_io_out0: &reg_io_out0
     EN_PSU_8_FB        : 23
     EN_PSU_9_FB        : 24
     EN_PSU_10_FB       : 25 
-    range              : "25:0"
+    #range              : "25:0"
   used_bits: "25:0"
   
 reg_io_out1: &reg_io_out1
@@ -134,7 +134,7 @@ reg_io_out1: &reg_io_out1
     RS485_DE_4 : 6
     RS485_DE_5 : 7
     RS485_DE_6 : 8
-    range      : "8:0"
+    #range      : "8:0"
   used_bits: "8:0"
 
 reg_sn_eti: &reg_sn_eti
@@ -164,7 +164,7 @@ reg_uarts_ctl: &reg_uarts_ctl
   fields:
     EN_RANGE    : "8:0" 
     RST         :  9               
-    1MS_ERR_CLR : 10              
+    MS1_ERR_CLR : 10              
   used_bits: "10:0"
   init: 0x1F
 
@@ -173,7 +173,7 @@ reg_uarts_status: &reg_uarts_status
   cpu_access: false
   fields:
     BUSY    : 0 
-    1MS_ERR : 1      
+    MS1_ERR : 1      
   used_bits: "1:0"
 
 reg_spis_ctl: &reg_spis_ctl
@@ -182,8 +182,9 @@ reg_spis_ctl: &reg_spis_ctl
   fields:
     EN_RANGE      : "2:0" 
     RST           : 3               
-    100US_ERR_CLR : 4                 
-  used_bits: "4:0"
+    US100_ERR_CLR : 4
+    Z_CROSS_ERR_CLR : 5
+  used_bits: "5:0"
   init: 0x5
 
 reg_spis_status: &reg_spis_status
@@ -191,12 +192,13 @@ reg_spis_status: &reg_spis_status
   cpu_access: false
   fields:
     BUSY      : 0 
-    100US_ERR : 1
+    US100_ERR : 1
     SPI0_OK   : 2
     SPI1_OK   : 3
     SPI2_OK   : 4
-    SPIS_OK   : "4:2"
-  used_bits: "4:0"
+    Z_CROSS_ERR: 5
+    #SPIS_OK   : "4:2"
+  used_bits: "5:0"
 
 reg_spi_raw: &reg_spi_raw
   fpga_access: true
@@ -204,10 +206,10 @@ reg_spi_raw: &reg_spi_raw
   fields:
     L_D_RANGE   : "11:0" 
     L_ID_RANGE  : "15:12"
-    L_RANGE     : "15:0" 
+    #L_RANGE     : "15:0" 
     H_D_RANGE   : "27:16"
     H_ID_RANGE  : "31:28"
-    H_RANGE     : "31:16"
+    #H_RANGE     : "31:16"
   used_bits: "31:0"  
     
 reg_vsns_ph: &reg_vsns_ph
@@ -332,6 +334,7 @@ regs:
   - UART_RAW8_L       : *reg_d_int
   - UART_RAW8_H       : *reg_d_int
   - SPIS_CONTROL      : *reg_spis_ctl
+    init: 0x0
   - SPIS_STATUS       : *reg_spis_status
   - SPI_RAW0_BA       : *reg_spi_raw
   - SPI_RAW0_DC       : *reg_spi_raw

@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------------------------
--- Registers VHDL package created from yaml definition of registers at 19-06-2024 10:36 --
+-- Registers VHDL package created from yaml definition of registers at 27-06-2024 15:20 --
 --   python function: regs2vhdl.py                                                      --
 --   yaml file name: ../yaml/condor_regs.yaml                                           --
 ------------------------------------------------------------------------------------------
@@ -345,7 +345,6 @@ package regs_pkg is
   constant IO_IN_PH_A_ON_fpga             : integer := 17;
   constant IO_IN_PH_B_ON_fpga             : integer := 18;
   constant IO_IN_PH_C_ON_fpga             : integer := 19;
-  subtype  IO_IN_range                    is integer range 19 downto  0;
   -- fields for IO_OUT0
   constant IO_OUT0_FAN_EN1_FPGA           : integer :=  0;
   constant IO_OUT0_FAN_CTRL1_FPGA         : integer :=  1;
@@ -373,7 +372,6 @@ package regs_pkg is
   constant IO_OUT0_EN_PSU_8_FB            : integer := 23;
   constant IO_OUT0_EN_PSU_9_FB            : integer := 24;
   constant IO_OUT0_EN_PSU_10_FB           : integer := 25;
-  subtype  IO_OUT0_range                  is integer range 25 downto  0;
   -- fields for IO_OUT1
   constant IO_OUT1_RS485_DE_7             : integer :=  0;
   constant IO_OUT1_RS485_DE_8             : integer :=  1;
@@ -384,7 +382,6 @@ package regs_pkg is
   constant IO_OUT1_RS485_DE_4             : integer :=  6;
   constant IO_OUT1_RS485_DE_5             : integer :=  7;
   constant IO_OUT1_RS485_DE_6             : integer :=  8;
-  subtype  IO_OUT1_range                  is integer range  8 downto  0;
   -- fields for SN_ETI
   subtype  SN_ETI_SN                      is integer range  7 downto  0;
   constant SN_ETI_SET_SN                  : integer :=  8;
@@ -399,231 +396,172 @@ package regs_pkg is
   -- fields for UARTS_CONTROL
   subtype  UARTS_CONTROL_EN_RANGE         is integer range  8 downto  0;
   constant UARTS_CONTROL_RST              : integer :=  9;
-  constant UARTS_CONTROL_1MS_ERR_CLR      : integer := 10;
+  constant UARTS_CONTROL_MS1_ERR_CLR      : integer := 10;
   -- fields for UARTS_STATUS
   constant UARTS_STATUS_BUSY              : integer :=  0;
-  constant UARTS_STATUS_1MS_ERR           : integer :=  1;
+  constant UARTS_STATUS_MS1_ERR           : integer :=  1;
   -- fields for SPIS_CONTROL
   subtype  SPIS_CONTROL_EN_RANGE          is integer range  2 downto  0;
   constant SPIS_CONTROL_RST               : integer :=  3;
-  constant SPIS_CONTROL_100US_ERR_CLR     : integer :=  4;
+  constant SPIS_CONTROL_US100_ERR_CLR     : integer :=  4;
+  constant SPIS_CONTROL_Z_CROSS_ERR_CLR   : integer :=  5;
   -- fields for SPIS_STATUS
   constant SPIS_STATUS_BUSY               : integer :=  0;
-  constant SPIS_STATUS_100US_ERR          : integer :=  1;
+  constant SPIS_STATUS_US100_ERR          : integer :=  1;
   constant SPIS_STATUS_SPI0_OK            : integer :=  2;
   constant SPIS_STATUS_SPI1_OK            : integer :=  3;
   constant SPIS_STATUS_SPI2_OK            : integer :=  4;
-  subtype  SPIS_STATUS_SPIS_OK            is integer range  4 downto  2;
+  constant SPIS_STATUS_Z_CROSS_ERR        : integer :=  5;
   -- fields for SPI_RAW0_BA
   subtype  SPI_RAW0_BA_L_D_RANGE          is integer range 11 downto  0;
   subtype  SPI_RAW0_BA_L_ID_RANGE         is integer range 15 downto 12;
-  subtype  SPI_RAW0_BA_L_RANGE            is integer range 15 downto  0;
   subtype  SPI_RAW0_BA_H_D_RANGE          is integer range 27 downto 16;
   subtype  SPI_RAW0_BA_H_ID_RANGE         is integer range 31 downto 28;
-  subtype  SPI_RAW0_BA_H_RANGE            is integer range 31 downto 16;
   -- fields for SPI_RAW0_DC
   subtype  SPI_RAW0_DC_L_D_RANGE          is integer range 11 downto  0;
   subtype  SPI_RAW0_DC_L_ID_RANGE         is integer range 15 downto 12;
-  subtype  SPI_RAW0_DC_L_RANGE            is integer range 15 downto  0;
   subtype  SPI_RAW0_DC_H_D_RANGE          is integer range 27 downto 16;
   subtype  SPI_RAW0_DC_H_ID_RANGE         is integer range 31 downto 28;
-  subtype  SPI_RAW0_DC_H_RANGE            is integer range 31 downto 16;
   -- fields for SPI_RAW2_BA
   subtype  SPI_RAW2_BA_L_D_RANGE          is integer range 11 downto  0;
   subtype  SPI_RAW2_BA_L_ID_RANGE         is integer range 15 downto 12;
-  subtype  SPI_RAW2_BA_L_RANGE            is integer range 15 downto  0;
   subtype  SPI_RAW2_BA_H_D_RANGE          is integer range 27 downto 16;
   subtype  SPI_RAW2_BA_H_ID_RANGE         is integer range 31 downto 28;
-  subtype  SPI_RAW2_BA_H_RANGE            is integer range 31 downto 16;
   -- fields for SPI_RAW2_DC
   subtype  SPI_RAW2_DC_L_D_RANGE          is integer range 11 downto  0;
   subtype  SPI_RAW2_DC_L_ID_RANGE         is integer range 15 downto 12;
-  subtype  SPI_RAW2_DC_L_RANGE            is integer range 15 downto  0;
   subtype  SPI_RAW2_DC_H_D_RANGE          is integer range 27 downto 16;
   subtype  SPI_RAW2_DC_H_ID_RANGE         is integer range 31 downto 28;
-  subtype  SPI_RAW2_DC_H_RANGE            is integer range 31 downto 16;
   -- fields for SPI_RAW2_FE
   subtype  SPI_RAW2_FE_L_D_RANGE          is integer range 11 downto  0;
   subtype  SPI_RAW2_FE_L_ID_RANGE         is integer range 15 downto 12;
-  subtype  SPI_RAW2_FE_L_RANGE            is integer range 15 downto  0;
   subtype  SPI_RAW2_FE_H_D_RANGE          is integer range 27 downto 16;
   subtype  SPI_RAW2_FE_H_ID_RANGE         is integer range 31 downto 28;
-  subtype  SPI_RAW2_FE_H_RANGE            is integer range 31 downto 16;
   -- fields for SPI_RAW2_HG
   subtype  SPI_RAW2_HG_L_D_RANGE          is integer range 11 downto  0;
   subtype  SPI_RAW2_HG_L_ID_RANGE         is integer range 15 downto 12;
-  subtype  SPI_RAW2_HG_L_RANGE            is integer range 15 downto  0;
   subtype  SPI_RAW2_HG_H_D_RANGE          is integer range 27 downto 16;
   subtype  SPI_RAW2_HG_H_ID_RANGE         is integer range 31 downto 28;
-  subtype  SPI_RAW2_HG_H_RANGE            is integer range 31 downto 16;
   -- fields for SPI_OUT4_Isns
   subtype  SPI_OUT4_Isns_L_D_RANGE        is integer range 11 downto  0;
   subtype  SPI_OUT4_Isns_L_ID_RANGE       is integer range 15 downto 12;
-  subtype  SPI_OUT4_Isns_L_RANGE          is integer range 15 downto  0;
   subtype  SPI_OUT4_Isns_H_D_RANGE        is integer range 27 downto 16;
   subtype  SPI_OUT4_Isns_H_ID_RANGE       is integer range 31 downto 28;
-  subtype  SPI_OUT4_Isns_H_RANGE          is integer range 31 downto 16;
   -- fields for SPI_DC_PWR_I_sns
   subtype  SPI_DC_PWR_I_sns_L_D_RANGE     is integer range 11 downto  0;
   subtype  SPI_DC_PWR_I_sns_L_ID_RANGE    is integer range 15 downto 12;
-  subtype  SPI_DC_PWR_I_sns_L_RANGE       is integer range 15 downto  0;
   subtype  SPI_DC_PWR_I_sns_H_D_RANGE     is integer range 27 downto 16;
   subtype  SPI_DC_PWR_I_sns_H_ID_RANGE    is integer range 31 downto 28;
-  subtype  SPI_DC_PWR_I_sns_H_RANGE       is integer range 31 downto 16;
   -- fields for SPI_PH1_I_sns
   subtype  SPI_PH1_I_sns_L_D_RANGE        is integer range 11 downto  0;
   subtype  SPI_PH1_I_sns_L_ID_RANGE       is integer range 15 downto 12;
-  subtype  SPI_PH1_I_sns_L_RANGE          is integer range 15 downto  0;
   subtype  SPI_PH1_I_sns_H_D_RANGE        is integer range 27 downto 16;
   subtype  SPI_PH1_I_sns_H_ID_RANGE       is integer range 31 downto 28;
-  subtype  SPI_PH1_I_sns_H_RANGE          is integer range 31 downto 16;
   -- fields for SPI_PH2_I_sns
   subtype  SPI_PH2_I_sns_L_D_RANGE        is integer range 11 downto  0;
   subtype  SPI_PH2_I_sns_L_ID_RANGE       is integer range 15 downto 12;
-  subtype  SPI_PH2_I_sns_L_RANGE          is integer range 15 downto  0;
   subtype  SPI_PH2_I_sns_H_D_RANGE        is integer range 27 downto 16;
   subtype  SPI_PH2_I_sns_H_ID_RANGE       is integer range 31 downto 28;
-  subtype  SPI_PH2_I_sns_H_RANGE          is integer range 31 downto 16;
   -- fields for SPI_PH3_I_sns
   subtype  SPI_PH3_I_sns_L_D_RANGE        is integer range 11 downto  0;
   subtype  SPI_PH3_I_sns_L_ID_RANGE       is integer range 15 downto 12;
-  subtype  SPI_PH3_I_sns_L_RANGE          is integer range 15 downto  0;
   subtype  SPI_PH3_I_sns_H_D_RANGE        is integer range 27 downto 16;
   subtype  SPI_PH3_I_sns_H_ID_RANGE       is integer range 31 downto 28;
-  subtype  SPI_PH3_I_sns_H_RANGE          is integer range 31 downto 16;
   -- fields for SPI_Vsns_PH_A_RLY
   subtype  SPI_Vsns_PH_A_RLY_L_D_RANGE    is integer range 11 downto  0;
   subtype  SPI_Vsns_PH_A_RLY_L_ID_RANGE   is integer range 15 downto 12;
-  subtype  SPI_Vsns_PH_A_RLY_L_RANGE      is integer range 15 downto  0;
   subtype  SPI_Vsns_PH_A_RLY_H_D_RANGE    is integer range 27 downto 16;
   subtype  SPI_Vsns_PH_A_RLY_H_ID_RANGE   is integer range 31 downto 28;
-  subtype  SPI_Vsns_PH_A_RLY_H_RANGE      is integer range 31 downto 16;
   -- fields for SPI_Vsns_PH_B_RLY
   subtype  SPI_Vsns_PH_B_RLY_L_D_RANGE    is integer range 11 downto  0;
   subtype  SPI_Vsns_PH_B_RLY_L_ID_RANGE   is integer range 15 downto 12;
-  subtype  SPI_Vsns_PH_B_RLY_L_RANGE      is integer range 15 downto  0;
   subtype  SPI_Vsns_PH_B_RLY_H_D_RANGE    is integer range 27 downto 16;
   subtype  SPI_Vsns_PH_B_RLY_H_ID_RANGE   is integer range 31 downto 28;
-  subtype  SPI_Vsns_PH_B_RLY_H_RANGE      is integer range 31 downto 16;
   -- fields for SPI_Vsns_PH_C_RLY
   subtype  SPI_Vsns_PH_C_RLY_L_D_RANGE    is integer range 11 downto  0;
   subtype  SPI_Vsns_PH_C_RLY_L_ID_RANGE   is integer range 15 downto 12;
-  subtype  SPI_Vsns_PH_C_RLY_L_RANGE      is integer range 15 downto  0;
   subtype  SPI_Vsns_PH_C_RLY_H_D_RANGE    is integer range 27 downto 16;
   subtype  SPI_Vsns_PH_C_RLY_H_ID_RANGE   is integer range 31 downto 28;
-  subtype  SPI_Vsns_PH_C_RLY_H_RANGE      is integer range 31 downto 16;
   -- fields for SPI_Vsns_PH3
   subtype  SPI_Vsns_PH3_L_D_RANGE         is integer range 11 downto  0;
   subtype  SPI_Vsns_PH3_L_ID_RANGE        is integer range 15 downto 12;
-  subtype  SPI_Vsns_PH3_L_RANGE           is integer range 15 downto  0;
   subtype  SPI_Vsns_PH3_H_D_RANGE         is integer range 27 downto 16;
   subtype  SPI_Vsns_PH3_H_ID_RANGE        is integer range 31 downto 28;
-  subtype  SPI_Vsns_PH3_H_RANGE           is integer range 31 downto 16;
   -- fields for SPI_Vsns_PH2
   subtype  SPI_Vsns_PH2_L_D_RANGE         is integer range 11 downto  0;
   subtype  SPI_Vsns_PH2_L_ID_RANGE        is integer range 15 downto 12;
-  subtype  SPI_Vsns_PH2_L_RANGE           is integer range 15 downto  0;
   subtype  SPI_Vsns_PH2_H_D_RANGE         is integer range 27 downto 16;
   subtype  SPI_Vsns_PH2_H_ID_RANGE        is integer range 31 downto 28;
-  subtype  SPI_Vsns_PH2_H_RANGE           is integer range 31 downto 16;
   -- fields for SPI_Vsns_PH1
   subtype  SPI_Vsns_PH1_L_D_RANGE         is integer range 11 downto  0;
   subtype  SPI_Vsns_PH1_L_ID_RANGE        is integer range 15 downto 12;
-  subtype  SPI_Vsns_PH1_L_RANGE           is integer range 15 downto  0;
   subtype  SPI_Vsns_PH1_H_D_RANGE         is integer range 27 downto 16;
   subtype  SPI_Vsns_PH1_H_ID_RANGE        is integer range 31 downto 28;
-  subtype  SPI_Vsns_PH1_H_RANGE           is integer range 31 downto 16;
   -- fields for SPI_OUT4_sns
   subtype  SPI_OUT4_sns_L_D_RANGE         is integer range 11 downto  0;
   subtype  SPI_OUT4_sns_L_ID_RANGE        is integer range 15 downto 12;
-  subtype  SPI_OUT4_sns_L_RANGE           is integer range 15 downto  0;
   subtype  SPI_OUT4_sns_H_D_RANGE         is integer range 27 downto 16;
   subtype  SPI_OUT4_sns_H_ID_RANGE        is integer range 31 downto 28;
-  subtype  SPI_OUT4_sns_H_RANGE           is integer range 31 downto 16;
   -- fields for SPI_RMS_OUT4_Isns
   subtype  SPI_RMS_OUT4_Isns_L_D_RANGE    is integer range 11 downto  0;
   subtype  SPI_RMS_OUT4_Isns_L_ID_RANGE   is integer range 15 downto 12;
-  subtype  SPI_RMS_OUT4_Isns_L_RANGE      is integer range 15 downto  0;
   subtype  SPI_RMS_OUT4_Isns_H_D_RANGE    is integer range 27 downto 16;
   subtype  SPI_RMS_OUT4_Isns_H_ID_RANGE   is integer range 31 downto 28;
-  subtype  SPI_RMS_OUT4_Isns_H_RANGE      is integer range 31 downto 16;
   -- fields for SPI_RMS_DC_PWR_I_sns
   subtype  SPI_RMS_DC_PWR_I_sns_L_D_RANGE is integer range 11 downto  0;
   subtype  SPI_RMS_DC_PWR_I_sns_L_ID_RANGE is integer range 15 downto 12;
-  subtype  SPI_RMS_DC_PWR_I_sns_L_RANGE   is integer range 15 downto  0;
   subtype  SPI_RMS_DC_PWR_I_sns_H_D_RANGE is integer range 27 downto 16;
   subtype  SPI_RMS_DC_PWR_I_sns_H_ID_RANGE is integer range 31 downto 28;
-  subtype  SPI_RMS_DC_PWR_I_sns_H_RANGE   is integer range 31 downto 16;
   -- fields for SPI_RMS_PH1_I_sns
   subtype  SPI_RMS_PH1_I_sns_L_D_RANGE    is integer range 11 downto  0;
   subtype  SPI_RMS_PH1_I_sns_L_ID_RANGE   is integer range 15 downto 12;
-  subtype  SPI_RMS_PH1_I_sns_L_RANGE      is integer range 15 downto  0;
   subtype  SPI_RMS_PH1_I_sns_H_D_RANGE    is integer range 27 downto 16;
   subtype  SPI_RMS_PH1_I_sns_H_ID_RANGE   is integer range 31 downto 28;
-  subtype  SPI_RMS_PH1_I_sns_H_RANGE      is integer range 31 downto 16;
   -- fields for SPI_RMS_PH2_I_sns
   subtype  SPI_RMS_PH2_I_sns_L_D_RANGE    is integer range 11 downto  0;
   subtype  SPI_RMS_PH2_I_sns_L_ID_RANGE   is integer range 15 downto 12;
-  subtype  SPI_RMS_PH2_I_sns_L_RANGE      is integer range 15 downto  0;
   subtype  SPI_RMS_PH2_I_sns_H_D_RANGE    is integer range 27 downto 16;
   subtype  SPI_RMS_PH2_I_sns_H_ID_RANGE   is integer range 31 downto 28;
-  subtype  SPI_RMS_PH2_I_sns_H_RANGE      is integer range 31 downto 16;
   -- fields for SPI_RMS_PH3_I_sns
   subtype  SPI_RMS_PH3_I_sns_L_D_RANGE    is integer range 11 downto  0;
   subtype  SPI_RMS_PH3_I_sns_L_ID_RANGE   is integer range 15 downto 12;
-  subtype  SPI_RMS_PH3_I_sns_L_RANGE      is integer range 15 downto  0;
   subtype  SPI_RMS_PH3_I_sns_H_D_RANGE    is integer range 27 downto 16;
   subtype  SPI_RMS_PH3_I_sns_H_ID_RANGE   is integer range 31 downto 28;
-  subtype  SPI_RMS_PH3_I_sns_H_RANGE      is integer range 31 downto 16;
   -- fields for SPI_RMS_Vsns_PH_A_RLY
   subtype  SPI_RMS_Vsns_PH_A_RLY_L_D_RANGE is integer range 11 downto  0;
   subtype  SPI_RMS_Vsns_PH_A_RLY_L_ID_RANGE is integer range 15 downto 12;
-  subtype  SPI_RMS_Vsns_PH_A_RLY_L_RANGE  is integer range 15 downto  0;
   subtype  SPI_RMS_Vsns_PH_A_RLY_H_D_RANGE is integer range 27 downto 16;
   subtype  SPI_RMS_Vsns_PH_A_RLY_H_ID_RANGE is integer range 31 downto 28;
-  subtype  SPI_RMS_Vsns_PH_A_RLY_H_RANGE  is integer range 31 downto 16;
   -- fields for SPI_RMS_Vsns_PH_B_RLY
   subtype  SPI_RMS_Vsns_PH_B_RLY_L_D_RANGE is integer range 11 downto  0;
   subtype  SPI_RMS_Vsns_PH_B_RLY_L_ID_RANGE is integer range 15 downto 12;
-  subtype  SPI_RMS_Vsns_PH_B_RLY_L_RANGE  is integer range 15 downto  0;
   subtype  SPI_RMS_Vsns_PH_B_RLY_H_D_RANGE is integer range 27 downto 16;
   subtype  SPI_RMS_Vsns_PH_B_RLY_H_ID_RANGE is integer range 31 downto 28;
-  subtype  SPI_RMS_Vsns_PH_B_RLY_H_RANGE  is integer range 31 downto 16;
   -- fields for SPI_RMS_Vsns_PH_C_RLY
   subtype  SPI_RMS_Vsns_PH_C_RLY_L_D_RANGE is integer range 11 downto  0;
   subtype  SPI_RMS_Vsns_PH_C_RLY_L_ID_RANGE is integer range 15 downto 12;
-  subtype  SPI_RMS_Vsns_PH_C_RLY_L_RANGE  is integer range 15 downto  0;
   subtype  SPI_RMS_Vsns_PH_C_RLY_H_D_RANGE is integer range 27 downto 16;
   subtype  SPI_RMS_Vsns_PH_C_RLY_H_ID_RANGE is integer range 31 downto 28;
-  subtype  SPI_RMS_Vsns_PH_C_RLY_H_RANGE  is integer range 31 downto 16;
   -- fields for SPI_RMS_Vsns_PH3
   subtype  SPI_RMS_Vsns_PH3_L_D_RANGE     is integer range 11 downto  0;
   subtype  SPI_RMS_Vsns_PH3_L_ID_RANGE    is integer range 15 downto 12;
-  subtype  SPI_RMS_Vsns_PH3_L_RANGE       is integer range 15 downto  0;
   subtype  SPI_RMS_Vsns_PH3_H_D_RANGE     is integer range 27 downto 16;
   subtype  SPI_RMS_Vsns_PH3_H_ID_RANGE    is integer range 31 downto 28;
-  subtype  SPI_RMS_Vsns_PH3_H_RANGE       is integer range 31 downto 16;
   -- fields for SPI_RMS_Vsns_PH2
   subtype  SPI_RMS_Vsns_PH2_L_D_RANGE     is integer range 11 downto  0;
   subtype  SPI_RMS_Vsns_PH2_L_ID_RANGE    is integer range 15 downto 12;
-  subtype  SPI_RMS_Vsns_PH2_L_RANGE       is integer range 15 downto  0;
   subtype  SPI_RMS_Vsns_PH2_H_D_RANGE     is integer range 27 downto 16;
   subtype  SPI_RMS_Vsns_PH2_H_ID_RANGE    is integer range 31 downto 28;
-  subtype  SPI_RMS_Vsns_PH2_H_RANGE       is integer range 31 downto 16;
   -- fields for SPI_RMS_Vsns_PH1
   subtype  SPI_RMS_Vsns_PH1_L_D_RANGE     is integer range 11 downto  0;
   subtype  SPI_RMS_Vsns_PH1_L_ID_RANGE    is integer range 15 downto 12;
-  subtype  SPI_RMS_Vsns_PH1_L_RANGE       is integer range 15 downto  0;
   subtype  SPI_RMS_Vsns_PH1_H_D_RANGE     is integer range 27 downto 16;
   subtype  SPI_RMS_Vsns_PH1_H_ID_RANGE    is integer range 31 downto 28;
-  subtype  SPI_RMS_Vsns_PH1_H_RANGE       is integer range 31 downto 16;
   -- fields for SPI_RMS_OUT4_sns
   subtype  SPI_RMS_OUT4_sns_L_D_RANGE     is integer range 11 downto  0;
   subtype  SPI_RMS_OUT4_sns_L_ID_RANGE    is integer range 15 downto 12;
-  subtype  SPI_RMS_OUT4_sns_L_RANGE       is integer range 15 downto  0;
   subtype  SPI_RMS_OUT4_sns_H_D_RANGE     is integer range 27 downto 16;
   subtype  SPI_RMS_OUT4_sns_H_ID_RANGE    is integer range 31 downto 28;
-  subtype  SPI_RMS_OUT4_sns_H_RANGE       is integer range 31 downto 16;
 
   ----------------------------------------------------------------------------------
   -- Register Reset value (defalut is 0)                                            
@@ -632,7 +570,6 @@ package regs_pkg is
     REGS_VERSION         => X"00010004",
     GENERAL_CONTROL      => X"00000F00",
     UARTS_CONTROL        => X"0000001F",
-    SPIS_CONTROL         => X"00000005",
     others               => X"00000000"
   );
 
@@ -744,8 +681,8 @@ package regs_pkg is
     UART_RAW7_H          => X"FFFFFFFF",
     UART_RAW8_L          => X"FFFFFFFF",
     UART_RAW8_H          => X"FFFFFFFF",
-    SPIS_CONTROL         => X"0000001F",
-    SPIS_STATUS          => X"0000001F",
+    SPIS_CONTROL         => X"0000003F",
+    SPIS_STATUS          => X"0000003F",
     SPI_RAW0_BA          => X"FFFFFFFF",
     SPI_RAW0_DC          => X"FFFFFFFF",
     SPI_RAW2_BA          => X"FFFFFFFF",

@@ -15,28 +15,28 @@ end entity sample2v;
 
 architecture RTL of sample2v is
     signal sample_s : signed(31 downto 0);
-    signal v_int : signed(31 downto 0);
     signal mult : signed(63 downto 0);
-    constant A : integer := integer(0.119777 * 2**16);
-    constant B : integer := integer(-223.14 * 2**16);
+    constant A : integer := integer(0.108881 * 2**16);
+    constant B : integer := integer(2047 * 2**16);
     signal valid : std_logic_vector(3 downto 0);
+    signal dec : signed(31 downto 0);
 begin
     process(clk)
-        variable v_var : std_logic_vector(31 downto 0);
+        variable v_var : std_logic_vector(63 downto 0);
     begin
         if rising_edge(clk) then
             if sync_rst then
                 sample_s <= (others => '0');
-                v_int <= (others => '0');
+                dec <= (others => '0');
                 mult <= (others => '0');
                 valid <= (others => '0');
                 v <= (others => '0');
             else
-                sample_s <= signed(X"00000" & sample);
-                mult <= sample_s * A;
-                v_int <= mult(31 downto 0) + B;
-                v_var := std_logic_vector(v_int);
-                v <= v_var(27 downto 16);
+                sample_s <= signed(X"0" & sample & X"0000");
+                dec <= sample_s - B;
+                mult <= dec * A;
+                v_var := std_logic_vector(mult);
+                v <= v_var(43 downto 32);
                 valid <= sample_valid & valid(valid'left downto 1);
                 
             end if;

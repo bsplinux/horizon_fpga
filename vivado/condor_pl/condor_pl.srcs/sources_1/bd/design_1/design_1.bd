@@ -3374,7 +3374,7 @@
             "value": "16"
           },
           "C_SCK_RATIO": {
-            "value": "4"
+            "value": "8"
           },
           "C_SPI_MODE": {
             "value": "0"
@@ -3513,7 +3513,7 @@
             "value": "16"
           },
           "C_SCK_RATIO": {
-            "value": "4"
+            "value": "8"
           },
           "C_SPI_MODE": {
             "value": "0"
@@ -3537,7 +3537,7 @@
             "value": "16"
           },
           "C_SCK_RATIO": {
-            "value": "4"
+            "value": "8"
           },
           "C_SPI_MODE": {
             "value": "0"

@@ -253,7 +253,8 @@ end package condor_pl_pkg;
 
 package body condor_pl_pkg is
     function ios_2_app_vec(x: ios_2_app_t) return std_logic_vector is
-        variable o : std_logic_vector(IO_IN_range);
+        --variable o : std_logic_vector(IO_IN_range);
+        variable o : std_logic_vector(IO_IN_PH_C_ON_fpga downto IO_IN_POWERON_FPGA);
     begin
         o( 0) := x.POWERON_FPGA    ; 
         o( 1) := x.FAN_PG1_FPGA    ; 

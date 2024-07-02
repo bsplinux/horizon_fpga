@@ -176,7 +176,7 @@ begin
                     end if;
                 end case;
                 
-                if registers(UARTS_CONTROL)(UARTS_CONTROL_1MS_ERR_CLR) and regs_updating(UARTS_CONTROL) then
+                if registers(UARTS_CONTROL)(UARTS_CONTROL_MS1_ERR_CLR) and regs_updating(UARTS_CONTROL) then
                     one_ms_error <= '0';
                 end if;
             
@@ -247,7 +247,7 @@ begin
         
         internal_regs_we(UARTS_STATUS) <= '1';
         internal_regs(UARTS_STATUS)(UARTS_STATUS_BUSY) <= not ap_idle;
-        internal_regs(UARTS_STATUS)(UARTS_STATUS_1MS_ERR) <= one_ms_error;
+        internal_regs(UARTS_STATUS)(UARTS_STATUS_MS1_ERR) <= one_ms_error;
         
     end process;
     

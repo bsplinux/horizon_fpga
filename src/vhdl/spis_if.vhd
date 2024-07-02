@@ -83,17 +83,19 @@ architecture RTL of spis_if is
     END COMPONENT;
     
     COMPONENT rms_0
-    PORT (
-        sample_ap_vld : IN STD_LOGIC;
-        d_out_ap_vld : OUT STD_LOGIC;
+    port (
         ap_clk : IN STD_LOGIC;
-        ap_rst : IN STD_LOGIC;
-        sample : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-        n : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
-        zero_cross : IN STD_LOGIC;
-        zero_cross_ap_ack : out std_logic;
-        zero_cross_ap_vld : in std_logic;
-        d_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0) 
+        ap_rst_n : IN STD_LOGIC;
+        sample_TDATA : IN STD_LOGIC_VECTOR (15 downto 0);
+        sample_TVALID : IN STD_LOGIC;
+        sample_TREADY : OUT STD_LOGIC;
+        zero_cross_TDATA : IN STD_LOGIC_VECTOR (7 downto 0);
+        zero_cross_TVALID : IN STD_LOGIC;
+        zero_cross_TREADY : OUT STD_LOGIC;
+        d_out_TDATA : OUT STD_LOGIC_VECTOR (15 downto 0);
+        d_out_TVALID : OUT STD_LOGIC;
+        d_out_TREADY : IN STD_LOGIC;
+        cnt : IN STD_LOGIC_VECTOR (31 downto 0)
     );
     END COMPONENT;
 
@@ -112,7 +114,6 @@ architecture RTL of spis_if is
     signal one100_us_tick: std_logic;
     
     signal zero_cross_error : std_logic;
-    signal n : std_logic_vector(7 downto 0);
     
     signal spis_ok, spis_ok_sig : std_logic_vector(2 downto 0);
     
@@ -135,6 +136,9 @@ architecture RTL of spis_if is
     signal a_valid_vec : std_logic_vector(sample2a_range);
     signal a_rms_vec : a_vec_t;
     signal a_rms_valid_vec : std_logic_vector(sample2a_range);
+    signal p : std_logic_vector(15 downto 0);
+    signal p_valid : std_logic;
+    signal z_cross_error : std_logic;
     
     
 begin
@@ -212,7 +216,7 @@ begin
                     end if;
                 end case;
                 
-                if registers(SPIS_CONTROL)(SPIS_CONTROL_100US_ERR_CLR) and regs_updating(SPIS_CONTROL) then
+                if registers(SPIS_CONTROL)(SPIS_CONTROL_US100_ERR_CLR) and regs_updating(SPIS_CONTROL) then
                     one100_us_error <= '0';
                 end if;
             
@@ -259,60 +263,64 @@ begin
         
         internal_regs_we(SPIS_STATUS) <= '1';
         internal_regs(SPIS_STATUS)(SPIS_STATUS_BUSY) <= not ap_idle;
-        internal_regs(SPIS_STATUS)(SPIS_STATUS_100US_ERR) <= one100_us_error;
-        internal_regs(SPIS_STATUS)(SPIS_STATUS_SPIS_OK) <= spis_ok_sig;
+        internal_regs(SPIS_STATUS)(SPIS_STATUS_US100_ERR) <= one100_us_error;
+        internal_regs(SPIS_STATUS)(SPIS_STATUS_SPI2_OK downto SPIS_STATUS_SPI0_OK) <= spis_ok_sig;
+        internal_regs(SPIS_STATUS)(SPIS_STATUS_Z_CROSS_ERR) <= zero_cross_error;
         
         internal_regs_we(SPI_OUT4_Isns    ) <= a_valid_vec(0);
         internal_regs_we(SPI_DC_PWR_I_sns ) <= a_valid_vec(1);
         internal_regs_we(SPI_PH1_I_sns    ) <= a_valid_vec(2);
         internal_regs_we(SPI_PH2_I_sns    ) <= a_valid_vec(3);
         internal_regs_we(SPI_PH3_I_sns    ) <= a_valid_vec(4);
-        internal_regs_we(SPI_Vsns_PH_A_RLY) <= v_valid_vec(0);
-        internal_regs_we(SPI_Vsns_PH_B_RLY) <= v_valid_vec(1);
-        internal_regs_we(SPI_Vsns_PH_C_RLY) <= v_valid_vec(2);
+        internal_regs_we(SPI_OUT4_sns     ) <= v_valid_vec(0);
+        internal_regs_we(SPI_Vsns_PH1     ) <= v_valid_vec(1);
+        internal_regs_we(SPI_Vsns_PH2     ) <= v_valid_vec(2);
         internal_regs_we(SPI_Vsns_PH3     ) <= v_valid_vec(3);
-        internal_regs_we(SPI_Vsns_PH2     ) <= v_valid_vec(4);
-        internal_regs_we(SPI_Vsns_PH1     ) <= v_valid_vec(5);
-        internal_regs_we(SPI_OUT4_sns     ) <= v_valid_vec(6);
+        internal_regs_we(SPI_Vsns_PH_C_RLY) <= v_valid_vec(4);
+        internal_regs_we(SPI_Vsns_PH_B_RLY) <= v_valid_vec(5);
+        internal_regs_we(SPI_Vsns_PH_A_RLY) <= v_valid_vec(6);
 
         internal_regs(SPI_OUT4_Isns    )(15 downto 0) <= a_vec(0);
         internal_regs(SPI_DC_PWR_I_sns )(15 downto 0) <= a_vec(1);
         internal_regs(SPI_PH1_I_sns    )(15 downto 0) <= a_vec(2);
         internal_regs(SPI_PH2_I_sns    )(15 downto 0) <= a_vec(3);
         internal_regs(SPI_PH3_I_sns    )(15 downto 0) <= a_vec(4);
-        internal_regs(SPI_Vsns_PH_A_RLY)(11 downto 0) <= v_vec(0);
-        internal_regs(SPI_Vsns_PH_B_RLY)(11 downto 0) <= v_vec(1);
-        internal_regs(SPI_Vsns_PH_C_RLY)(11 downto 0) <= v_vec(2);
+        internal_regs(SPI_OUT4_sns     )(11 downto 0) <= v_vec(0);
+        internal_regs(SPI_Vsns_PH1     )(11 downto 0) <= v_vec(1);
+        internal_regs(SPI_Vsns_PH2     )(11 downto 0) <= v_vec(2);
         internal_regs(SPI_Vsns_PH3     )(11 downto 0) <= v_vec(3);
-        internal_regs(SPI_Vsns_PH2     )(11 downto 0) <= v_vec(4);
-        internal_regs(SPI_Vsns_PH1     )(11 downto 0) <= v_vec(5);
-        internal_regs(SPI_OUT4_sns     )(11 downto 0) <= v_vec(6);
+        internal_regs(SPI_Vsns_PH_C_RLY)(11 downto 0) <= v_vec(4);
+        internal_regs(SPI_Vsns_PH_B_RLY)(11 downto 0) <= v_vec(5);
+        internal_regs(SPI_Vsns_PH_A_RLY)(11 downto 0) <= v_vec(6);
         
         internal_regs_we(SPI_RMS_OUT4_Isns    ) <= a_rms_valid_vec(0);
         internal_regs_we(SPI_RMS_DC_PWR_I_sns ) <= a_rms_valid_vec(1);
         internal_regs_we(SPI_RMS_PH1_I_sns    ) <= a_rms_valid_vec(2);
         internal_regs_we(SPI_RMS_PH2_I_sns    ) <= a_rms_valid_vec(3);
         internal_regs_we(SPI_RMS_PH3_I_sns    ) <= a_rms_valid_vec(4);
-        internal_regs_we(SPI_RMS_Vsns_PH_A_RLY) <= v_rms_valid_vec(0);
-        internal_regs_we(SPI_RMS_Vsns_PH_B_RLY) <= v_rms_valid_vec(1);
-        internal_regs_we(SPI_RMS_Vsns_PH_C_RLY) <= v_rms_valid_vec(2);
+        internal_regs_we(SPI_RMS_OUT4_sns     ) <= v_rms_valid_vec(0);
+        internal_regs_we(SPI_RMS_Vsns_PH1     ) <= v_rms_valid_vec(1);
+        internal_regs_we(SPI_RMS_Vsns_PH2     ) <= v_rms_valid_vec(2);
         internal_regs_we(SPI_RMS_Vsns_PH3     ) <= v_rms_valid_vec(3);
-        internal_regs_we(SPI_RMS_Vsns_PH2     ) <= v_rms_valid_vec(4);
-        internal_regs_we(SPI_RMS_Vsns_PH1     ) <= v_rms_valid_vec(5);
-        internal_regs_we(SPI_RMS_OUT4_sns     ) <= v_rms_valid_vec(6);
+        internal_regs_we(SPI_RMS_Vsns_PH_C_RLY) <= v_rms_valid_vec(4);
+        internal_regs_we(SPI_RMS_Vsns_PH_B_RLY) <= v_rms_valid_vec(5);
+        internal_regs_we(SPI_RMS_Vsns_PH_A_RLY) <= v_rms_valid_vec(6);
 
         internal_regs(SPI_RMS_OUT4_Isns    )(15 downto 0) <= a_rms_vec(0);
         internal_regs(SPI_RMS_DC_PWR_I_sns )(15 downto 0) <= a_rms_vec(1);
         internal_regs(SPI_RMS_PH1_I_sns    )(15 downto 0) <= a_rms_vec(2);
         internal_regs(SPI_RMS_PH2_I_sns    )(15 downto 0) <= a_rms_vec(3);
         internal_regs(SPI_RMS_PH3_I_sns    )(15 downto 0) <= a_rms_vec(4);
-        internal_regs(SPI_RMS_Vsns_PH_A_RLY)(11 downto 0) <= v_rms_vec(0);
-        internal_regs(SPI_RMS_Vsns_PH_B_RLY)(11 downto 0) <= v_rms_vec(1);
-        internal_regs(SPI_RMS_Vsns_PH_C_RLY)(11 downto 0) <= v_rms_vec(2);
+        internal_regs(SPI_RMS_OUT4_sns     )(11 downto 0) <= v_rms_vec(0);
+        internal_regs(SPI_RMS_Vsns_PH1     )(11 downto 0) <= v_rms_vec(1);
+        internal_regs(SPI_RMS_Vsns_PH2     )(11 downto 0) <= v_rms_vec(2);
         internal_regs(SPI_RMS_Vsns_PH3     )(11 downto 0) <= v_rms_vec(3);
-        internal_regs(SPI_RMS_Vsns_PH2     )(11 downto 0) <= v_rms_vec(4);
-        internal_regs(SPI_RMS_Vsns_PH1     )(11 downto 0) <= v_rms_vec(5);
-        internal_regs(SPI_RMS_OUT4_sns     )(11 downto 0) <= v_rms_vec(6);
+        internal_regs(SPI_RMS_Vsns_PH_C_RLY)(11 downto 0) <= v_rms_vec(4);
+        internal_regs(SPI_RMS_Vsns_PH_B_RLY)(11 downto 0) <= v_rms_vec(5);
+        internal_regs(SPI_RMS_Vsns_PH_A_RLY)(11 downto 0) <= v_rms_vec(6);
+        
+        internal_regs_we(LOG_AC_POWER) <= p_valid;
+        internal_regs(LOG_AC_POWER)    <= X"0000" & p;
         
     end process;
     
@@ -394,15 +402,32 @@ begin
         d                => sample2v_vec(1),
         d_valid          => sample2v_valid_vec(1),
         zero_cross       => z_cross,
-        zero_cross_error => zero_cross_error,
-        n                => n
+        zero_cross_error => z_cross_error,
+        n                => open
     );
-    
+    process(clk)
+        variable clr : std_logic;
+    begin
+        if rising_edge(clk) then
+            if sync_rst then
+                zero_cross_error <= '0';
+                clr := '0';
+            else
+                if z_cross_error then
+                    zero_cross_error <= '1';
+                elsif registers(SPIS_CONTROL)(SPIS_CONTROL_Z_CROSS_ERR_CLR) and not clr then
+                    zero_cross_error <= '0';
+                end if;
+                clr := registers(SPIS_CONTROL)(SPIS_CONTROL_Z_CROSS_ERR_CLR);
+            end if;
+        end if;
+    end process;
+        
     -- a2d values to V / A values and rms calclulations:
     sample2v_gen: for i in sample2v_range generate
         signal zero_cross : std_logic;
-        signal zero_cross_ap_ack : std_logic;
-        signal zero_cross_ap_vld : std_logic;
+        signal zero_cross_TREADY : std_logic;
+        signal sample_TREADY : std_logic;
     begin
         
         sample2v_i: entity work.sample2v
@@ -417,17 +442,19 @@ begin
         
         rms_v_i: component rms_0
         port map(
-            sample_ap_vld => v_valid_vec(i),
-            d_out_ap_vld  => v_rms_valid_vec(i),
-            ap_clk        => clk,
-            ap_rst        => sync_rst,
-            sample        => X"0" & v_vec(i),
-            n             => n,
-            zero_cross    => zero_cross,
-            zero_cross_ap_ack => zero_cross_ap_ack,
-            zero_cross_ap_vld => zero_cross_ap_vld,
-            d_out(11 downto 0) => v_rms_vec(i),
-            d_out(15 downto 12) => open
+            ap_clk            => clk,
+            ap_rst_n          => hls_rstn,
+            sample_TDATA      => v_vec(i)(11) & v_vec(i)(11) & v_vec(i)(11) & v_vec(i)(11) & v_vec(i),
+            sample_TVALID     => v_valid_vec(i),
+            sample_TREADY     => sample_TREADY,
+            zero_cross_TDATA  => "0000000" & zero_cross,
+            zero_cross_TVALID => '1',
+            zero_cross_TREADY => zero_cross_TREADY,
+            d_out_TDATA(11 downto 0) => v_rms_vec(i),
+            d_out_TDATA(15 downto 12) => open,
+            d_out_TVALID      => v_rms_valid_vec(i),
+            d_out_TREADY      => '1',
+            cnt               => X"00000000" -- 0 stands for infinite run of this hls block this port is only used in simulation
         );
         process(clk)
             variable z_cross_s: std_logic;
@@ -436,27 +463,24 @@ begin
                 if sync_rst then
                     zero_cross <= '0';
                     z_cross_s := '0';
-                    zero_cross_ap_vld <= '0';
                 else
                     if z_cross and not z_cross_s then
                         zero_cross <= '1';
-                        zero_cross_ap_vld <= '1';
-                    elsif zero_cross_ap_ack then
+                    elsif zero_cross_TREADY then
                         zero_cross <= '0';
                     end if;
                     z_cross_s := z_cross;    
                 end if;
             end if;
         end process;
-        
     end generate sample2v_gen;
-    sample2v_vec <= (spis_d_2(123 downto 112), spis_d_2(107 downto 96), spis_d_2(91 downto 80), spis_d_2(75 downto 64), spis_d_2(43 downto 32), spis_d_2(27 downto 16), spis_d_2(11 downto 0));
+    sample2v_vec <= (spis_d_2(123 downto 112), spis_d_2(107 downto 96), spis_d_2(91 downto 80), spis_d_2(59 downto 48), spis_d_2(43 downto 32), spis_d_2(27 downto 16), spis_d_2(11 downto 0));
     sample2v_valid_vec <= spis_d_2_ap_vld & spis_d_2_ap_vld & spis_d_2_ap_vld & spis_d_2_ap_vld & spis_d_2_ap_vld & spis_d_2_ap_vld & spis_d_2_ap_vld;
     
     sample2a_gen: for i in sample2a_range generate
         signal zero_cross : std_logic;
-        signal zero_cross_ap_ack : std_logic;
-        signal zero_cross_ap_vld : std_logic;
+        signal zero_cross_TREADY : std_logic;
+        signal sample_TREADY : std_logic;
     begin
         
         sample2a_i: entity work.sample2a
@@ -471,18 +495,19 @@ begin
 
         rms_a_i: component rms_0
         port map(
-            sample_ap_vld => a_valid_vec(i),
-            d_out_ap_vld  => a_rms_valid_vec(i),
-            ap_clk        => clk,
-            ap_rst        => sync_rst,
-            sample        => a_vec(i),
-            n             => n,
-            zero_cross    => zero_cross,
-            zero_cross_ap_ack => zero_cross_ap_ack,
-            zero_cross_ap_vld => zero_cross_ap_vld,
-            d_out         => a_rms_vec(i)
+            ap_clk            => clk,
+            ap_rst_n          => hls_rstn,
+            sample_TDATA      => a_vec(i),
+            sample_TVALID     => a_valid_vec(i),
+            sample_TREADY     => sample_TREADY,
+            zero_cross_TDATA  => "0000000" & zero_cross,
+            zero_cross_TVALID => '1',
+            zero_cross_TREADY => zero_cross_TREADY,
+            d_out_TDATA       => a_rms_vec(i),
+            d_out_TVALID      => a_rms_valid_vec(i),
+            d_out_TREADY      => '1',
+            cnt               => X"00000000" -- 0 stands for infinite run of this hls block this port is only used in simulation
         );
-        
         process(clk)
             variable z_cross_s: std_logic;
         begin
@@ -490,21 +515,36 @@ begin
                 if sync_rst then
                     zero_cross <= '0';
                     z_cross_s := '0';
-                    zero_cross_ap_vld <= '0';
                 else
                     if z_cross and not z_cross_s then
                         zero_cross <= '1';
-                        zero_cross_ap_vld <= '1';
-                    elsif zero_cross_ap_ack then
+                    elsif zero_cross_TREADY then
                         zero_cross <= '0';
                     end if;
                     z_cross_s := z_cross;    
                 end if;
-            end if;                
+            end if;
         end process;
         
     end generate sample2a_gen;
-    sample2a_vec <= (spis_d_0(59 downto 48), spis_d_0(43 downto 32), spis_d_0(27 downto 16), spis_d_0(11 downto 0), spis_d_2(59 downto 48));
+    sample2a_vec <= (spis_d_0(59 downto 48), spis_d_0(43 downto 32), spis_d_0(27 downto 16), spis_d_0(11 downto 0), spis_d_2(75 downto 64));
     sample2a_valid_vec <= spis_d_0_ap_vld & spis_d_0_ap_vld & spis_d_0_ap_vld & spis_d_0_ap_vld & spis_d_2_ap_vld;
+    
+    -- power calculation
+    spi_power_i: entity work.spi_power
+    port map(
+        clk      => clk,
+        sync_rst => sync_rst,
+        v1       => v_vec(1),
+        v2       => v_vec(2),
+        v3       => v_vec(3),
+        i1       => a_vec(2),
+        i2       => a_vec(3),
+        i3       => a_vec(4),
+        v_valid  => v_valid_vec(1) & v_valid_vec(2) & v_valid_vec(3),
+        i_valid  => a_valid_vec(2) & a_valid_vec(3) & a_valid_vec(4),
+        p        => p,
+        p_valid  => p_valid
+    );
     
 end architecture RTL;

@@ -25,7 +25,8 @@ entity app_ios is
 end entity app_ios;
 
 architecture RTL of app_ios is
-    signal IO_IN_s   : std_logic_vector(IO_IN_range);
+    --signal IO_IN_s   : std_logic_vector(IO_IN_range);
+    signal IO_IN_s   : std_logic_vector(IO_IN_PH_C_ON_fpga downto IO_IN_POWERON_FPGA);
     
 begin
     meta_regs: entity work.syncronizers
@@ -159,7 +160,8 @@ begin
     begin
         --if registers(GENERAL_CONTROL)(CONTROL_IO_DEBUG_EN) = '1' then
             internal_regs_we(IO_IN) <= '1';
-            internal_regs(IO_IN)(IO_IN_range) <= IO_IN_s;
+            --internal_regs(IO_IN)(IO_IN_range) <= IO_IN_s;
+            internal_regs(IO_IN)(IO_IN_PH_C_ON_fpga downto IO_IN_POWERON_FPGA) <= IO_IN_s;
         --end if;
     end process;
 

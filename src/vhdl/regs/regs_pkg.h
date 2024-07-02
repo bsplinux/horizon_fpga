@@ -1,6 +1,6 @@
 /*
 ----------------------------------------------------------------------------------------
--- Registers H file created from yaml definition of registers at     19-06-2024 10:36 --
+-- Registers H file created from yaml definition of registers at     27-06-2024 15:20 --
 --   python function: regs2h.py                                                       --
 --   yaml file name: ../yaml/condor_regs.yaml                                         --
 ----------------------------------------------------------------------------------------
@@ -135,7 +135,6 @@ typedef struct
     uint32_t PH_A_ON_fpga           : 1;
     uint32_t PH_B_ON_fpga           : 1;
     uint32_t PH_C_ON_fpga           : 1;
-    uint32_t range                  : 20;
 }fields_IO_IN_t;
 
 typedef union
@@ -172,7 +171,6 @@ typedef struct
     uint32_t EN_PSU_8_FB            : 1;
     uint32_t EN_PSU_9_FB            : 1;
     uint32_t EN_PSU_10_FB           : 1;
-    uint32_t range                  : 26;
 }fields_IO_OUT0_t;
 
 typedef union
@@ -192,7 +190,6 @@ typedef struct
     uint32_t RS485_DE_4             : 1;
     uint32_t RS485_DE_5             : 1;
     uint32_t RS485_DE_6             : 1;
-    uint32_t range                  : 9;
 }fields_IO_OUT1_t;
 
 typedef union
@@ -894,7 +891,7 @@ typedef struct
 {
     uint32_t EN_RANGE               : 9;
     uint32_t RST                    : 1;
-    uint32_t 1MS_ERR_CLR            : 1;
+    uint32_t MS1_ERR_CLR            : 1;
 }fields_UARTS_CONTROL_t;
 
 typedef union
@@ -906,7 +903,7 @@ typedef union
 typedef struct
 {
     uint32_t BUSY                   : 1;
-    uint32_t 1MS_ERR                : 1;
+    uint32_t MS1_ERR                : 1;
 }fields_UARTS_STATUS_t;
 
 typedef union
@@ -1099,7 +1096,8 @@ typedef struct
 {
     uint32_t EN_RANGE               : 3;
     uint32_t RST                    : 1;
-    uint32_t 100US_ERR_CLR          : 1;
+    uint32_t US100_ERR_CLR          : 1;
+    uint32_t Z_CROSS_ERR_CLR        : 1;
 }fields_SPIS_CONTROL_t;
 
 typedef union
@@ -1111,11 +1109,11 @@ typedef union
 typedef struct
 {
     uint32_t BUSY                   : 1;
-    uint32_t 100US_ERR              : 1;
+    uint32_t US100_ERR              : 1;
     uint32_t SPI0_OK                : 1;
     uint32_t SPI1_OK                : 1;
     uint32_t SPI2_OK                : 1;
-    uint32_t SPIS_OK                : 3;
+    uint32_t Z_CROSS_ERR            : 1;
 }fields_SPIS_STATUS_t;
 
 typedef union
@@ -1128,10 +1126,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RAW0_BA_t;
 
 typedef union
@@ -1144,10 +1140,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RAW0_DC_t;
 
 typedef union
@@ -1180,10 +1174,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RAW2_BA_t;
 
 typedef union
@@ -1196,10 +1188,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RAW2_DC_t;
 
 typedef union
@@ -1212,10 +1202,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RAW2_FE_t;
 
 typedef union
@@ -1228,10 +1216,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RAW2_HG_t;
 
 typedef union
@@ -1244,10 +1230,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_OUT4_Isns_t;
 
 typedef union
@@ -1260,10 +1244,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_DC_PWR_I_sns_t;
 
 typedef union
@@ -1276,10 +1258,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_PH1_I_sns_t;
 
 typedef union
@@ -1292,10 +1272,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_PH2_I_sns_t;
 
 typedef union
@@ -1308,10 +1286,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_PH3_I_sns_t;
 
 typedef union
@@ -1324,10 +1300,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_Vsns_PH_A_RLY_t;
 
 typedef union
@@ -1340,10 +1314,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_Vsns_PH_B_RLY_t;
 
 typedef union
@@ -1356,10 +1328,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_Vsns_PH_C_RLY_t;
 
 typedef union
@@ -1372,10 +1342,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_Vsns_PH3_t;
 
 typedef union
@@ -1388,10 +1356,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_Vsns_PH2_t;
 
 typedef union
@@ -1404,10 +1370,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_Vsns_PH1_t;
 
 typedef union
@@ -1420,10 +1384,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_OUT4_sns_t;
 
 typedef union
@@ -1436,10 +1398,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RMS_OUT4_Isns_t;
 
 typedef union
@@ -1452,10 +1412,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RMS_DC_PWR_I_sns_t;
 
 typedef union
@@ -1468,10 +1426,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RMS_PH1_I_sns_t;
 
 typedef union
@@ -1484,10 +1440,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RMS_PH2_I_sns_t;
 
 typedef union
@@ -1500,10 +1454,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RMS_PH3_I_sns_t;
 
 typedef union
@@ -1516,10 +1468,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RMS_Vsns_PH_A_RLY_t;
 
 typedef union
@@ -1532,10 +1482,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RMS_Vsns_PH_B_RLY_t;
 
 typedef union
@@ -1548,10 +1496,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RMS_Vsns_PH_C_RLY_t;
 
 typedef union
@@ -1564,10 +1510,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RMS_Vsns_PH3_t;
 
 typedef union
@@ -1580,10 +1524,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RMS_Vsns_PH2_t;
 
 typedef union
@@ -1596,10 +1538,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RMS_Vsns_PH1_t;
 
 typedef union
@@ -1612,10 +1552,8 @@ typedef struct
 {
     uint32_t L_D_RANGE              : 12;
     uint32_t L_ID_RANGE             : 4;
-    uint32_t L_RANGE                : 16;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-    uint32_t H_RANGE                : 16;
 }fields_SPI_RMS_OUT4_sns_t;
 
 typedef union

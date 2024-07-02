@@ -9,4 +9,3 @@ set_directive_interface -mode axis -register_mode both -depth 78 -register=true 
 set_directive_interface -mode axis -register_mode both -depth 78 -register=true "rms_syn" zero_cross
 set_directive_interface -mode axis -register_mode both -depth 3 -register=true "rms_syn" d_out
 set_directive_pipeline -off=true "rms_syn/main_loop"
-set_directive_interface -mode ap_ctrl_none "rms_syn"

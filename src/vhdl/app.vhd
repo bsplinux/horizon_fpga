@@ -141,6 +141,9 @@ begin
                     internal_regs_we(i) <= internal_regs_we_spis(i);
                     internal_regs(i) <= internal_regs_spis(i);
                 end loop;
+                internal_regs_we(LOG_AC_POWER) <= internal_regs_we_spis(LOG_AC_POWER);
+                internal_regs(LOG_AC_POWER)    <= internal_regs_spis(LOG_AC_POWER);
+                
                     
                 internal_regs_we(LOG_PSU_STATUS_L) <= '1';
                 internal_regs_we(LOG_PSU_STATUS_H) <= '1';
