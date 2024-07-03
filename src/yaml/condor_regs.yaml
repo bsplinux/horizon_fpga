@@ -176,6 +176,54 @@ reg_uarts_status: &reg_uarts_status
     MS1_ERR : 1      
   used_bits: "1:0"
 
+reg_uart_d_l: &reg_uart_d_l
+  fpga_access: true
+  cpu_access: false
+  fields:
+    TEMP: "7:0"
+    VIN_H: "15:12"
+    VIN_L: "23:16"
+    VOUT_L:  "31:24"
+  used_bits: "31:0"
+
+reg_uart_d_h: &reg_uart_d_h
+  fpga_access: true
+  cpu_access: false
+  fields:
+    VOUT_H: "3:0"
+    IIN_H: "7:4"
+    IIN_L: "15:8"
+    IOUT:  "27:16"
+    VINP: 28
+    OTP : 29
+    OCP : 30
+    OVP : 31
+  used_bits: "31:0"
+
+reg_uart_main_l: &reg_uart_main_l
+  fpga_access: true
+  cpu_access: false
+  fields:
+    TEMP: "7:0"
+    IPHA_H: "15:12"
+    IPHA_L: "23:16"
+    IPHB_L:  "31:24"
+  used_bits: "31:0"
+
+reg_uart_main_h: &reg_uart_main_h
+  fpga_access: true
+  cpu_access: false
+  fields:
+    IPHB_H: "3:0"
+    IPHC_H: "7:4"
+    IPHC_L: "15:8"
+    CAP_EOL: 16
+    VINP   : 20
+    OTP    : 21
+    OCP    : 22
+    OVP    : 23
+  used_bits: "23:0"
+
 reg_spis_ctl: &reg_spis_ctl
   fpga_access: false
   cpu_access: true
@@ -315,24 +363,42 @@ regs:
   - PWM3_HIGH         : *reg_d
   - UARTS_CONTROL     : *reg_uarts_ctl
   - UARTS_STATUS      : *reg_uarts_status
-  - UART_RAW0_L       : *reg_d_int
-  - UART_RAW0_H       : *reg_d_int
-  - UART_RAW1_L       : *reg_d_int
-  - UART_RAW1_H       : *reg_d_int
-  - UART_RAW2_L       : *reg_d_int
-  - UART_RAW2_H       : *reg_d_int
-  - UART_RAW3_L       : *reg_d_int
-  - UART_RAW3_H       : *reg_d_int
-  - UART_RAW4_L       : *reg_d_int
-  - UART_RAW4_H       : *reg_d_int
-  - UART_RAW5_L       : *reg_d_int
-  - UART_RAW5_H       : *reg_d_int
-  - UART_RAW6_L       : *reg_d_int
-  - UART_RAW6_H       : *reg_d_int
-  - UART_RAW7_L       : *reg_d_int
-  - UART_RAW7_H       : *reg_d_int
-  - UART_RAW8_L       : *reg_d_int
-  - UART_RAW8_H       : *reg_d_int
+  - UART_RAW0_L       : *reg_uart_d_l
+  - UART_RAW0_H       : *reg_uart_d_h
+  - UART_RAW1_L       : *reg_uart_d_l
+  - UART_RAW1_H       : *reg_uart_d_h
+  - UART_RAW2_L       : *reg_uart_d_l
+  - UART_RAW2_H       : *reg_uart_d_h
+  - UART_RAW3_L       : *reg_uart_d_l
+  - UART_RAW3_H       : *reg_uart_d_h
+  - UART_RAW4_L       : *reg_uart_d_l
+  - UART_RAW4_H       : *reg_uart_d_h
+  - UART_RAW5_L       : *reg_uart_d_l
+  - UART_RAW5_H       : *reg_uart_d_h
+  - UART_RAW6_L       : *reg_uart_d_l
+  - UART_RAW6_H       : *reg_uart_d_h
+  - UART_RAW7_L       : *reg_uart_d_l
+  - UART_RAW7_H       : *reg_uart_d_h
+  - UART_RAW8_L       : *reg_uart_main_l
+  - UART_RAW8_H       : *reg_uart_main_h
+  - UART_CALC0_L      : *reg_uart_d_l
+  - UART_CALC0_H      : *reg_uart_d_h
+  - UART_CALC1_L      : *reg_uart_d_l
+  - UART_CALC1_H      : *reg_uart_d_h
+  - UART_CALC2_L      : *reg_uart_d_l
+  - UART_CALC2_H      : *reg_uart_d_h
+  - UART_CALC3_L      : *reg_uart_d_l
+  - UART_CALC3_H      : *reg_uart_d_h
+  - UART_CALC4_L      : *reg_uart_d_l
+  - UART_CALC4_H      : *reg_uart_d_h
+  - UART_CALC5_L      : *reg_uart_d_l
+  - UART_CALC5_H      : *reg_uart_d_h
+  - UART_CALC6_L      : *reg_uart_d_l
+  - UART_CALC6_H      : *reg_uart_d_h
+  - UART_CALC7_L      : *reg_uart_d_l
+  - UART_CALC7_H      : *reg_uart_d_h
+  - UART_CALC8_L      : *reg_uart_main_l
+  - UART_CALC8_H      : *reg_uart_main_h
   - SPIS_CONTROL      : *reg_spis_ctl
     init: 0x0
   - SPIS_STATUS       : *reg_spis_status

@@ -320,7 +320,7 @@ begin
         internal_regs(SPI_RMS_Vsns_PH_A_RLY)(11 downto 0) <= v_rms_vec(6);
         
         internal_regs_we(LOG_AC_POWER) <= p_valid;
-        internal_regs(LOG_AC_POWER)    <= X"0000" & p;
+        internal_regs(LOG_AC_POWER)    <= X"00000" & p(15 downto 4);-- dividing by 16 as current is given in a X16 value
         
     end process;
     

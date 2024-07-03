@@ -1,6 +1,6 @@
 /*
 ----------------------------------------------------------------------------------------
--- Registers H file created from yaml definition of registers at     27-06-2024 15:20 --
+-- Registers H file created from yaml definition of registers at     03-07-2024 10:20 --
 --   python function: regs2h.py                                                       --
 --   yaml file name: ../yaml/condor_regs.yaml                                         --
 ----------------------------------------------------------------------------------------
@@ -914,6 +914,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
 }fields_UART_RAW0_L_t;
 
 typedef union
@@ -924,6 +929,14 @@ typedef union
 
 typedef struct
 {
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_RAW0_H_t;
 
 typedef union
@@ -934,6 +947,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
 }fields_UART_RAW1_L_t;
 
 typedef union
@@ -944,6 +962,14 @@ typedef union
 
 typedef struct
 {
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_RAW1_H_t;
 
 typedef union
@@ -954,6 +980,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
 }fields_UART_RAW2_L_t;
 
 typedef union
@@ -964,6 +995,14 @@ typedef union
 
 typedef struct
 {
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_RAW2_H_t;
 
 typedef union
@@ -974,6 +1013,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
 }fields_UART_RAW3_L_t;
 
 typedef union
@@ -984,6 +1028,14 @@ typedef union
 
 typedef struct
 {
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_RAW3_H_t;
 
 typedef union
@@ -994,6 +1046,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
 }fields_UART_RAW4_L_t;
 
 typedef union
@@ -1004,6 +1061,14 @@ typedef union
 
 typedef struct
 {
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_RAW4_H_t;
 
 typedef union
@@ -1014,6 +1079,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
 }fields_UART_RAW5_L_t;
 
 typedef union
@@ -1024,6 +1094,14 @@ typedef union
 
 typedef struct
 {
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_RAW5_H_t;
 
 typedef union
@@ -1034,6 +1112,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
 }fields_UART_RAW6_L_t;
 
 typedef union
@@ -1044,6 +1127,14 @@ typedef union
 
 typedef struct
 {
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_RAW6_H_t;
 
 typedef union
@@ -1054,6 +1145,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
 }fields_UART_RAW7_L_t;
 
 typedef union
@@ -1064,6 +1160,14 @@ typedef union
 
 typedef struct
 {
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_RAW7_H_t;
 
 typedef union
@@ -1074,6 +1178,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t IPHA_H                 : 4;
+    uint32_t IPHA_L                 : 8;
+    uint32_t IPHB_L                 : 8;
 }fields_UART_RAW8_L_t;
 
 typedef union
@@ -1084,6 +1193,15 @@ typedef union
 
 typedef struct
 {
+    uint32_t IPHB_H                 : 4;
+    uint32_t IPHC_H                 : 4;
+    uint32_t IPHC_L                 : 8;
+    uint32_t CAP_EOL                : 1;
+    uint32_t pad17                  : 3;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_RAW8_H_t;
 
 typedef union
@@ -1091,6 +1209,304 @@ typedef union
     uint32_t raw;
     fields_UART_RAW8_H_t fields;
 }UART_RAW8_H_t;
+
+typedef struct
+{
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
+}fields_UART_CALC0_L_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC0_L_t fields;
+}UART_CALC0_L_t;
+
+typedef struct
+{
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
+}fields_UART_CALC0_H_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC0_H_t fields;
+}UART_CALC0_H_t;
+
+typedef struct
+{
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
+}fields_UART_CALC1_L_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC1_L_t fields;
+}UART_CALC1_L_t;
+
+typedef struct
+{
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
+}fields_UART_CALC1_H_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC1_H_t fields;
+}UART_CALC1_H_t;
+
+typedef struct
+{
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
+}fields_UART_CALC2_L_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC2_L_t fields;
+}UART_CALC2_L_t;
+
+typedef struct
+{
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
+}fields_UART_CALC2_H_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC2_H_t fields;
+}UART_CALC2_H_t;
+
+typedef struct
+{
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
+}fields_UART_CALC3_L_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC3_L_t fields;
+}UART_CALC3_L_t;
+
+typedef struct
+{
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
+}fields_UART_CALC3_H_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC3_H_t fields;
+}UART_CALC3_H_t;
+
+typedef struct
+{
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
+}fields_UART_CALC4_L_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC4_L_t fields;
+}UART_CALC4_L_t;
+
+typedef struct
+{
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
+}fields_UART_CALC4_H_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC4_H_t fields;
+}UART_CALC4_H_t;
+
+typedef struct
+{
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
+}fields_UART_CALC5_L_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC5_L_t fields;
+}UART_CALC5_L_t;
+
+typedef struct
+{
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
+}fields_UART_CALC5_H_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC5_H_t fields;
+}UART_CALC5_H_t;
+
+typedef struct
+{
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
+}fields_UART_CALC6_L_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC6_L_t fields;
+}UART_CALC6_L_t;
+
+typedef struct
+{
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
+}fields_UART_CALC6_H_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC6_H_t fields;
+}UART_CALC6_H_t;
+
+typedef struct
+{
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t VIN_H                  : 4;
+    uint32_t VIN_L                  : 8;
+    uint32_t VOUT_L                 : 8;
+}fields_UART_CALC7_L_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC7_L_t fields;
+}UART_CALC7_L_t;
+
+typedef struct
+{
+    uint32_t VOUT_H                 : 4;
+    uint32_t IIN_H                  : 4;
+    uint32_t IIN_L                  : 8;
+    uint32_t IOUT                   : 12;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
+}fields_UART_CALC7_H_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC7_H_t fields;
+}UART_CALC7_H_t;
+
+typedef struct
+{
+    uint32_t TEMP                   : 8;
+    uint32_t pad8                   : 4;
+    uint32_t IPHA_H                 : 4;
+    uint32_t IPHA_L                 : 8;
+    uint32_t IPHB_L                 : 8;
+}fields_UART_CALC8_L_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC8_L_t fields;
+}UART_CALC8_L_t;
+
+typedef struct
+{
+    uint32_t IPHB_H                 : 4;
+    uint32_t IPHC_H                 : 4;
+    uint32_t IPHC_L                 : 8;
+    uint32_t CAP_EOL                : 1;
+    uint32_t pad17                  : 3;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
+}fields_UART_CALC8_H_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_CALC8_H_t fields;
+}UART_CALC8_H_t;
 
 typedef struct
 {
@@ -1562,8 +1978,8 @@ typedef union
     fields_SPI_RMS_OUT4_sns_t fields;
 }SPI_RMS_OUT4_sns_t;
 
-#define NUM_REGS_PACKED 133
-#define NUM_REGS 133
+#define NUM_REGS_PACKED 151
+#define NUM_REGS 151
 
 typedef struct
 {
@@ -1666,6 +2082,24 @@ typedef struct
     UART_RAW7_H_t            UART_RAW7_H         ;
     UART_RAW8_L_t            UART_RAW8_L         ;
     UART_RAW8_H_t            UART_RAW8_H         ;
+    UART_CALC0_L_t           UART_CALC0_L        ;
+    UART_CALC0_H_t           UART_CALC0_H        ;
+    UART_CALC1_L_t           UART_CALC1_L        ;
+    UART_CALC1_H_t           UART_CALC1_H        ;
+    UART_CALC2_L_t           UART_CALC2_L        ;
+    UART_CALC2_H_t           UART_CALC2_H        ;
+    UART_CALC3_L_t           UART_CALC3_L        ;
+    UART_CALC3_H_t           UART_CALC3_H        ;
+    UART_CALC4_L_t           UART_CALC4_L        ;
+    UART_CALC4_H_t           UART_CALC4_H        ;
+    UART_CALC5_L_t           UART_CALC5_L        ;
+    UART_CALC5_H_t           UART_CALC5_H        ;
+    UART_CALC6_L_t           UART_CALC6_L        ;
+    UART_CALC6_H_t           UART_CALC6_H        ;
+    UART_CALC7_L_t           UART_CALC7_L        ;
+    UART_CALC7_H_t           UART_CALC7_H        ;
+    UART_CALC8_L_t           UART_CALC8_L        ;
+    UART_CALC8_H_t           UART_CALC8_H        ;
     SPIS_CONTROL_t           SPIS_CONTROL        ;
     SPIS_STATUS_t            SPIS_STATUS         ;
     SPI_RAW0_BA_t            SPI_RAW0_BA         ;
@@ -1808,39 +2242,57 @@ typedef struct
 #define UART_RAW7_H_i        96
 #define UART_RAW8_L_i        97
 #define UART_RAW8_H_i        98
-#define SPIS_CONTROL_i       99
-#define SPIS_STATUS_i       100
-#define SPI_RAW0_BA_i       101
-#define SPI_RAW0_DC_i       102
-#define SPI_RAW1_BA_i       103
-#define SPI_RAW1_DC_i       104
-#define SPI_RAW2_BA_i       105
-#define SPI_RAW2_DC_i       106
-#define SPI_RAW2_FE_i       107
-#define SPI_RAW2_HG_i       108
-#define SPI_OUT4_Isns_i     109
-#define SPI_DC_PWR_I_sns_i  110
-#define SPI_PH1_I_sns_i     111
-#define SPI_PH2_I_sns_i     112
-#define SPI_PH3_I_sns_i     113
-#define SPI_Vsns_PH_A_RLY_i 114
-#define SPI_Vsns_PH_B_RLY_i 115
-#define SPI_Vsns_PH_C_RLY_i 116
-#define SPI_Vsns_PH3_i      117
-#define SPI_Vsns_PH2_i      118
-#define SPI_Vsns_PH1_i      119
-#define SPI_OUT4_sns_i      120
-#define SPI_RMS_OUT4_Isns_i 121
-#define SPI_RMS_DC_PWR_I_sns_i 122
-#define SPI_RMS_PH1_I_sns_i 123
-#define SPI_RMS_PH2_I_sns_i 124
-#define SPI_RMS_PH3_I_sns_i 125
-#define SPI_RMS_Vsns_PH_A_RLY_i 126
-#define SPI_RMS_Vsns_PH_B_RLY_i 127
-#define SPI_RMS_Vsns_PH_C_RLY_i 128
-#define SPI_RMS_Vsns_PH3_i  129
-#define SPI_RMS_Vsns_PH2_i  130
-#define SPI_RMS_Vsns_PH1_i  131
-#define SPI_RMS_OUT4_sns_i  132
+#define UART_CALC0_L_i       99
+#define UART_CALC0_H_i      100
+#define UART_CALC1_L_i      101
+#define UART_CALC1_H_i      102
+#define UART_CALC2_L_i      103
+#define UART_CALC2_H_i      104
+#define UART_CALC3_L_i      105
+#define UART_CALC3_H_i      106
+#define UART_CALC4_L_i      107
+#define UART_CALC4_H_i      108
+#define UART_CALC5_L_i      109
+#define UART_CALC5_H_i      110
+#define UART_CALC6_L_i      111
+#define UART_CALC6_H_i      112
+#define UART_CALC7_L_i      113
+#define UART_CALC7_H_i      114
+#define UART_CALC8_L_i      115
+#define UART_CALC8_H_i      116
+#define SPIS_CONTROL_i      117
+#define SPIS_STATUS_i       118
+#define SPI_RAW0_BA_i       119
+#define SPI_RAW0_DC_i       120
+#define SPI_RAW1_BA_i       121
+#define SPI_RAW1_DC_i       122
+#define SPI_RAW2_BA_i       123
+#define SPI_RAW2_DC_i       124
+#define SPI_RAW2_FE_i       125
+#define SPI_RAW2_HG_i       126
+#define SPI_OUT4_Isns_i     127
+#define SPI_DC_PWR_I_sns_i  128
+#define SPI_PH1_I_sns_i     129
+#define SPI_PH2_I_sns_i     130
+#define SPI_PH3_I_sns_i     131
+#define SPI_Vsns_PH_A_RLY_i 132
+#define SPI_Vsns_PH_B_RLY_i 133
+#define SPI_Vsns_PH_C_RLY_i 134
+#define SPI_Vsns_PH3_i      135
+#define SPI_Vsns_PH2_i      136
+#define SPI_Vsns_PH1_i      137
+#define SPI_OUT4_sns_i      138
+#define SPI_RMS_OUT4_Isns_i 139
+#define SPI_RMS_DC_PWR_I_sns_i 140
+#define SPI_RMS_PH1_I_sns_i 141
+#define SPI_RMS_PH2_I_sns_i 142
+#define SPI_RMS_PH3_I_sns_i 143
+#define SPI_RMS_Vsns_PH_A_RLY_i 144
+#define SPI_RMS_Vsns_PH_B_RLY_i 145
+#define SPI_RMS_Vsns_PH_C_RLY_i 146
+#define SPI_RMS_Vsns_PH3_i  147
+#define SPI_RMS_Vsns_PH2_i  148
+#define SPI_RMS_Vsns_PH1_i  149
+#define SPI_RMS_OUT4_sns_i  150
 
 #endif //__REGS_PKG_H__

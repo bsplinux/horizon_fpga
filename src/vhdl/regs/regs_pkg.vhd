@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------------------------
--- Registers VHDL package created from yaml definition of registers at 27-06-2024 15:20 --
+-- Registers VHDL package created from yaml definition of registers at 03-07-2024 10:20 --
 --   python function: regs2vhdl.py                                                      --
 --   yaml file name: ../yaml/condor_regs.yaml                                           --
 ------------------------------------------------------------------------------------------
@@ -112,6 +112,24 @@ package regs_pkg is
       UART_RAW7_H         ,
       UART_RAW8_L         ,
       UART_RAW8_H         ,
+      UART_CALC0_L        ,
+      UART_CALC0_H        ,
+      UART_CALC1_L        ,
+      UART_CALC1_H        ,
+      UART_CALC2_L        ,
+      UART_CALC2_H        ,
+      UART_CALC3_L        ,
+      UART_CALC3_H        ,
+      UART_CALC4_L        ,
+      UART_CALC4_H        ,
+      UART_CALC5_L        ,
+      UART_CALC5_H        ,
+      UART_CALC6_L        ,
+      UART_CALC6_H        ,
+      UART_CALC7_L        ,
+      UART_CALC7_H        ,
+      UART_CALC8_L        ,
+      UART_CALC8_H        ,
       SPIS_CONTROL        ,
       SPIS_STATUS         ,
       SPI_RAW0_BA         ,
@@ -148,8 +166,8 @@ package regs_pkg is
       SPI_RMS_OUT4_sns    ,
       NO_REG
   );
-  constant NUM_REGS:  natural := 134;
-  constant REGS_SPACE_SIZE : natural := 133;
+  constant NUM_REGS:  natural := 152;
+  constant REGS_SPACE_SIZE : natural := 151;
 
   type regs_a_t is array(REGS_SPACE_SIZE - 1 downto 0) of regs_names_t;
   constant regs_a: regs_a_t := (
@@ -252,40 +270,58 @@ package regs_pkg is
        96 => UART_RAW7_H         ,
        97 => UART_RAW8_L         ,
        98 => UART_RAW8_H         ,
-       99 => SPIS_CONTROL        ,
-      100 => SPIS_STATUS         ,
-      101 => SPI_RAW0_BA         ,
-      102 => SPI_RAW0_DC         ,
-      103 => SPI_RAW1_BA         ,
-      104 => SPI_RAW1_DC         ,
-      105 => SPI_RAW2_BA         ,
-      106 => SPI_RAW2_DC         ,
-      107 => SPI_RAW2_FE         ,
-      108 => SPI_RAW2_HG         ,
-      109 => SPI_OUT4_Isns       ,
-      110 => SPI_DC_PWR_I_sns    ,
-      111 => SPI_PH1_I_sns       ,
-      112 => SPI_PH2_I_sns       ,
-      113 => SPI_PH3_I_sns       ,
-      114 => SPI_Vsns_PH_A_RLY   ,
-      115 => SPI_Vsns_PH_B_RLY   ,
-      116 => SPI_Vsns_PH_C_RLY   ,
-      117 => SPI_Vsns_PH3        ,
-      118 => SPI_Vsns_PH2        ,
-      119 => SPI_Vsns_PH1        ,
-      120 => SPI_OUT4_sns        ,
-      121 => SPI_RMS_OUT4_Isns   ,
-      122 => SPI_RMS_DC_PWR_I_sns,
-      123 => SPI_RMS_PH1_I_sns   ,
-      124 => SPI_RMS_PH2_I_sns   ,
-      125 => SPI_RMS_PH3_I_sns   ,
-      126 => SPI_RMS_Vsns_PH_A_RLY,
-      127 => SPI_RMS_Vsns_PH_B_RLY,
-      128 => SPI_RMS_Vsns_PH_C_RLY,
-      129 => SPI_RMS_Vsns_PH3    ,
-      130 => SPI_RMS_Vsns_PH2    ,
-      131 => SPI_RMS_Vsns_PH1    ,
-      132 => SPI_RMS_OUT4_sns    ,
+       99 => UART_CALC0_L        ,
+      100 => UART_CALC0_H        ,
+      101 => UART_CALC1_L        ,
+      102 => UART_CALC1_H        ,
+      103 => UART_CALC2_L        ,
+      104 => UART_CALC2_H        ,
+      105 => UART_CALC3_L        ,
+      106 => UART_CALC3_H        ,
+      107 => UART_CALC4_L        ,
+      108 => UART_CALC4_H        ,
+      109 => UART_CALC5_L        ,
+      110 => UART_CALC5_H        ,
+      111 => UART_CALC6_L        ,
+      112 => UART_CALC6_H        ,
+      113 => UART_CALC7_L        ,
+      114 => UART_CALC7_H        ,
+      115 => UART_CALC8_L        ,
+      116 => UART_CALC8_H        ,
+      117 => SPIS_CONTROL        ,
+      118 => SPIS_STATUS         ,
+      119 => SPI_RAW0_BA         ,
+      120 => SPI_RAW0_DC         ,
+      121 => SPI_RAW1_BA         ,
+      122 => SPI_RAW1_DC         ,
+      123 => SPI_RAW2_BA         ,
+      124 => SPI_RAW2_DC         ,
+      125 => SPI_RAW2_FE         ,
+      126 => SPI_RAW2_HG         ,
+      127 => SPI_OUT4_Isns       ,
+      128 => SPI_DC_PWR_I_sns    ,
+      129 => SPI_PH1_I_sns       ,
+      130 => SPI_PH2_I_sns       ,
+      131 => SPI_PH3_I_sns       ,
+      132 => SPI_Vsns_PH_A_RLY   ,
+      133 => SPI_Vsns_PH_B_RLY   ,
+      134 => SPI_Vsns_PH_C_RLY   ,
+      135 => SPI_Vsns_PH3        ,
+      136 => SPI_Vsns_PH2        ,
+      137 => SPI_Vsns_PH1        ,
+      138 => SPI_OUT4_sns        ,
+      139 => SPI_RMS_OUT4_Isns   ,
+      140 => SPI_RMS_DC_PWR_I_sns,
+      141 => SPI_RMS_PH1_I_sns   ,
+      142 => SPI_RMS_PH2_I_sns   ,
+      143 => SPI_RMS_PH3_I_sns   ,
+      144 => SPI_RMS_Vsns_PH_A_RLY,
+      145 => SPI_RMS_Vsns_PH_B_RLY,
+      146 => SPI_RMS_Vsns_PH_C_RLY,
+      147 => SPI_RMS_Vsns_PH3    ,
+      148 => SPI_RMS_Vsns_PH2    ,
+      149 => SPI_RMS_Vsns_PH1    ,
+      150 => SPI_RMS_OUT4_sns    ,
       others => NO_REG
   );
 
@@ -400,6 +436,258 @@ package regs_pkg is
   -- fields for UARTS_STATUS
   constant UARTS_STATUS_BUSY              : integer :=  0;
   constant UARTS_STATUS_MS1_ERR           : integer :=  1;
+  -- fields for UART_RAW0_L
+  subtype  UART_RAW0_L_TEMP               is integer range  7 downto  0;
+  subtype  UART_RAW0_L_VIN_H              is integer range 15 downto 12;
+  subtype  UART_RAW0_L_VIN_L              is integer range 23 downto 16;
+  subtype  UART_RAW0_L_VOUT_L             is integer range 31 downto 24;
+  -- fields for UART_RAW0_H
+  subtype  UART_RAW0_H_VOUT_H             is integer range  3 downto  0;
+  subtype  UART_RAW0_H_IIN_H              is integer range  7 downto  4;
+  subtype  UART_RAW0_H_IIN_L              is integer range 15 downto  8;
+  subtype  UART_RAW0_H_IOUT               is integer range 27 downto 16;
+  constant UART_RAW0_H_VINP               : integer := 28;
+  constant UART_RAW0_H_OTP                : integer := 29;
+  constant UART_RAW0_H_OCP                : integer := 30;
+  constant UART_RAW0_H_OVP                : integer := 31;
+  -- fields for UART_RAW1_L
+  subtype  UART_RAW1_L_TEMP               is integer range  7 downto  0;
+  subtype  UART_RAW1_L_VIN_H              is integer range 15 downto 12;
+  subtype  UART_RAW1_L_VIN_L              is integer range 23 downto 16;
+  subtype  UART_RAW1_L_VOUT_L             is integer range 31 downto 24;
+  -- fields for UART_RAW1_H
+  subtype  UART_RAW1_H_VOUT_H             is integer range  3 downto  0;
+  subtype  UART_RAW1_H_IIN_H              is integer range  7 downto  4;
+  subtype  UART_RAW1_H_IIN_L              is integer range 15 downto  8;
+  subtype  UART_RAW1_H_IOUT               is integer range 27 downto 16;
+  constant UART_RAW1_H_VINP               : integer := 28;
+  constant UART_RAW1_H_OTP                : integer := 29;
+  constant UART_RAW1_H_OCP                : integer := 30;
+  constant UART_RAW1_H_OVP                : integer := 31;
+  -- fields for UART_RAW2_L
+  subtype  UART_RAW2_L_TEMP               is integer range  7 downto  0;
+  subtype  UART_RAW2_L_VIN_H              is integer range 15 downto 12;
+  subtype  UART_RAW2_L_VIN_L              is integer range 23 downto 16;
+  subtype  UART_RAW2_L_VOUT_L             is integer range 31 downto 24;
+  -- fields for UART_RAW2_H
+  subtype  UART_RAW2_H_VOUT_H             is integer range  3 downto  0;
+  subtype  UART_RAW2_H_IIN_H              is integer range  7 downto  4;
+  subtype  UART_RAW2_H_IIN_L              is integer range 15 downto  8;
+  subtype  UART_RAW2_H_IOUT               is integer range 27 downto 16;
+  constant UART_RAW2_H_VINP               : integer := 28;
+  constant UART_RAW2_H_OTP                : integer := 29;
+  constant UART_RAW2_H_OCP                : integer := 30;
+  constant UART_RAW2_H_OVP                : integer := 31;
+  -- fields for UART_RAW3_L
+  subtype  UART_RAW3_L_TEMP               is integer range  7 downto  0;
+  subtype  UART_RAW3_L_VIN_H              is integer range 15 downto 12;
+  subtype  UART_RAW3_L_VIN_L              is integer range 23 downto 16;
+  subtype  UART_RAW3_L_VOUT_L             is integer range 31 downto 24;
+  -- fields for UART_RAW3_H
+  subtype  UART_RAW3_H_VOUT_H             is integer range  3 downto  0;
+  subtype  UART_RAW3_H_IIN_H              is integer range  7 downto  4;
+  subtype  UART_RAW3_H_IIN_L              is integer range 15 downto  8;
+  subtype  UART_RAW3_H_IOUT               is integer range 27 downto 16;
+  constant UART_RAW3_H_VINP               : integer := 28;
+  constant UART_RAW3_H_OTP                : integer := 29;
+  constant UART_RAW3_H_OCP                : integer := 30;
+  constant UART_RAW3_H_OVP                : integer := 31;
+  -- fields for UART_RAW4_L
+  subtype  UART_RAW4_L_TEMP               is integer range  7 downto  0;
+  subtype  UART_RAW4_L_VIN_H              is integer range 15 downto 12;
+  subtype  UART_RAW4_L_VIN_L              is integer range 23 downto 16;
+  subtype  UART_RAW4_L_VOUT_L             is integer range 31 downto 24;
+  -- fields for UART_RAW4_H
+  subtype  UART_RAW4_H_VOUT_H             is integer range  3 downto  0;
+  subtype  UART_RAW4_H_IIN_H              is integer range  7 downto  4;
+  subtype  UART_RAW4_H_IIN_L              is integer range 15 downto  8;
+  subtype  UART_RAW4_H_IOUT               is integer range 27 downto 16;
+  constant UART_RAW4_H_VINP               : integer := 28;
+  constant UART_RAW4_H_OTP                : integer := 29;
+  constant UART_RAW4_H_OCP                : integer := 30;
+  constant UART_RAW4_H_OVP                : integer := 31;
+  -- fields for UART_RAW5_L
+  subtype  UART_RAW5_L_TEMP               is integer range  7 downto  0;
+  subtype  UART_RAW5_L_VIN_H              is integer range 15 downto 12;
+  subtype  UART_RAW5_L_VIN_L              is integer range 23 downto 16;
+  subtype  UART_RAW5_L_VOUT_L             is integer range 31 downto 24;
+  -- fields for UART_RAW5_H
+  subtype  UART_RAW5_H_VOUT_H             is integer range  3 downto  0;
+  subtype  UART_RAW5_H_IIN_H              is integer range  7 downto  4;
+  subtype  UART_RAW5_H_IIN_L              is integer range 15 downto  8;
+  subtype  UART_RAW5_H_IOUT               is integer range 27 downto 16;
+  constant UART_RAW5_H_VINP               : integer := 28;
+  constant UART_RAW5_H_OTP                : integer := 29;
+  constant UART_RAW5_H_OCP                : integer := 30;
+  constant UART_RAW5_H_OVP                : integer := 31;
+  -- fields for UART_RAW6_L
+  subtype  UART_RAW6_L_TEMP               is integer range  7 downto  0;
+  subtype  UART_RAW6_L_VIN_H              is integer range 15 downto 12;
+  subtype  UART_RAW6_L_VIN_L              is integer range 23 downto 16;
+  subtype  UART_RAW6_L_VOUT_L             is integer range 31 downto 24;
+  -- fields for UART_RAW6_H
+  subtype  UART_RAW6_H_VOUT_H             is integer range  3 downto  0;
+  subtype  UART_RAW6_H_IIN_H              is integer range  7 downto  4;
+  subtype  UART_RAW6_H_IIN_L              is integer range 15 downto  8;
+  subtype  UART_RAW6_H_IOUT               is integer range 27 downto 16;
+  constant UART_RAW6_H_VINP               : integer := 28;
+  constant UART_RAW6_H_OTP                : integer := 29;
+  constant UART_RAW6_H_OCP                : integer := 30;
+  constant UART_RAW6_H_OVP                : integer := 31;
+  -- fields for UART_RAW7_L
+  subtype  UART_RAW7_L_TEMP               is integer range  7 downto  0;
+  subtype  UART_RAW7_L_VIN_H              is integer range 15 downto 12;
+  subtype  UART_RAW7_L_VIN_L              is integer range 23 downto 16;
+  subtype  UART_RAW7_L_VOUT_L             is integer range 31 downto 24;
+  -- fields for UART_RAW7_H
+  subtype  UART_RAW7_H_VOUT_H             is integer range  3 downto  0;
+  subtype  UART_RAW7_H_IIN_H              is integer range  7 downto  4;
+  subtype  UART_RAW7_H_IIN_L              is integer range 15 downto  8;
+  subtype  UART_RAW7_H_IOUT               is integer range 27 downto 16;
+  constant UART_RAW7_H_VINP               : integer := 28;
+  constant UART_RAW7_H_OTP                : integer := 29;
+  constant UART_RAW7_H_OCP                : integer := 30;
+  constant UART_RAW7_H_OVP                : integer := 31;
+  -- fields for UART_RAW8_L
+  subtype  UART_RAW8_L_TEMP               is integer range  7 downto  0;
+  subtype  UART_RAW8_L_IPHA_H             is integer range 15 downto 12;
+  subtype  UART_RAW8_L_IPHA_L             is integer range 23 downto 16;
+  subtype  UART_RAW8_L_IPHB_L             is integer range 31 downto 24;
+  -- fields for UART_RAW8_H
+  subtype  UART_RAW8_H_IPHB_H             is integer range  3 downto  0;
+  subtype  UART_RAW8_H_IPHC_H             is integer range  7 downto  4;
+  subtype  UART_RAW8_H_IPHC_L             is integer range 15 downto  8;
+  constant UART_RAW8_H_CAP_EOL            : integer := 16;
+  constant UART_RAW8_H_VINP               : integer := 20;
+  constant UART_RAW8_H_OTP                : integer := 21;
+  constant UART_RAW8_H_OCP                : integer := 22;
+  constant UART_RAW8_H_OVP                : integer := 23;
+  -- fields for UART_CALC0_L
+  subtype  UART_CALC0_L_TEMP              is integer range  7 downto  0;
+  subtype  UART_CALC0_L_VIN_H             is integer range 15 downto 12;
+  subtype  UART_CALC0_L_VIN_L             is integer range 23 downto 16;
+  subtype  UART_CALC0_L_VOUT_L            is integer range 31 downto 24;
+  -- fields for UART_CALC0_H
+  subtype  UART_CALC0_H_VOUT_H            is integer range  3 downto  0;
+  subtype  UART_CALC0_H_IIN_H             is integer range  7 downto  4;
+  subtype  UART_CALC0_H_IIN_L             is integer range 15 downto  8;
+  subtype  UART_CALC0_H_IOUT              is integer range 27 downto 16;
+  constant UART_CALC0_H_VINP              : integer := 28;
+  constant UART_CALC0_H_OTP               : integer := 29;
+  constant UART_CALC0_H_OCP               : integer := 30;
+  constant UART_CALC0_H_OVP               : integer := 31;
+  -- fields for UART_CALC1_L
+  subtype  UART_CALC1_L_TEMP              is integer range  7 downto  0;
+  subtype  UART_CALC1_L_VIN_H             is integer range 15 downto 12;
+  subtype  UART_CALC1_L_VIN_L             is integer range 23 downto 16;
+  subtype  UART_CALC1_L_VOUT_L            is integer range 31 downto 24;
+  -- fields for UART_CALC1_H
+  subtype  UART_CALC1_H_VOUT_H            is integer range  3 downto  0;
+  subtype  UART_CALC1_H_IIN_H             is integer range  7 downto  4;
+  subtype  UART_CALC1_H_IIN_L             is integer range 15 downto  8;
+  subtype  UART_CALC1_H_IOUT              is integer range 27 downto 16;
+  constant UART_CALC1_H_VINP              : integer := 28;
+  constant UART_CALC1_H_OTP               : integer := 29;
+  constant UART_CALC1_H_OCP               : integer := 30;
+  constant UART_CALC1_H_OVP               : integer := 31;
+  -- fields for UART_CALC2_L
+  subtype  UART_CALC2_L_TEMP              is integer range  7 downto  0;
+  subtype  UART_CALC2_L_VIN_H             is integer range 15 downto 12;
+  subtype  UART_CALC2_L_VIN_L             is integer range 23 downto 16;
+  subtype  UART_CALC2_L_VOUT_L            is integer range 31 downto 24;
+  -- fields for UART_CALC2_H
+  subtype  UART_CALC2_H_VOUT_H            is integer range  3 downto  0;
+  subtype  UART_CALC2_H_IIN_H             is integer range  7 downto  4;
+  subtype  UART_CALC2_H_IIN_L             is integer range 15 downto  8;
+  subtype  UART_CALC2_H_IOUT              is integer range 27 downto 16;
+  constant UART_CALC2_H_VINP              : integer := 28;
+  constant UART_CALC2_H_OTP               : integer := 29;
+  constant UART_CALC2_H_OCP               : integer := 30;
+  constant UART_CALC2_H_OVP               : integer := 31;
+  -- fields for UART_CALC3_L
+  subtype  UART_CALC3_L_TEMP              is integer range  7 downto  0;
+  subtype  UART_CALC3_L_VIN_H             is integer range 15 downto 12;
+  subtype  UART_CALC3_L_VIN_L             is integer range 23 downto 16;
+  subtype  UART_CALC3_L_VOUT_L            is integer range 31 downto 24;
+  -- fields for UART_CALC3_H
+  subtype  UART_CALC3_H_VOUT_H            is integer range  3 downto  0;
+  subtype  UART_CALC3_H_IIN_H             is integer range  7 downto  4;
+  subtype  UART_CALC3_H_IIN_L             is integer range 15 downto  8;
+  subtype  UART_CALC3_H_IOUT              is integer range 27 downto 16;
+  constant UART_CALC3_H_VINP              : integer := 28;
+  constant UART_CALC3_H_OTP               : integer := 29;
+  constant UART_CALC3_H_OCP               : integer := 30;
+  constant UART_CALC3_H_OVP               : integer := 31;
+  -- fields for UART_CALC4_L
+  subtype  UART_CALC4_L_TEMP              is integer range  7 downto  0;
+  subtype  UART_CALC4_L_VIN_H             is integer range 15 downto 12;
+  subtype  UART_CALC4_L_VIN_L             is integer range 23 downto 16;
+  subtype  UART_CALC4_L_VOUT_L            is integer range 31 downto 24;
+  -- fields for UART_CALC4_H
+  subtype  UART_CALC4_H_VOUT_H            is integer range  3 downto  0;
+  subtype  UART_CALC4_H_IIN_H             is integer range  7 downto  4;
+  subtype  UART_CALC4_H_IIN_L             is integer range 15 downto  8;
+  subtype  UART_CALC4_H_IOUT              is integer range 27 downto 16;
+  constant UART_CALC4_H_VINP              : integer := 28;
+  constant UART_CALC4_H_OTP               : integer := 29;
+  constant UART_CALC4_H_OCP               : integer := 30;
+  constant UART_CALC4_H_OVP               : integer := 31;
+  -- fields for UART_CALC5_L
+  subtype  UART_CALC5_L_TEMP              is integer range  7 downto  0;
+  subtype  UART_CALC5_L_VIN_H             is integer range 15 downto 12;
+  subtype  UART_CALC5_L_VIN_L             is integer range 23 downto 16;
+  subtype  UART_CALC5_L_VOUT_L            is integer range 31 downto 24;
+  -- fields for UART_CALC5_H
+  subtype  UART_CALC5_H_VOUT_H            is integer range  3 downto  0;
+  subtype  UART_CALC5_H_IIN_H             is integer range  7 downto  4;
+  subtype  UART_CALC5_H_IIN_L             is integer range 15 downto  8;
+  subtype  UART_CALC5_H_IOUT              is integer range 27 downto 16;
+  constant UART_CALC5_H_VINP              : integer := 28;
+  constant UART_CALC5_H_OTP               : integer := 29;
+  constant UART_CALC5_H_OCP               : integer := 30;
+  constant UART_CALC5_H_OVP               : integer := 31;
+  -- fields for UART_CALC6_L
+  subtype  UART_CALC6_L_TEMP              is integer range  7 downto  0;
+  subtype  UART_CALC6_L_VIN_H             is integer range 15 downto 12;
+  subtype  UART_CALC6_L_VIN_L             is integer range 23 downto 16;
+  subtype  UART_CALC6_L_VOUT_L            is integer range 31 downto 24;
+  -- fields for UART_CALC6_H
+  subtype  UART_CALC6_H_VOUT_H            is integer range  3 downto  0;
+  subtype  UART_CALC6_H_IIN_H             is integer range  7 downto  4;
+  subtype  UART_CALC6_H_IIN_L             is integer range 15 downto  8;
+  subtype  UART_CALC6_H_IOUT              is integer range 27 downto 16;
+  constant UART_CALC6_H_VINP              : integer := 28;
+  constant UART_CALC6_H_OTP               : integer := 29;
+  constant UART_CALC6_H_OCP               : integer := 30;
+  constant UART_CALC6_H_OVP               : integer := 31;
+  -- fields for UART_CALC7_L
+  subtype  UART_CALC7_L_TEMP              is integer range  7 downto  0;
+  subtype  UART_CALC7_L_VIN_H             is integer range 15 downto 12;
+  subtype  UART_CALC7_L_VIN_L             is integer range 23 downto 16;
+  subtype  UART_CALC7_L_VOUT_L            is integer range 31 downto 24;
+  -- fields for UART_CALC7_H
+  subtype  UART_CALC7_H_VOUT_H            is integer range  3 downto  0;
+  subtype  UART_CALC7_H_IIN_H             is integer range  7 downto  4;
+  subtype  UART_CALC7_H_IIN_L             is integer range 15 downto  8;
+  subtype  UART_CALC7_H_IOUT              is integer range 27 downto 16;
+  constant UART_CALC7_H_VINP              : integer := 28;
+  constant UART_CALC7_H_OTP               : integer := 29;
+  constant UART_CALC7_H_OCP               : integer := 30;
+  constant UART_CALC7_H_OVP               : integer := 31;
+  -- fields for UART_CALC8_L
+  subtype  UART_CALC8_L_TEMP              is integer range  7 downto  0;
+  subtype  UART_CALC8_L_IPHA_H            is integer range 15 downto 12;
+  subtype  UART_CALC8_L_IPHA_L            is integer range 23 downto 16;
+  subtype  UART_CALC8_L_IPHB_L            is integer range 31 downto 24;
+  -- fields for UART_CALC8_H
+  subtype  UART_CALC8_H_IPHB_H            is integer range  3 downto  0;
+  subtype  UART_CALC8_H_IPHC_H            is integer range  7 downto  4;
+  subtype  UART_CALC8_H_IPHC_L            is integer range 15 downto  8;
+  constant UART_CALC8_H_CAP_EOL           : integer := 16;
+  constant UART_CALC8_H_VINP              : integer := 20;
+  constant UART_CALC8_H_OTP               : integer := 21;
+  constant UART_CALC8_H_OCP               : integer := 22;
+  constant UART_CALC8_H_OVP               : integer := 23;
   -- fields for SPIS_CONTROL
   subtype  SPIS_CONTROL_EN_RANGE          is integer range  2 downto  0;
   constant SPIS_CONTROL_RST               : integer :=  3;
@@ -680,7 +968,25 @@ package regs_pkg is
     UART_RAW7_L          => X"FFFFFFFF",
     UART_RAW7_H          => X"FFFFFFFF",
     UART_RAW8_L          => X"FFFFFFFF",
-    UART_RAW8_H          => X"FFFFFFFF",
+    UART_RAW8_H          => X"00FFFFFF",
+    UART_CALC0_L         => X"FFFFFFFF",
+    UART_CALC0_H         => X"FFFFFFFF",
+    UART_CALC1_L         => X"FFFFFFFF",
+    UART_CALC1_H         => X"FFFFFFFF",
+    UART_CALC2_L         => X"FFFFFFFF",
+    UART_CALC2_H         => X"FFFFFFFF",
+    UART_CALC3_L         => X"FFFFFFFF",
+    UART_CALC3_H         => X"FFFFFFFF",
+    UART_CALC4_L         => X"FFFFFFFF",
+    UART_CALC4_H         => X"FFFFFFFF",
+    UART_CALC5_L         => X"FFFFFFFF",
+    UART_CALC5_H         => X"FFFFFFFF",
+    UART_CALC6_L         => X"FFFFFFFF",
+    UART_CALC6_H         => X"FFFFFFFF",
+    UART_CALC7_L         => X"FFFFFFFF",
+    UART_CALC7_H         => X"FFFFFFFF",
+    UART_CALC8_L         => X"FFFFFFFF",
+    UART_CALC8_H         => X"00FFFFFF",
     SPIS_CONTROL         => X"0000003F",
     SPIS_STATUS          => X"0000003F",
     SPI_RAW0_BA          => X"FFFFFFFF",
@@ -806,6 +1112,24 @@ package regs_pkg is
     UART_RAW7_H          => '1',
     UART_RAW8_L          => '1',
     UART_RAW8_H          => '1',
+    UART_CALC0_L         => '1',
+    UART_CALC0_H         => '1',
+    UART_CALC1_L         => '1',
+    UART_CALC1_H         => '1',
+    UART_CALC2_L         => '1',
+    UART_CALC2_H         => '1',
+    UART_CALC3_L         => '1',
+    UART_CALC3_H         => '1',
+    UART_CALC4_L         => '1',
+    UART_CALC4_H         => '1',
+    UART_CALC5_L         => '1',
+    UART_CALC5_H         => '1',
+    UART_CALC6_L         => '1',
+    UART_CALC6_H         => '1',
+    UART_CALC7_L         => '1',
+    UART_CALC7_H         => '1',
+    UART_CALC8_L         => '1',
+    UART_CALC8_H         => '1',
     SPIS_STATUS          => '1',
     SPI_RAW0_BA          => '1',
     SPI_RAW0_DC          => '1',
