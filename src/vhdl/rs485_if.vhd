@@ -106,11 +106,22 @@ architecture RTL of rs485_if is
     signal ap_ready : STD_LOGIC;
     --signal uart_en : STD_LOGIC_VECTOR(8 DOWNTO 0);
     type uarts_d_array_t is array (UARTS_RANGE) of std_logic_vector(63 downto 0);
-    signal uarts_d_array : uarts_d_array_t;
+    signal uarts_d_array  : uarts_d_array_t;
     signal uarts_calc_array : uarts_d_array_t;
     signal uart_de : STD_LOGIC_VECTOR(UARTS_RANGE);
     signal uart_de_ap_vld : STD_LOGIC;
     signal one_ms_error : std_logic;
+    
+--    function swap_bytes(vec: std_logic_vector) return std_logic_vector is
+--        variable swapped : std_logic_vector := (others => '0');
+--        variable num_bytes : integer := (vec'length / 8);
+--    begin
+--        for i in 0 to num_bytes - 1 loop
+--            swapped(8*i + 7 downto 8*i) := vec(7 + (num_bytes-1)*8 - (8*i) downto (num_bytes - 1)*8 - (8*i));
+--        end loop;
+--        return swapped;
+--    end;
+    
     
 begin
     sm_pr: process(clk)
@@ -133,7 +144,7 @@ begin
                 --next state logic
                 case state is 
                 when idle =>
-                    if one_ms_interrupt = '1' and allow_hls then
+                    if one_ms_interrupt = '1' and allow_hls and ap_idle = '1' then
                         state := wt_rdy;
                     end if;
                 when wt_rdy =>
@@ -152,10 +163,12 @@ begin
                 ap_start <= '0';
                 case state is 
                 when idle =>
-                    null;
+                    if one_ms_interrupt = '1' and allow_hls and ap_idle = '0' and hls_rstn = '1' then
+                        one_ms_error <= '1';
+                    end if;
                 when wt_rdy =>
                     ap_start <= '1';
-                    if one_ms_interrupt = '1' then
+                    if one_ms_interrupt = '1' and ap_start = '1' then
                         one_ms_error <= '1';
                     end if;
                 when wt_done =>
@@ -350,6 +363,14 @@ begin
             uart_de            => uart_de,
             uart_de_ap_vld     => uart_de_ap_vld
         );
+        
+--        process(all)
+--        begin
+--            for uart in uarts_d_array'range loop
+--                uarts_d_array(uart) <= swap_bytes(uarts_tmp_array(uart));
+--            end loop;
+--        end process;
+        
     else generate
         
     end generate gen_hls;

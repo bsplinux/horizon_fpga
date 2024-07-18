@@ -25,7 +25,8 @@ entity app is
         app_2_ios        : out app_2_ios_t;
         ps_intr          : out std_logic_vector(PS_INTR_range);
         HLS_to_BD        : out HLS_axim_to_interconnect_array_t(1 downto 0);
-        BD_to_HLS        : in  HLS_axim_from_interconnect_array_t(1 downto 0)
+        BD_to_HLS        : in  HLS_axim_from_interconnect_array_t(1 downto 0);
+        one_ms_tick      : out std_logic
         
     );
 end entity app;
@@ -63,6 +64,8 @@ architecture RTL of app is
     signal PSU_status_pwr_on_mask      : std_logic_vector(PSU_Status_range);
     signal lamp_temp                   : std_logic;
 begin
+    one_ms_tick <= free_running_1ms;
+    
     process(clk)
     begin
         if rising_edge(clk) then

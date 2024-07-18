@@ -166,7 +166,7 @@ reg_uarts_ctl: &reg_uarts_ctl
     RST         :  9               
     MS1_ERR_CLR : 10              
   used_bits: "10:0"
-  init: 0x1F
+  init: 0x1FF
 
 reg_uarts_status: &reg_uarts_status
   fpga_access: true
@@ -362,6 +362,7 @@ regs:
   - PWM3_LOW          : *reg_d
   - PWM3_HIGH         : *reg_d
   - UARTS_CONTROL     : *reg_uarts_ctl
+    init: 0x0
   - UARTS_STATUS      : *reg_uarts_status
   - UART_RAW0_L       : *reg_uart_d_l
   - UART_RAW0_H       : *reg_uart_d_h

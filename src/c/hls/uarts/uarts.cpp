@@ -93,17 +93,9 @@ void uarts(
 				stat = uart_stat(axi, uarts_info[i]);
 				if (stat & UART_REG_STAT_TX_EMPTY) // waiting for fifo to be empty telling us data was sent to UART
 				{
-					uarts_info[i].state = wt4rx_dummy;
+					uarts_info[i].state = wt4rx;
 					de_int[i] = 0;
 					*uart_de = de_int;
-				}
-				break;
-			case wt4rx_dummy: // first byte is an echo of tx command and is not read rx data (the connection of the PCB is using shared line for rx and tx)
-				stat = uart_stat(axi, uarts_info[i]);
-				if (stat & UART_REG_STAT_RX_VALID)
-				{
-					volatile unsigned char dummy = uart_read(axi, uarts_info[i]);
-					uarts_info[i].state = wt4rx;
 				}
 				break;
 			case wt4rx: // wait until all data was received

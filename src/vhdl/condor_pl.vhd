@@ -160,6 +160,7 @@ architecture Behavioral of condor_pl is
 
     signal HLS_to_BD  : HLS_axim_to_interconnect_array_t(1 downto 0);
     signal BD_to_HLS  : HLS_axim_from_interconnect_array_t(1 downto 0);
+    signal one_ms_tick : std_logic;
 begin
     bd_gen : if sim_on generate
         procedure tick(num_ticks : integer := 1) is
@@ -326,7 +327,11 @@ begin
             spi1_mosi : out STD_LOGIC;
             spi1_sck : out STD_LOGIC;
             spi1_cs : out STD_LOGIC_VECTOR ( 0 to 0 );
-            ps_intr : in std_logic_vector(PS_INTR_range)
+            ps_intr : in std_logic_vector(PS_INTR_range);
+            rx : in std_logic_vector(0 to 0);
+            tx : in std_logic_vector(0 to 0);
+            de : in std_logic_vector(0 to 0);
+            onemili : in std_logic_vector(0 to 0)
         );
         end component design_1;
     begin
@@ -457,7 +462,11 @@ begin
           REGS_BE => REGS_BE,
           REGS_D => REGS_D,
           REGS_Q => REGS_Q,
-          ps_intr => ps_intr
+          ps_intr => ps_intr,
+          rx(0) => RS485_RXD_1,
+          tx(0) => RS485_TXD_1,
+          de(0) => RS485_DE_1,
+          onemili(0) => one_ms_tick
         );
     end generate bd_gen;
 
@@ -508,15 +517,15 @@ begin
     EN_PSU_8_FB        <= app_2_ios.EN_PSU_8_FB       ;
     EN_PSU_9_FB        <= app_2_ios.EN_PSU_9_FB       ;
     EN_PSU_10_FB       <= app_2_ios.EN_PSU_10_FB      ;
-    RS485_DE_7         <= app_2_ios.RS485_DE_7        ; 
-    RS485_DE_8         <= app_2_ios.RS485_DE_8        ;    
-    RS485_DE_9         <= app_2_ios.RS485_DE_9        ;    
-    RS485_DE_1         <= app_2_ios.RS485_DE_1        ;    
-    RS485_DE_2         <= app_2_ios.RS485_DE_2        ;    
-    RS485_DE_3         <= app_2_ios.RS485_DE_3        ;    
-    RS485_DE_4         <= app_2_ios.RS485_DE_4        ;    
-    RS485_DE_5         <= app_2_ios.RS485_DE_5        ;    
-    RS485_DE_6         <= app_2_ios.RS485_DE_6        ;    
+    RS485_DE_1         <= app_2_ios.RS485_DE_1        ;  -- | this is the order in the spec
+    RS485_DE_9         <= app_2_ios.RS485_DE_2        ;  -- |  
+    RS485_DE_2         <= app_2_ios.RS485_DE_3        ;  -- |  
+    RS485_DE_3         <= app_2_ios.RS485_DE_4        ;  -- |  
+    RS485_DE_4         <= app_2_ios.RS485_DE_5        ;  -- |  
+    RS485_DE_5         <= app_2_ios.RS485_DE_6        ;  -- |  
+    RS485_DE_6         <= app_2_ios.RS485_DE_7        ;  -- |  
+    RS485_DE_7         <= app_2_ios.RS485_DE_8        ;  -- |  
+    RS485_DE_8         <= app_2_ios.RS485_DE_9        ;  -- \/  
 
     REGS_WE <= REGS_BE(3) or REGS_BE(2) or REGS_BE(1) or REGS_BE(0);
     process(ps_clk100)
@@ -583,7 +592,8 @@ begin
         app_2_ios        => app_2_ios,
         ps_intr          => ps_intr,
         BD_to_HLS        => BD_to_HLS,
-        HLS_to_BD        => HLS_to_BD
+        HLS_to_BD        => HLS_to_BD,
+        one_ms_tick      => one_ms_tick
     );
 
 end Behavioral;

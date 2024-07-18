@@ -16,5 +16,5 @@ config_cosim -tool xsim
 source "./rms/solution1_ctl/directives.tcl"
 csim_design
 csynth_design
-cosim_design
+cosim_design -tool xsim
 export_design -format ip_catalog

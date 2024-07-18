@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x94E38A649B45913D",
+      "boundary_crc": "0x4C81AFE073832BD3",
       "device": "xa7z020clg400-1Q",
       "gen_directory": "../../../../condor_pl.gen/sources_1/bd/design_1",
       "name": "design_1",
@@ -1050,6 +1050,26 @@
             "value_src": "default"
           }
         }
+      },
+      "rx": {
+        "direction": "I",
+        "left": "0",
+        "right": "0"
+      },
+      "tx": {
+        "direction": "I",
+        "left": "0",
+        "right": "0"
+      },
+      "de": {
+        "direction": "I",
+        "left": "0",
+        "right": "0"
+      },
+      "onemili": {
+        "direction": "I",
+        "left": "0",
+        "right": "0"
       }
     },
     "components": {
@@ -3561,11 +3581,17 @@
         "xci_path": "ip\\design_1_system_ila_0_0\\design_1_system_ila_0_0.xci",
         "inst_hier_path": "system_ila_0",
         "parameters": {
+          "C_DATA_DEPTH": {
+            "value": "8192"
+          },
           "C_MON_TYPE": {
-            "value": "INTERFACE"
+            "value": "MIX"
           },
           "C_NUM_MONITOR_SLOTS": {
             "value": "1"
+          },
+          "C_NUM_OF_PROBES": {
+            "value": "4"
           },
           "C_SLOT_0_APC_EN": {
             "value": "0"
@@ -3617,7 +3643,8 @@
       "S01_AXI_0_1": {
         "interface_ports": [
           "UARTS_AXI",
-          "smartconnect_0/S01_AXI"
+          "smartconnect_0/S01_AXI",
+          "system_ila_0/SLOT_0_AXI"
         ]
       },
       "S02_AXI_0_1": {
@@ -3773,8 +3800,7 @@
       "smartconnect_0_M12_AXI": {
         "interface_ports": [
           "axi_quad_spi_2/AXI_LITE",
-          "smartconnect_0/M12_AXI",
-          "system_ila_0/SLOT_0_AXI"
+          "smartconnect_0/M12_AXI"
         ],
         "hdl_attributes": {
           "DEBUG": {
@@ -3869,6 +3895,30 @@
         "ports": [
           "axi_quad_spi_2/ss_o",
           "spi2_cs"
+        ]
+      },
+      "probe0_0_1": {
+        "ports": [
+          "rx",
+          "system_ila_0/probe0"
+        ]
+      },
+      "probe1_0_1": {
+        "ports": [
+          "tx",
+          "system_ila_0/probe1"
+        ]
+      },
+      "probe2_0_1": {
+        "ports": [
+          "de",
+          "system_ila_0/probe2"
+        ]
+      },
+      "probe3_0_1": {
+        "ports": [
+          "onemili",
+          "system_ila_0/probe3"
         ]
       },
       "proc_sys_reset_0_peripheral_reset": {

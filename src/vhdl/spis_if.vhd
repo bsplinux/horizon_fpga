@@ -185,7 +185,7 @@ begin
                 --next state logic
                 case state is 
                 when idle =>
-                    if one100_us_tick = '1' and allow_hls then
+                    if one100_us_tick = '1' and allow_hls and ap_idle = '1' then
                         state := wt_rdy;
                     end if;
                 when wt_rdy =>
@@ -204,10 +204,12 @@ begin
                 ap_start <= '0';
                 case state is 
                 when idle =>
-                    null;
+                    if one100_us_tick = '1' and allow_hls and ap_idle = '0' and hls_rstn = '1' then
+                        one100_us_error <= '1';
+                    end if;
                 when wt_rdy =>
                     ap_start <= '1';
-                    if one100_us_tick = '1' then
+                    if one100_us_tick = '1' and ap_start = '1' then
                         one100_us_error <= '1';
                     end if;
                 when wt_done =>

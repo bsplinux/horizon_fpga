@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------------------------
--- Registers VHDL package created from yaml definition of registers at 03-07-2024 10:20 --
+-- Registers VHDL package created from yaml definition of registers at 07-07-2024 15:16 --
 --   python function: regs2vhdl.py                                                      --
 --   yaml file name: ../yaml/condor_regs.yaml                                           --
 ------------------------------------------------------------------------------------------
@@ -857,7 +857,6 @@ package regs_pkg is
   constant REGISTERS_INIT : reg_array_t := (
     REGS_VERSION         => X"00010004",
     GENERAL_CONTROL      => X"00000F00",
-    UARTS_CONTROL        => X"0000001F",
     others               => X"00000000"
   );
 
