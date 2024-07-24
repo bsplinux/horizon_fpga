@@ -50,26 +50,21 @@ void uarts(
 	volatile ap_uint<MAX_UARTS> *uart_de
 )
 {
-	static uart_info_t uarts_info[MAX_UARTS];
-	static bool init_done = false;
+	uart_info_t uarts_info[MAX_UARTS];
 	ap_uint<MAX_UARTS> uarts_busy = 0xFFFFFFFF;
-	unsigned char rx_cnt[RX_SIZE] = {0};
 	unsigned char stat;
 	unsigned char rx_d[MAX_UARTS][RX_SIZE];
 	ap_uint<MAX_UARTS> de_int = {0};
 
-	if (!init_done)
+	init_loop: for(int i = 0; i < MAX_UARTS; i++)
 	{
-		init_loop: for(int i = 0; i < MAX_UARTS; i++)
-		{
-			uarts_info[i].num = i;
-			uarts_info[i].adr = UART_BASE + i * 0x10000;
-			if (uart_en[i] == 0)
-				uarts_info[i].state = disable;
-			else
-				uarts_info[i].state = idle;
-		}
-		init_done = true;
+		uarts_info[i].rx_cnt = 0;
+		uarts_info[i].num = i;
+		uarts_info[i].adr = UART_BASE + i * 0x10000;
+		if (uart_en[i] == 0)
+			uarts_info[i].state = disable;
+		else
+			uarts_info[i].state = idle;
 	}
 
 	main_loop: for(;;)
@@ -102,21 +97,26 @@ void uarts(
 				stat = uart_stat(axi, uarts_info[i]);
 				if (stat & UART_REG_STAT_RX_VALID)
 				{
-					if (rx_cnt[i] < RX_SIZE)
-						rx_d[i][rx_cnt[i]++] = uart_read(axi, uarts_info[i]);
-					else if (rx_cnt[i] == (RX_SIZE)) // last byte which is also crc byte
+					if (uarts_info[i].rx_cnt < RX_SIZE)
+						rx_d[i][uarts_info[i].rx_cnt] = uart_read(axi, uarts_info[i]);
+					else if (uarts_info[i].rx_cnt == (RX_SIZE)) // last byte which is also crc byte
 					{
 						volatile unsigned char dummy = uart_read(axi, uarts_info[i]);
 						// note, we do not check CRC?
 						uarts_info[i].state = data_valid;
 					}
+					uarts_info[i].rx_cnt++;
 				}
 				break;
-			case data_valid:  // read all data and normalize it, then write it to registers
-				// todo this part, for now we send the data as is out not to registers
-				uarts_info[i].state = done;
-				break;
-			case done:  // this uart is done, function still needs to take care of other uarts before exiting
+			case data_valid:
+				uarts_d[i]( 7, 0) = rx_d[i][0];
+				uarts_d[i](15, 8) = rx_d[i][1];
+				uarts_d[i](23,16) = rx_d[i][2];
+				uarts_d[i](31,24) = rx_d[i][3];
+				uarts_d[i](39,32) = rx_d[i][4];
+				uarts_d[i](47,40) = rx_d[i][5];
+				uarts_d[i](55,48) = rx_d[i][6];
+				uarts_d[i](63,56) = rx_d[i][7];
 				uarts_info[i].state = idle;
 				uarts_busy[i] = 0;
 				break;
@@ -126,17 +126,5 @@ void uarts(
 		}
 		if (uarts_busy == 0)
 			break;
-	}
-	final_write: for(int uart = 0; uart < MAX_UARTS; uart++)
-	{
-		uarts_d[uart]( 7, 0) = rx_d[uart][0];
-		uarts_d[uart](15, 8) = rx_d[uart][1];
-		uarts_d[uart](23,16) = rx_d[uart][2];
-		uarts_d[uart](31,24) = rx_d[uart][3];
-		uarts_d[uart](39,32) = rx_d[uart][4];
-		uarts_d[uart](47,40) = rx_d[uart][5];
-		uarts_d[uart](55,48) = rx_d[uart][6];
-		uarts_d[uart](63,56) = rx_d[uart][7];
-		// not taking rx_d[uart][8] as it is the crc
 	}
 }

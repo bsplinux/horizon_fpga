@@ -25,13 +25,13 @@
 #define REQUEST_FRAME_COMMAND 0xAA
 #define RX_SIZE 8
 
-enum uart_state {disable, idle, wt4tx, wt4rx, data_valid, done};
+enum uart_state {disable, idle, wt4tx, wt4rx, data_valid};
 
 typedef struct {
 	unsigned char num;
 	unsigned int  adr;
 	uart_state state;
-	
+	unsigned char rx_cnt;
 } uart_info_t;
 
 void uarts(
