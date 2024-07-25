@@ -121,9 +121,10 @@ architecture RTL of spis_if is
     type sample2v_vec_t is array(sample2v_range) of std_logic_vector(11 downto 0);
     signal sample2v_vec : sample2v_vec_t;
     signal sample2v_valid_vec : std_logic_vector(sample2v_range);
-    signal v_vec : sample2v_vec_t;
+    type v_vec_t is array(sample2v_range) of std_logic_vector(15 downto 0);
+    signal v_vec : v_vec_t;
     signal v_valid_vec : std_logic_vector(sample2v_range);
-    signal v_rms_vec : sample2v_vec_t;
+    signal v_rms_vec : v_vec_t;
     signal v_rms_valid_vec : std_logic_vector(sample2v_range);
     
 
@@ -287,39 +288,73 @@ begin
         internal_regs(SPI_PH1_I_sns    )(15 downto 0) <= a_vec(2);
         internal_regs(SPI_PH2_I_sns    )(15 downto 0) <= a_vec(3);
         internal_regs(SPI_PH3_I_sns    )(15 downto 0) <= a_vec(4);
-        internal_regs(SPI_OUT4_sns     )(11 downto 0) <= v_vec(0);
-        internal_regs(SPI_Vsns_PH1     )(11 downto 0) <= v_vec(1);
-        internal_regs(SPI_Vsns_PH2     )(11 downto 0) <= v_vec(2);
-        internal_regs(SPI_Vsns_PH3     )(11 downto 0) <= v_vec(3);
-        internal_regs(SPI_Vsns_PH_C_RLY)(11 downto 0) <= v_vec(4);
-        internal_regs(SPI_Vsns_PH_B_RLY)(11 downto 0) <= v_vec(5);
-        internal_regs(SPI_Vsns_PH_A_RLY)(11 downto 0) <= v_vec(6);
+        internal_regs(SPI_OUT4_sns     )(15 downto 0) <= v_vec(0);
+        internal_regs(SPI_Vsns_PH1     )(15 downto 0) <= v_vec(1);
+        internal_regs(SPI_Vsns_PH2     )(15 downto 0) <= v_vec(2);
+        internal_regs(SPI_Vsns_PH3     )(15 downto 0) <= v_vec(3);
+        internal_regs(SPI_Vsns_PH_C_RLY)(15 downto 0) <= v_vec(4);
+        internal_regs(SPI_Vsns_PH_B_RLY)(15 downto 0) <= v_vec(5);
+        internal_regs(SPI_Vsns_PH_A_RLY)(15 downto 0) <= v_vec(6);
         
-        internal_regs_we(SPI_RMS_OUT4_Isns    ) <= a_rms_valid_vec(0);
-        internal_regs_we(SPI_RMS_DC_PWR_I_sns ) <= a_rms_valid_vec(1);
-        internal_regs_we(SPI_RMS_PH1_I_sns    ) <= a_rms_valid_vec(2);
-        internal_regs_we(SPI_RMS_PH2_I_sns    ) <= a_rms_valid_vec(3);
-        internal_regs_we(SPI_RMS_PH3_I_sns    ) <= a_rms_valid_vec(4);
-        internal_regs_we(SPI_RMS_OUT4_sns     ) <= v_rms_valid_vec(0);
-        internal_regs_we(SPI_RMS_Vsns_PH1     ) <= v_rms_valid_vec(1);
-        internal_regs_we(SPI_RMS_Vsns_PH2     ) <= v_rms_valid_vec(2);
-        internal_regs_we(SPI_RMS_Vsns_PH3     ) <= v_rms_valid_vec(3);
-        internal_regs_we(SPI_RMS_Vsns_PH_C_RLY) <= v_rms_valid_vec(4);
-        internal_regs_we(SPI_RMS_Vsns_PH_B_RLY) <= v_rms_valid_vec(5);
-        internal_regs_we(SPI_RMS_Vsns_PH_A_RLY) <= v_rms_valid_vec(6);
+        --internal_regs_we(SPI_RMS_OUT4_Isns    ) <= a_rms_valid_vec(0);
+        --internal_regs_we(SPI_RMS_DC_PWR_I_sns ) <= a_rms_valid_vec(1);
+        --internal_regs_we(SPI_RMS_PH1_I_sns    ) <= a_rms_valid_vec(2);
+        --internal_regs_we(SPI_RMS_PH2_I_sns    ) <= a_rms_valid_vec(3);
+        --internal_regs_we(SPI_RMS_PH3_I_sns    ) <= a_rms_valid_vec(4);
+        --internal_regs_we(SPI_RMS_OUT4_sns     ) <= v_rms_valid_vec(0);
+        --internal_regs_we(SPI_RMS_Vsns_PH1     ) <= v_rms_valid_vec(1);
+        --internal_regs_we(SPI_RMS_Vsns_PH2     ) <= v_rms_valid_vec(2);
+        --internal_regs_we(SPI_RMS_Vsns_PH3     ) <= v_rms_valid_vec(3);
+        --internal_regs_we(SPI_RMS_Vsns_PH_C_RLY) <= v_rms_valid_vec(4);
+        --internal_regs_we(SPI_RMS_Vsns_PH_B_RLY) <= v_rms_valid_vec(5);
+        --internal_regs_we(SPI_RMS_Vsns_PH_A_RLY) <= v_rms_valid_vec(6);
+        --
+        --internal_regs(SPI_RMS_OUT4_Isns    )(15 downto 0) <= a_rms_vec(0);
+        --internal_regs(SPI_RMS_DC_PWR_I_sns )(15 downto 0) <= a_rms_vec(1);
+        --internal_regs(SPI_RMS_PH1_I_sns    )(15 downto 0) <= a_rms_vec(2);
+        --internal_regs(SPI_RMS_PH2_I_sns    )(15 downto 0) <= a_rms_vec(3);
+        --internal_regs(SPI_RMS_PH3_I_sns    )(15 downto 0) <= a_rms_vec(4);
+        --internal_regs(SPI_RMS_OUT4_sns     )(15 downto 0) <= v_rms_vec(0);
+        --internal_regs(SPI_RMS_Vsns_PH1     )(15 downto 0) <= v_rms_vec(1);
+        --internal_regs(SPI_RMS_Vsns_PH2     )(15 downto 0) <= v_rms_vec(2);
+        --internal_regs(SPI_RMS_Vsns_PH3     )(15 downto 0) <= v_rms_vec(3);
+        --internal_regs(SPI_RMS_Vsns_PH_C_RLY)(15 downto 0) <= v_rms_vec(4);
+        --internal_regs(SPI_RMS_Vsns_PH_B_RLY)(15 downto 0) <= v_rms_vec(5);
+        --internal_regs(SPI_RMS_Vsns_PH_A_RLY)(15 downto 0) <= v_rms_vec(6);
+        
+        internal_regs_we(LOG_I_OUT_4          ) <= a_rms_valid_vec(0);
+        internal_regs_we(LOG_I_DC_IN          ) <= a_rms_valid_vec(1);
+        internal_regs_we(LOG_I_AC_IN_PH_A     ) <= a_rms_valid_vec(2);
+        internal_regs_we(LOG_I_AC_IN_PH_B     ) <= a_rms_valid_vec(3);
+        internal_regs_we(LOG_I_AC_IN_PH_C     ) <= a_rms_valid_vec(4);
+        internal_regs_we(LOG_V_OUT_4          ) <= v_rms_valid_vec(0);
+        internal_regs_we(LOG_VAC_IN_PH_A      ) <= v_rms_valid_vec(1);
+        internal_regs_we(LOG_VAC_IN_PH_B      ) <= v_rms_valid_vec(2);
+        internal_regs_we(LOG_VAC_IN_PH_C      ) <= v_rms_valid_vec(3);
+        internal_regs_we(LOG_V_OUT_3_ph3      ) <= v_rms_valid_vec(4);
+        internal_regs_we(LOG_V_OUT_3_ph2      ) <= v_rms_valid_vec(5);
+        internal_regs_we(LOG_V_OUT_3_ph1      ) <= v_rms_valid_vec(6);
 
-        internal_regs(SPI_RMS_OUT4_Isns    )(15 downto 0) <= a_rms_vec(0);
-        internal_regs(SPI_RMS_DC_PWR_I_sns )(15 downto 0) <= a_rms_vec(1);
-        internal_regs(SPI_RMS_PH1_I_sns    )(15 downto 0) <= a_rms_vec(2);
-        internal_regs(SPI_RMS_PH2_I_sns    )(15 downto 0) <= a_rms_vec(3);
-        internal_regs(SPI_RMS_PH3_I_sns    )(15 downto 0) <= a_rms_vec(4);
-        internal_regs(SPI_RMS_OUT4_sns     )(11 downto 0) <= v_rms_vec(0);
-        internal_regs(SPI_RMS_Vsns_PH1     )(11 downto 0) <= v_rms_vec(1);
-        internal_regs(SPI_RMS_Vsns_PH2     )(11 downto 0) <= v_rms_vec(2);
-        internal_regs(SPI_RMS_Vsns_PH3     )(11 downto 0) <= v_rms_vec(3);
-        internal_regs(SPI_RMS_Vsns_PH_C_RLY)(11 downto 0) <= v_rms_vec(4);
-        internal_regs(SPI_RMS_Vsns_PH_B_RLY)(11 downto 0) <= v_rms_vec(5);
-        internal_regs(SPI_RMS_Vsns_PH_A_RLY)(11 downto 0) <= v_rms_vec(6);
+        internal_regs_we(LOG_I_OUT_3_ph1      ) <= a_rms_valid_vec(2); -- same as I_AC_IN_PH_A/B/C
+        internal_regs_we(LOG_I_OUT_3_ph2      ) <= a_rms_valid_vec(3); -- same as I_AC_IN_PH_A/B/C
+        internal_regs_we(LOG_I_OUT_3_ph3      ) <= a_rms_valid_vec(4); -- same as I_AC_IN_PH_A/B/C
+
+        internal_regs(LOG_I_OUT_4          )(15 downto 0) <= a_rms_vec(0);
+        internal_regs(LOG_I_DC_IN          )(15 downto 0) <= a_rms_vec(1);
+        internal_regs(LOG_I_AC_IN_PH_A     )(15 downto 0) <= a_rms_vec(2);
+        internal_regs(LOG_I_AC_IN_PH_B     )(15 downto 0) <= a_rms_vec(3);
+        internal_regs(LOG_I_AC_IN_PH_C     )(15 downto 0) <= a_rms_vec(4);
+        internal_regs(LOG_V_OUT_4          )(15 downto 0) <= v_rms_vec(0);
+        internal_regs(LOG_VAC_IN_PH_A      )(15 downto 0) <= v_rms_vec(1);
+        internal_regs(LOG_VAC_IN_PH_B      )(15 downto 0) <= v_rms_vec(2);
+        internal_regs(LOG_VAC_IN_PH_C      )(15 downto 0) <= v_rms_vec(3);
+        internal_regs(LOG_V_OUT_3_ph3      )(15 downto 0) <= v_rms_vec(4);
+        internal_regs(LOG_V_OUT_3_ph2      )(15 downto 0) <= v_rms_vec(5);
+        internal_regs(LOG_V_OUT_3_ph1      )(15 downto 0) <= v_rms_vec(6);
+
+        internal_regs(LOG_I_OUT_3_ph1      )(15 downto 0) <= a_rms_vec(2); -- same as I_AC_IN_PH_A/B/C
+        internal_regs(LOG_I_OUT_3_ph2      )(15 downto 0) <= a_rms_vec(3); -- same as I_AC_IN_PH_A/B/C
+        internal_regs(LOG_I_OUT_3_ph3      )(15 downto 0) <= a_rms_vec(4); -- same as I_AC_IN_PH_A/B/C
         
         internal_regs_we(LOG_AC_POWER) <= p_valid;
         internal_regs(LOG_AC_POWER)    <= X"00000" & p(15 downto 4);-- dividing by 16 as current is given in a X16 value
@@ -446,14 +481,13 @@ begin
         port map(
             ap_clk            => clk,
             ap_rst_n          => hls_rstn,
-            sample_TDATA      => v_vec(i)(11) & v_vec(i)(11) & v_vec(i)(11) & v_vec(i)(11) & v_vec(i),
+            sample_TDATA      => v_vec(i),
             sample_TVALID     => v_valid_vec(i),
             sample_TREADY     => sample_TREADY,
             zero_cross_TDATA  => "0000000" & zero_cross,
             zero_cross_TVALID => '1',
             zero_cross_TREADY => zero_cross_TREADY,
-            d_out_TDATA(11 downto 0) => v_rms_vec(i),
-            d_out_TDATA(15 downto 12) => open,
+            d_out_TDATA       => v_rms_vec(i),
             d_out_TVALID      => v_rms_valid_vec(i),
             d_out_TREADY      => '1',
             cnt               => X"00000000" -- 0 stands for infinite run of this hls block this port is only used in simulation

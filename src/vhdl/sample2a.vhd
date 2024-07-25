@@ -17,7 +17,7 @@ architecture RTL of sample2a is
     signal sample_s : signed(31 downto 0);
     signal dec : signed(31 downto 0);
     signal mult : signed(63 downto 0);
-    constant K : integer := integer(0.014652 * 2**16);
+    constant K : integer := integer(0.29304 * 2**16);
     constant N : integer := integer(2252 * 2**16);
     signal valid : std_logic_vector(3 downto 0);
 begin
@@ -36,7 +36,7 @@ begin
                 dec <= sample_s - N;
                 mult <= dec * K;
                 a_var := std_logic_vector(mult);
-                a <= a_var(43 downto 28); -- 12bits.4bits
+                a <= a_var(47 downto 32); 
                 valid <= sample_valid & valid(valid'left downto 1);
                 
             end if;

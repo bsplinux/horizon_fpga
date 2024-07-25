@@ -6,7 +6,7 @@ entity spi_power is
     port(
         clk          : in  std_logic;
         sync_rst     : in  std_logic;
-        v1,v2,v3     : in  std_logic_vector(11 downto 0);
+        v1,v2,v3     : in  std_logic_vector(15 downto 0);
         i1,i2,i3     : in  std_logic_vector(15 downto 0);
         v_valid      : in std_logic_vector(1 to 3);
         i_valid      : in std_logic_vector(1 to 3);
@@ -28,7 +28,7 @@ begin
     process(clk)
         variable cnt : integer range 0 to 10;
         variable p_var : signed(63 downto 0);
-        constant DIV30 : integer := integer((1.0/30.0) * 2**16);
+        constant DIV2000 : integer := integer((1.0/(10.0*20.0*10.0)) * 2**16);
     begin
         if rising_edge(clk) then
             if sync_rst then
@@ -79,7 +79,7 @@ begin
                         state <= wt1;
                         p_valid <= '1';
                         p_var := resize(p1,64) + p2 + p3;
-                        p_var := p_var(31 downto 0) * DIV30;
+                        p_var := p_var(31 downto 0) * DIV2000;
                         p <= std_logic_vector(p_var(31 downto 16));
                 end case;
 
@@ -101,21 +101,21 @@ begin
                 v_valid_s <= (others => '0');
             else
                 if v_valid(1) then
-                    v1_s <= resize(signed(v1),16);
+                    v1_s <= signed(v1);
                     v_valid_s(1) <= '1';
                 elsif clr(1) then
                     v_valid_s(1) <= '0';
                 end if;
                 
                 if v_valid(2) then
-                    v2_s <= resize(signed(v2),16);
+                    v2_s <= signed(v2);
                     v_valid_s(2) <= '1';
                 elsif clr(2) then
                     v_valid_s(2) <= '0';
                 end if;
                 
                 if v_valid(3) then
-                    v3_s <= resize(signed(v3),16);
+                    v3_s <= signed(v3);
                     v_valid_s(3) <= '1';
                 elsif clr(3) then
                     v_valid_s(3) <= '0';

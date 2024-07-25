@@ -8,7 +8,7 @@ entity sample2v is
         sync_rst     : in  std_logic;
         sample       : in  std_logic_vector(11 downto 0);
         sample_valid : in  std_logic;
-        v            : out std_logic_vector(11 downto 0);
+        v            : out std_logic_vector(15 downto 0);
         v_valid      : out std_logic
     );
 end entity sample2v;
@@ -16,7 +16,7 @@ end entity sample2v;
 architecture RTL of sample2v is
     signal sample_s : signed(31 downto 0);
     signal mult : signed(63 downto 0);
-    constant A : integer := integer(0.108881 * 2**16);
+    constant A : integer := integer(1.08881 * 2**16);
     constant B : integer := integer(2047 * 2**16);
     signal valid : std_logic_vector(3 downto 0);
     signal dec : signed(31 downto 0);
@@ -36,7 +36,7 @@ begin
                 dec <= sample_s - B;
                 mult <= dec * A;
                 v_var := std_logic_vector(mult);
-                v <= v_var(43 downto 32);
+                v <= v_var(47 downto 32);
                 valid <= sample_valid & valid(valid'left downto 1);
                 
             end if;

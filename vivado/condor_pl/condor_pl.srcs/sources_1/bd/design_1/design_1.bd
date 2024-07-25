@@ -3584,6 +3584,9 @@
           "C_DATA_DEPTH": {
             "value": "8192"
           },
+          "C_EN_STRG_QUAL": {
+            "value": "1"
+          },
           "C_MON_TYPE": {
             "value": "MIX"
           },
@@ -3946,8 +3949,8 @@
           "axi_uartlite_8/s_axi_aclk",
           "proc_sys_reset_0/slowest_sync_clk",
           "processing_system7_0/M_AXI_GP0_ACLK",
-          "smartconnect_0/aclk",
-          "system_ila_0/clk"
+          "system_ila_0/clk",
+          "smartconnect_0/aclk"
         ]
       },
       "processing_system7_0_FCLK_CLK1": {
@@ -3975,8 +3978,8 @@
           "axi_uartlite_6/s_axi_aresetn",
           "axi_uartlite_7/s_axi_aresetn",
           "axi_uartlite_8/s_axi_aresetn",
-          "smartconnect_0/aresetn",
-          "system_ila_0/resetn"
+          "system_ila_0/resetn",
+          "smartconnect_0/aresetn"
         ]
       },
       "processing_system7_0_FCLK_RESET0_N1": {
