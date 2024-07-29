@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="spi_power_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="spi_power_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="22.983310 us"></ZoomEndTime>
+      <Cursor1Time time="3.475000 us"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="423"></NameColumnWidth>
+      <ValueColumnWidth column_width="462"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="2" />
+   <wvobject fp_name="group19" type="group">
+      <obj_property name="label">tb</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/spi_power_tb/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/sync_rst" type="logic">
+         <obj_property name="ElementShortName">sync_rst</obj_property>
+         <obj_property name="ObjectShortName">sync_rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/v1" type="array">
+         <obj_property name="ElementShortName">v1[15:0]</obj_property>
+         <obj_property name="ObjectShortName">v1[15:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/v2" type="array">
+         <obj_property name="ElementShortName">v2[15:0]</obj_property>
+         <obj_property name="ObjectShortName">v2[15:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/v3" type="array">
+         <obj_property name="ElementShortName">v3[15:0]</obj_property>
+         <obj_property name="ObjectShortName">v3[15:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/i1" type="array">
+         <obj_property name="ElementShortName">i1[15:0]</obj_property>
+         <obj_property name="ObjectShortName">i1[15:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/i2" type="array">
+         <obj_property name="ElementShortName">i2[15:0]</obj_property>
+         <obj_property name="ObjectShortName">i2[15:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/i3" type="array">
+         <obj_property name="ElementShortName">i3[15:0]</obj_property>
+         <obj_property name="ObjectShortName">i3[15:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/v_valid1" type="logic">
+         <obj_property name="ElementShortName">v_valid1</obj_property>
+         <obj_property name="ObjectShortName">v_valid1</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/v_valid2" type="logic">
+         <obj_property name="ElementShortName">v_valid2</obj_property>
+         <obj_property name="ObjectShortName">v_valid2</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/v_valid3" type="logic">
+         <obj_property name="ElementShortName">v_valid3</obj_property>
+         <obj_property name="ObjectShortName">v_valid3</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/i_valid1" type="logic">
+         <obj_property name="ElementShortName">i_valid1</obj_property>
+         <obj_property name="ObjectShortName">i_valid1</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/i_valid2" type="logic">
+         <obj_property name="ElementShortName">i_valid2</obj_property>
+         <obj_property name="ObjectShortName">i_valid2</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/i_valid3" type="logic">
+         <obj_property name="ElementShortName">i_valid3</obj_property>
+         <obj_property name="ObjectShortName">i_valid3</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/p" type="array">
+         <obj_property name="ElementShortName">p[15:0]</obj_property>
+         <obj_property name="ObjectShortName">p[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/p_valid" type="logic">
+         <obj_property name="ElementShortName">p_valid</obj_property>
+         <obj_property name="ObjectShortName">p_valid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/stop_clk" type="other">
+         <obj_property name="ElementShortName">stop_clk</obj_property>
+         <obj_property name="ObjectShortName">stop_clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/PRD" type="other">
+         <obj_property name="ElementShortName">PRD</obj_property>
+         <obj_property name="ObjectShortName">PRD</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group70" type="group">
+      <obj_property name="label">spi_power</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/spi_power_tb/uut/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/sync_rst" type="logic">
+         <obj_property name="ElementShortName">sync_rst</obj_property>
+         <obj_property name="ObjectShortName">sync_rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/v1" type="array">
+         <obj_property name="ElementShortName">v1[15:0]</obj_property>
+         <obj_property name="ObjectShortName">v1[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/v2" type="array">
+         <obj_property name="ElementShortName">v2[15:0]</obj_property>
+         <obj_property name="ObjectShortName">v2[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/v3" type="array">
+         <obj_property name="ElementShortName">v3[15:0]</obj_property>
+         <obj_property name="ObjectShortName">v3[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/i1" type="array">
+         <obj_property name="ElementShortName">i1[15:0]</obj_property>
+         <obj_property name="ObjectShortName">i1[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/i2" type="array">
+         <obj_property name="ElementShortName">i2[15:0]</obj_property>
+         <obj_property name="ObjectShortName">i2[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/i3" type="array">
+         <obj_property name="ElementShortName">i3[15:0]</obj_property>
+         <obj_property name="ObjectShortName">i3[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/v_valid" type="array">
+         <obj_property name="ElementShortName">v_valid[1:3]</obj_property>
+         <obj_property name="ObjectShortName">v_valid[1:3]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/i_valid" type="array">
+         <obj_property name="ElementShortName">i_valid[1:3]</obj_property>
+         <obj_property name="ObjectShortName">i_valid[1:3]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/p" type="array">
+         <obj_property name="ElementShortName">p[15:0]</obj_property>
+         <obj_property name="ObjectShortName">p[15:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/p_valid" type="logic">
+         <obj_property name="ElementShortName">p_valid</obj_property>
+         <obj_property name="ObjectShortName">p_valid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/i_valid_s" type="array">
+         <obj_property name="ElementShortName">i_valid_s[1:3]</obj_property>
+         <obj_property name="ObjectShortName">i_valid_s[1:3]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/v_valid_s" type="array">
+         <obj_property name="ElementShortName">v_valid_s[1:3]</obj_property>
+         <obj_property name="ObjectShortName">v_valid_s[1:3]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/v1_s" type="array">
+         <obj_property name="ElementShortName">v1_s[15:0]</obj_property>
+         <obj_property name="ObjectShortName">v1_s[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/v2_s" type="array">
+         <obj_property name="ElementShortName">v2_s[15:0]</obj_property>
+         <obj_property name="ObjectShortName">v2_s[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/v3_s" type="array">
+         <obj_property name="ElementShortName">v3_s[15:0]</obj_property>
+         <obj_property name="ObjectShortName">v3_s[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/i1_s" type="array">
+         <obj_property name="ElementShortName">i1_s[15:0]</obj_property>
+         <obj_property name="ObjectShortName">i1_s[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/i2_s" type="array">
+         <obj_property name="ElementShortName">i2_s[15:0]</obj_property>
+         <obj_property name="ObjectShortName">i2_s[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/i3_s" type="array">
+         <obj_property name="ElementShortName">i3_s[15:0]</obj_property>
+         <obj_property name="ObjectShortName">i3_s[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/clr" type="array">
+         <obj_property name="ElementShortName">clr[1:3]</obj_property>
+         <obj_property name="ObjectShortName">clr[1:3]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/state" type="other">
+         <obj_property name="ElementShortName">state</obj_property>
+         <obj_property name="ObjectShortName">state</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/p1" type="array">
+         <obj_property name="ElementShortName">p1[31:0]</obj_property>
+         <obj_property name="ObjectShortName">p1[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/p2" type="array">
+         <obj_property name="ElementShortName">p2[31:0]</obj_property>
+         <obj_property name="ObjectShortName">p2[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/spi_power_tb/uut/p3" type="array">
+         <obj_property name="ElementShortName">p3[31:0]</obj_property>
+         <obj_property name="ObjectShortName">p3[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

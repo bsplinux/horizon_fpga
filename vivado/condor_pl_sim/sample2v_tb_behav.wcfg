@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="sample2v_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="sample2v_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="32.760000 us"></ZoomEndTime>
+      <Cursor1Time time="9.345000 us"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="308"></NameColumnWidth>
+      <ValueColumnWidth column_width="305"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="16" />
+   <wave_markers>
+      <marker time="6425000" label="" />
+      <marker time="7075000" label="" />
+   </wave_markers>
+   <wvobject fp_name="/sample2v_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sample2v_tb/sync_rst" type="logic">
+      <obj_property name="ElementShortName">sync_rst</obj_property>
+      <obj_property name="ObjectShortName">sync_rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sample2v_tb/sample_v" type="array">
+      <obj_property name="ElementShortName">sample_v[11:0]</obj_property>
+      <obj_property name="ObjectShortName">sample_v[11:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sample2v_tb/sample_v_valid" type="logic">
+      <obj_property name="ElementShortName">sample_v_valid</obj_property>
+      <obj_property name="ObjectShortName">sample_v_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sample2v_tb/v" type="array">
+      <obj_property name="ElementShortName">v[11:0]</obj_property>
+      <obj_property name="ObjectShortName">v[11:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sample2v_tb/v_valid" type="logic">
+      <obj_property name="ElementShortName">v_valid</obj_property>
+      <obj_property name="ObjectShortName">v_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sample2v_tb/sample_a" type="array">
+      <obj_property name="ElementShortName">sample_a[11:0]</obj_property>
+      <obj_property name="ObjectShortName">sample_a[11:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sample2v_tb/sample_a_valid" type="logic">
+      <obj_property name="ElementShortName">sample_a_valid</obj_property>
+      <obj_property name="ObjectShortName">sample_a_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sample2v_tb/a" type="array">
+      <obj_property name="ElementShortName">a[15:0]</obj_property>
+      <obj_property name="ObjectShortName">a[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sample2v_tb/a_valid" type="logic">
+      <obj_property name="ElementShortName">a_valid</obj_property>
+      <obj_property name="ObjectShortName">a_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="group25" type="group">
+      <obj_property name="label">sample2v</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/sample2v_tb/sample2v_uut/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2v_uut/sync_rst" type="logic">
+         <obj_property name="ElementShortName">sync_rst</obj_property>
+         <obj_property name="ObjectShortName">sync_rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2v_uut/sample" type="array">
+         <obj_property name="ElementShortName">sample[11:0]</obj_property>
+         <obj_property name="ObjectShortName">sample[11:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2v_uut/sample_valid" type="logic">
+         <obj_property name="ElementShortName">sample_valid</obj_property>
+         <obj_property name="ObjectShortName">sample_valid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2v_uut/sample_s" type="array">
+         <obj_property name="ElementShortName">sample_s[31:0]</obj_property>
+         <obj_property name="ObjectShortName">sample_s[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2v_uut/mult" type="array">
+         <obj_property name="ElementShortName">mult[63:0]</obj_property>
+         <obj_property name="ObjectShortName">mult[63:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2v_uut/v_int" type="array">
+         <obj_property name="ElementShortName">v_int[31:0]</obj_property>
+         <obj_property name="ObjectShortName">v_int[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2v_uut/valid" type="array">
+         <obj_property name="ElementShortName">valid[3:0]</obj_property>
+         <obj_property name="ObjectShortName">valid[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2v_uut/v" type="array">
+         <obj_property name="ElementShortName">v[11:0]</obj_property>
+         <obj_property name="ObjectShortName">v[11:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2v_uut/v_valid" type="logic">
+         <obj_property name="ElementShortName">v_valid</obj_property>
+         <obj_property name="ObjectShortName">v_valid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2v_uut/A" type="other">
+         <obj_property name="ElementShortName">A</obj_property>
+         <obj_property name="ObjectShortName">A</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2v_uut/B" type="other">
+         <obj_property name="ElementShortName">B</obj_property>
+         <obj_property name="ObjectShortName">B</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group38" type="group">
+      <obj_property name="label">sample2a</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/sample2v_tb/sample2a_uut/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2a_uut/sync_rst" type="logic">
+         <obj_property name="ElementShortName">sync_rst</obj_property>
+         <obj_property name="ObjectShortName">sync_rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2a_uut/sample" type="array">
+         <obj_property name="ElementShortName">sample[11:0]</obj_property>
+         <obj_property name="ObjectShortName">sample[11:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2a_uut/sample_valid" type="logic">
+         <obj_property name="ElementShortName">sample_valid</obj_property>
+         <obj_property name="ObjectShortName">sample_valid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2a_uut/a" type="array">
+         <obj_property name="ElementShortName">a[15:0]</obj_property>
+         <obj_property name="ObjectShortName">a[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2a_uut/a_valid" type="logic">
+         <obj_property name="ElementShortName">a_valid</obj_property>
+         <obj_property name="ObjectShortName">a_valid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2a_uut/sample_s" type="array">
+         <obj_property name="ElementShortName">sample_s[31:0]</obj_property>
+         <obj_property name="ObjectShortName">sample_s[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2a_uut/a_int" type="array">
+         <obj_property name="ElementShortName">a_int[31:0]</obj_property>
+         <obj_property name="ObjectShortName">a_int[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2a_uut/mult" type="array">
+         <obj_property name="ElementShortName">mult[63:0]</obj_property>
+         <obj_property name="ObjectShortName">mult[63:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2a_uut/valid" type="array">
+         <obj_property name="ElementShortName">valid[3:0]</obj_property>
+         <obj_property name="ObjectShortName">valid[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2a_uut/K" type="other">
+         <obj_property name="ElementShortName">K</obj_property>
+         <obj_property name="ObjectShortName">K</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/sample2a_uut/N" type="other">
+         <obj_property name="ElementShortName">N</obj_property>
+         <obj_property name="ObjectShortName">N</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group103" type="group">
+      <obj_property name="label">z cross</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/sample2v_tb/zero_cross_inst/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/zero_cross_inst/sync_rst" type="logic">
+         <obj_property name="ElementShortName">sync_rst</obj_property>
+         <obj_property name="ObjectShortName">sync_rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/zero_cross_inst/d" type="array">
+         <obj_property name="ElementShortName">d[11:0]</obj_property>
+         <obj_property name="ObjectShortName">d[11:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/zero_cross_inst/d_valid" type="logic">
+         <obj_property name="ElementShortName">d_valid</obj_property>
+         <obj_property name="ObjectShortName">d_valid</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/zero_cross_inst/zero_cross" type="logic">
+         <obj_property name="ElementShortName">zero_cross</obj_property>
+         <obj_property name="ObjectShortName">zero_cross</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/zero_cross_inst/zero_cross_error" type="logic">
+         <obj_property name="ElementShortName">zero_cross_error</obj_property>
+         <obj_property name="ObjectShortName">zero_cross_error</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/zero_cross_inst/n" type="array">
+         <obj_property name="ElementShortName">n[7:0]</obj_property>
+         <obj_property name="ObjectShortName">n[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/zero_cross_inst/D_SIZE" type="other">
+         <obj_property name="ElementShortName">D_SIZE</obj_property>
+         <obj_property name="ObjectShortName">D_SIZE</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/zero_cross_inst/N_SIZE" type="other">
+         <obj_property name="ElementShortName">N_SIZE</obj_property>
+         <obj_property name="ObjectShortName">N_SIZE</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/zero_cross_inst/MID" type="array">
+         <obj_property name="ElementShortName">MID[11:0]</obj_property>
+         <obj_property name="ObjectShortName">MID[11:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group113" type="group">
+      <obj_property name="label">rms</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/sample2v_tb/rms_a_uut/sample_ap_vld" type="logic">
+         <obj_property name="ElementShortName">sample_ap_vld</obj_property>
+         <obj_property name="ObjectShortName">sample_ap_vld</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/rms_a_uut/zero_cross_ap_ack" type="logic">
+         <obj_property name="ElementShortName">zero_cross_ap_ack</obj_property>
+         <obj_property name="ObjectShortName">zero_cross_ap_ack</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/rms_a_uut/d_out_ap_vld" type="logic">
+         <obj_property name="ElementShortName">d_out_ap_vld</obj_property>
+         <obj_property name="ObjectShortName">d_out_ap_vld</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/rms_a_uut/zero_cross_ap_vld" type="logic">
+         <obj_property name="ElementShortName">zero_cross_ap_vld</obj_property>
+         <obj_property name="ObjectShortName">zero_cross_ap_vld</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/rms_a_uut/ap_clk" type="logic">
+         <obj_property name="ElementShortName">ap_clk</obj_property>
+         <obj_property name="ObjectShortName">ap_clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/rms_a_uut/ap_rst" type="logic">
+         <obj_property name="ElementShortName">ap_rst</obj_property>
+         <obj_property name="ObjectShortName">ap_rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/rms_a_uut/sample" type="array">
+         <obj_property name="ElementShortName">sample[15:0]</obj_property>
+         <obj_property name="ObjectShortName">sample[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/rms_a_uut/n" type="array">
+         <obj_property name="ElementShortName">n[7:0]</obj_property>
+         <obj_property name="ObjectShortName">n[7:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/rms_a_uut/zero_cross" type="logic">
+         <obj_property name="ElementShortName">zero_cross</obj_property>
+         <obj_property name="ObjectShortName">zero_cross</obj_property>
+      </wvobject>
+      <wvobject fp_name="/sample2v_tb/rms_a_uut/d_out" type="array">
+         <obj_property name="ElementShortName">d_out[15:0]</obj_property>
+         <obj_property name="ObjectShortName">d_out[15:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/sample2v_tb/d_out" type="array">
+      <obj_property name="ElementShortName">d_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">d_out[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sample2v_tb/d_out_ap_vld" type="logic">
+      <obj_property name="ElementShortName">d_out_ap_vld</obj_property>
+      <obj_property name="ObjectShortName">d_out_ap_vld</obj_property>
+   </wvobject>
+</wave_config>

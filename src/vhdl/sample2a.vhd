@@ -8,7 +8,7 @@ entity sample2a is
         sync_rst     : in  std_logic;
         sample       : in  std_logic_vector(11 downto 0);
         sample_valid : in  std_logic;
-        a            : out std_logic_vector(15 downto 0); -- 15:4 whole no. 3:0 fraction
+        a            : out std_logic_vector(15 downto 0); 
         a_valid      : out std_logic
     );
 end entity sample2a;
@@ -18,7 +18,7 @@ architecture RTL of sample2a is
     signal dec : signed(31 downto 0);
     signal mult : signed(63 downto 0);
     constant K : integer := integer(0.29304 * 2**16);
-    constant N : integer := integer(2252 * 2**16);
+    constant N : integer := integer(2047 * 2**16);
     signal valid : std_logic_vector(3 downto 0);
 begin
     process(clk)

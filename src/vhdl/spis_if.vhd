@@ -323,7 +323,7 @@ begin
         --internal_regs(SPI_RMS_Vsns_PH_A_RLY)(15 downto 0) <= v_rms_vec(6);
         
         internal_regs_we(LOG_I_OUT_4          ) <= a_rms_valid_vec(0);
-        internal_regs_we(LOG_I_DC_IN          ) <= a_rms_valid_vec(1);
+        internal_regs_we(LOG_I_DC_IN          ) <= a_valid_vec(1);-- pre RMS as per spec
         internal_regs_we(LOG_I_AC_IN_PH_A     ) <= a_rms_valid_vec(2);
         internal_regs_we(LOG_I_AC_IN_PH_B     ) <= a_rms_valid_vec(3);
         internal_regs_we(LOG_I_AC_IN_PH_C     ) <= a_rms_valid_vec(4);
@@ -340,7 +340,7 @@ begin
         internal_regs_we(LOG_I_OUT_3_ph3      ) <= a_rms_valid_vec(4); -- same as I_AC_IN_PH_A/B/C
 
         internal_regs(LOG_I_OUT_4          )(15 downto 0) <= a_rms_vec(0);
-        internal_regs(LOG_I_DC_IN          )(15 downto 0) <= a_rms_vec(1);
+        internal_regs(LOG_I_DC_IN          )(15 downto 0) <= a_vec(1);--pre RMS as per spec
         internal_regs(LOG_I_AC_IN_PH_A     )(15 downto 0) <= a_rms_vec(2);
         internal_regs(LOG_I_AC_IN_PH_B     )(15 downto 0) <= a_rms_vec(3);
         internal_regs(LOG_I_AC_IN_PH_C     )(15 downto 0) <= a_rms_vec(4);
@@ -357,7 +357,7 @@ begin
         internal_regs(LOG_I_OUT_3_ph3      )(15 downto 0) <= a_rms_vec(4); -- same as I_AC_IN_PH_A/B/C
         
         internal_regs_we(LOG_AC_POWER) <= p_valid;
-        internal_regs(LOG_AC_POWER)    <= X"00000" & p(15 downto 4);-- dividing by 16 as current is given in a X16 value
+        internal_regs(LOG_AC_POWER)    <= X"0000" & p;
         
     end process;
     
