@@ -18,3 +18,5 @@ deliveries
 hls_params.yaml
 itamar
 linux
+__pycache__
+ps7_summary.html
