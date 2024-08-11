@@ -6,6 +6,7 @@ use ieee.numeric_std_unsigned.all;
 use work.condor_pl_pkg.all;
 --use work.sim_pkg.all;
 use work.regs_pkg.all;
+use work.condor_pl_pkg.all;
 
 entity rs485_if is
     generic(HLS_EN : boolean);
@@ -20,9 +21,10 @@ entity rs485_if is
         HLS_to_BD        : out HLS_axim_to_interconnect_t;
         BD_to_HLS        : in  HLS_axim_from_interconnect_t;
         one_ms_interrupt : in  std_logic;
-        de               : out std_logic_vector(8 downto 0)
+        de               : out std_logic_vector(8 downto 0);
+        log_regs         : out log_reg_array_t
     );
-end entity rs485_if;
+    end entity rs485_if;
 
 architecture RTL of rs485_if is
     COMPONENT uarts_0 is
@@ -107,20 +109,9 @@ architecture RTL of rs485_if is
     --signal uart_en : STD_LOGIC_VECTOR(8 DOWNTO 0);
     type uarts_d_array_t is array (UARTS_RANGE) of std_logic_vector(63 downto 0);
     signal uarts_d_array  : uarts_d_array_t;
-    signal uarts_calc_array : uarts_d_array_t;
     signal uart_de : STD_LOGIC_VECTOR(UARTS_RANGE);
     signal uart_de_ap_vld : STD_LOGIC;
     signal one_ms_error : std_logic;
-    
---    function swap_bytes(vec: std_logic_vector) return std_logic_vector is
---        variable swapped : std_logic_vector := (others => '0');
---        variable num_bytes : integer := (vec'length / 8);
---    begin
---        for i in 0 to num_bytes - 1 loop
---            swapped(8*i + 7 downto 8*i) := vec(7 + (num_bytes-1)*8 - (8*i) downto (num_bytes - 1)*8 - (8*i));
---        end loop;
---        return swapped;
---    end;
     
     type dcdc_t is record
         i_in : std_logic_vector(15 downto 0);
@@ -263,94 +254,57 @@ begin
         internal_regs(UARTS_STATUS)(UARTS_STATUS_BUSY) <= not ap_idle;
         internal_regs(UARTS_STATUS)(UARTS_STATUS_MS1_ERR) <= one_ms_error;
         
---        internal_regs_we(UART_CALC0_L) <= uarts_calc_vld(0);
---        internal_regs_we(UART_CALC1_L) <= uarts_calc_vld(1);
---        internal_regs_we(UART_CALC2_L) <= uarts_calc_vld(2);
---        internal_regs_we(UART_CALC3_L) <= uarts_calc_vld(3);
---        internal_regs_we(UART_CALC4_L) <= uarts_calc_vld(4);
---        internal_regs_we(UART_CALC5_L) <= uarts_calc_vld(5);
---        internal_regs_we(UART_CALC6_L) <= uarts_calc_vld(6);
---        internal_regs_we(UART_CALC7_L) <= uarts_calc_vld(7);
---        internal_regs_we(UART_CALC8_L) <= uarts_calc_vld(8);
---        internal_regs_we(UART_CALC0_H) <= uarts_calc_vld(0);
---        internal_regs_we(UART_CALC1_H) <= uarts_calc_vld(1);
---        internal_regs_we(UART_CALC2_H) <= uarts_calc_vld(2);
---        internal_regs_we(UART_CALC3_H) <= uarts_calc_vld(3);
---        internal_regs_we(UART_CALC4_H) <= uarts_calc_vld(4);
---        internal_regs_we(UART_CALC5_H) <= uarts_calc_vld(5);
---        internal_regs_we(UART_CALC6_H) <= uarts_calc_vld(6);
---        internal_regs_we(UART_CALC7_H) <= uarts_calc_vld(7);
---        internal_regs_we(UART_CALC8_H) <= uarts_calc_vld(8);
---
---        internal_regs(UART_CALC0_L) <= uarts_calc_array(0)(31 downto 0);
---        internal_regs(UART_CALC1_L) <= uarts_calc_array(1)(31 downto 0);
---        internal_regs(UART_CALC2_L) <= uarts_calc_array(2)(31 downto 0);
---        internal_regs(UART_CALC3_L) <= uarts_calc_array(3)(31 downto 0);
---        internal_regs(UART_CALC4_L) <= uarts_calc_array(4)(31 downto 0);
---        internal_regs(UART_CALC5_L) <= uarts_calc_array(5)(31 downto 0);
---        internal_regs(UART_CALC6_L) <= uarts_calc_array(6)(31 downto 0);
---        internal_regs(UART_CALC7_L) <= uarts_calc_array(7)(31 downto 0);
---        internal_regs(UART_CALC8_L) <= uarts_calc_array(8)(31 downto 0);
---        internal_regs(UART_CALC0_H) <= uarts_calc_array(0)(63 downto 32);
---        internal_regs(UART_CALC1_H) <= uarts_calc_array(1)(63 downto 32);
---        internal_regs(UART_CALC2_H) <= uarts_calc_array(2)(63 downto 32);
---        internal_regs(UART_CALC3_H) <= uarts_calc_array(3)(63 downto 32);
---        internal_regs(UART_CALC4_H) <= uarts_calc_array(4)(63 downto 32);
---        internal_regs(UART_CALC5_H) <= uarts_calc_array(5)(63 downto 32);
---        internal_regs(UART_CALC6_H) <= uarts_calc_array(6)(63 downto 32);
---        internal_regs(UART_CALC7_H) <= uarts_calc_array(7)(63 downto 32);
---        internal_regs(UART_CALC8_H) <= uarts_calc_array(8)(63 downto 32);
-        internal_regs_we(LOG_V_OUT_1 ) <= uarts_calc_vld(0);
-        internal_regs_we(LOG_V_OUT_2 ) <= uarts_calc_vld(0);
-        internal_regs_we(LOG_V_OUT_5 ) <= uarts_calc_vld(2);
-        internal_regs_we(LOG_V_OUT_6 ) <= uarts_calc_vld(3);
-        internal_regs_we(LOG_V_OUT_7 ) <= uarts_calc_vld(4);
-        internal_regs_we(LOG_V_OUT_8 ) <= uarts_calc_vld(5);
-        internal_regs_we(LOG_V_OUT_9 ) <= uarts_calc_vld(6);
-        internal_regs_we(LOG_V_OUT_10) <= uarts_calc_vld(7);
-        internal_regs_we(LOG_I_OUT_1 ) <= uarts_calc_vld(0);
-        internal_regs_we(LOG_I_OUT_2 ) <= uarts_calc_vld(1);
-        internal_regs_we(LOG_I_OUT_5 ) <= uarts_calc_vld(2);
-        internal_regs_we(LOG_I_OUT_6 ) <= uarts_calc_vld(3);
-        internal_regs_we(LOG_I_OUT_7 ) <= uarts_calc_vld(4);
-        internal_regs_we(LOG_I_OUT_8 ) <= uarts_calc_vld(5);
-        internal_regs_we(LOG_I_OUT_9 ) <= uarts_calc_vld(6);
-        internal_regs_we(LOG_I_OUT_10) <= uarts_calc_vld(7);
-        internal_regs_we(LOG_T1      ) <= uarts_calc_vld(0);
-        internal_regs_we(LOG_T2      ) <= uarts_calc_vld(1);
-        internal_regs_we(LOG_T3      ) <= uarts_calc_vld(7);
-        internal_regs_we(LOG_T4      ) <= uarts_calc_vld(8);
-        internal_regs_we(LOG_T5      ) <= uarts_calc_vld(2);
-        internal_regs_we(LOG_T6      ) <= uarts_calc_vld(3);
-        internal_regs_we(LOG_T7      ) <= uarts_calc_vld(4);
-        internal_regs_we(LOG_T8      ) <= uarts_calc_vld(5);
-        internal_regs_we(LOG_T9      ) <= uarts_calc_vld(6);
-                                                                         --IRS        Spec            vhdl
-        internal_regs(LOG_V_OUT_1 )(15 downto 0) <= dcdc_array(0).v_out; --V_OUT_1    DCDC1_VOUT      uart 0
-        internal_regs(LOG_V_OUT_2 )(15 downto 0) <= dcdc_array(0).v_out; --V_OUT_2    DCDC1_VOUT      uart 0
-        internal_regs(LOG_V_OUT_5 )(15 downto 0) <= dcdc_array(2).v_out; --V_OUT_5    DCDC5_VOUT      uart 2
-        internal_regs(LOG_V_OUT_6 )(15 downto 0) <= dcdc_array(3).v_out; --V_OUT_6    DCDC6_VOUT      uart 3
-        internal_regs(LOG_V_OUT_7 )(15 downto 0) <= dcdc_array(4).v_out; --V_OUT_7    DCDC7_VOUT      uart 4
-        internal_regs(LOG_V_OUT_8 )(15 downto 0) <= dcdc_array(5).v_out; --V_OUT_8    DCDC8_VOUT      uart 5
-        internal_regs(LOG_V_OUT_9 )(15 downto 0) <= dcdc_array(6).v_out; --V_OUT_9    DCDC9_VOUT      uart 6
-        internal_regs(LOG_V_OUT_10)(15 downto 0) <= dcdc_array(7).v_out; --V_OUT_10   DCDC10_VOUT     uart 7
-        internal_regs(LOG_I_OUT_1 )(15 downto 0) <= dcdc_array(0).i_out; --I_OUT_1    DCDC1_IOUT      uart 0
-        internal_regs(LOG_I_OUT_2 )(15 downto 0) <= dcdc_array(1).i_out; --I_OUT_2    DCDC2_IOUT      uart 1
-        internal_regs(LOG_I_OUT_5 )(15 downto 0) <= dcdc_array(2).i_out; --I_OUT_5    DCDC5_IOUT      uart 2
-        internal_regs(LOG_I_OUT_6 )(15 downto 0) <= dcdc_array(3).i_out; --I_OUT_6    DCDC6_IOUT      uart 3
-        internal_regs(LOG_I_OUT_7 )(15 downto 0) <= dcdc_array(4).i_out; --I_OUT_7    DCDC7_IOUT      uart 4
-        internal_regs(LOG_I_OUT_8 )(15 downto 0) <= dcdc_array(5).i_out; --I_OUT_8    DCDC8_IOUT      uart 5
-        internal_regs(LOG_I_OUT_9 )(15 downto 0) <= dcdc_array(6).i_out; --I_OUT_9    DCDC9_IOUT      uart 6
-        internal_regs(LOG_I_OUT_10)(15 downto 0) <= dcdc_array(7).i_out; --I_OUT_10   DCDC10_IOUT     uart 7
-        internal_regs(LOG_T1      )( 7 downto 0) <= dcdc_array(0).t;     --T1         DCDC1_Temp      uart 0  
-        internal_regs(LOG_T2      )( 7 downto 0) <= dcdc_array(1).t;     --T2         DCDC2_Temp      uart 1  
-        internal_regs(LOG_T3      )( 7 downto 0) <= dcdc_array(7).t;     --T3         DCDC10_Temp     uart 7  
-        internal_regs(LOG_T4      )( 7 downto 0) <= dcdc_array(8).t;     --T4         Main Board Temp uart 8  
-        internal_regs(LOG_T5      )( 7 downto 0) <= dcdc_array(2).t;     --T5         DCDC5_Temp      uart 2  
-        internal_regs(LOG_T6      )( 7 downto 0) <= dcdc_array(3).t;     --T6         DCDC6_Temp      uart 3  
-        internal_regs(LOG_T7      )( 7 downto 0) <= dcdc_array(4).t;     --T7         DCDC7_Temp      uart 4  
-        internal_regs(LOG_T8      )( 7 downto 0) <= dcdc_array(5).t;     --T8         DCDC8_Temp      uart 5  
-        internal_regs(LOG_T9      )( 7 downto 0) <= dcdc_array(6).t;     --T9         DCDC9_Temp      uart 6  
+        internal_regs_we(UART_V_OUT_1 ) <= '1';
+        internal_regs_we(UART_V_OUT_2 ) <= '1';
+        internal_regs_we(UART_V_OUT_5 ) <= '1';
+        internal_regs_we(UART_V_OUT_6 ) <= '1';
+        internal_regs_we(UART_V_OUT_7 ) <= '1';
+        internal_regs_we(UART_V_OUT_8 ) <= '1';
+        internal_regs_we(UART_V_OUT_9 ) <= '1';
+        internal_regs_we(UART_V_OUT_10) <= '1';
+        internal_regs_we(UART_I_OUT_1 ) <= '1';
+        internal_regs_we(UART_I_OUT_2 ) <= '1';
+        internal_regs_we(UART_I_OUT_5 ) <= '1';
+        internal_regs_we(UART_I_OUT_6 ) <= '1';
+        internal_regs_we(UART_I_OUT_7 ) <= '1';
+        internal_regs_we(UART_I_OUT_8 ) <= '1';
+        internal_regs_we(UART_I_OUT_9 ) <= '1';
+        internal_regs_we(UART_I_OUT_10) <= '1';
+        internal_regs_we(UART_T1      ) <= '1';
+        internal_regs_we(UART_T2      ) <= '1';
+        internal_regs_we(UART_T3      ) <= '1';
+        internal_regs_we(UART_T4      ) <= '1';
+        internal_regs_we(UART_T5      ) <= '1';
+        internal_regs_we(UART_T6      ) <= '1';
+        internal_regs_we(UART_T7      ) <= '1';
+        internal_regs_we(UART_T8      ) <= '1';
+        internal_regs_we(UART_T9      ) <= '1';
+                                                                         
+        internal_regs(UART_V_OUT_1 ) <= log_regs(LOG_V_OUT_1 );
+        internal_regs(UART_V_OUT_2 ) <= log_regs(LOG_V_OUT_2 );
+        internal_regs(UART_V_OUT_5 ) <= log_regs(LOG_V_OUT_5 );
+        internal_regs(UART_V_OUT_6 ) <= log_regs(LOG_V_OUT_6 );
+        internal_regs(UART_V_OUT_7 ) <= log_regs(LOG_V_OUT_7 );
+        internal_regs(UART_V_OUT_8 ) <= log_regs(LOG_V_OUT_8 );
+        internal_regs(UART_V_OUT_9 ) <= log_regs(LOG_V_OUT_9 );
+        internal_regs(UART_V_OUT_10) <= log_regs(LOG_V_OUT_10);
+        internal_regs(UART_I_OUT_1 ) <= log_regs(LOG_I_OUT_1 );
+        internal_regs(UART_I_OUT_2 ) <= log_regs(LOG_I_OUT_2 );
+        internal_regs(UART_I_OUT_5 ) <= log_regs(LOG_I_OUT_5 );
+        internal_regs(UART_I_OUT_6 ) <= log_regs(LOG_I_OUT_6 );
+        internal_regs(UART_I_OUT_7 ) <= log_regs(LOG_I_OUT_7 );
+        internal_regs(UART_I_OUT_8 ) <= log_regs(LOG_I_OUT_8 );
+        internal_regs(UART_I_OUT_9 ) <= log_regs(LOG_I_OUT_9 );
+        internal_regs(UART_I_OUT_10) <= log_regs(LOG_I_OUT_10);
+        internal_regs(UART_T1      ) <= log_regs(LOG_T1      );  
+        internal_regs(UART_T2      ) <= log_regs(LOG_T2      );  
+        internal_regs(UART_T3      ) <= log_regs(LOG_T3      );  
+        internal_regs(UART_T4      ) <= log_regs(LOG_T4      );  
+        internal_regs(UART_T5      ) <= log_regs(LOG_T5      );  
+        internal_regs(UART_T6      ) <= log_regs(LOG_T6      );  
+        internal_regs(UART_T7      ) <= log_regs(LOG_T7      );  
+        internal_regs(UART_T8      ) <= log_regs(LOG_T8      );  
+        internal_regs(UART_T9      ) <= log_regs(LOG_T9      );  
                                                                                              
     end process;
     
@@ -515,18 +469,6 @@ begin
                             dcdc_array(uart).OCP   <= uarts_d_array(uart)(MAIN_BORD_OCP );
                             dcdc_array(uart).OTP   <= uarts_d_array(uart)(MAIN_BORD_OTP );
                             dcdc_array(uart).VINP  <= uarts_d_array(uart)(MAIN_BORD_VINP);
---                            uarts_calc_array(uart) <= (others => '0');
---                            uarts_calc_array(uart)(UART_TEMP_RANGE)  <=  uarts_d_array(uart)(UART_TEMP_RANGE) - NORM_TEMP;
---                            uarts_calc_array(uart)(UART_IPHA_L_RANGE) <= std_logic_vector(ipha_tmp(23 downto 16)); 
---                            uarts_calc_array(uart)(UART_IPHA_H_RANGE) <= std_logic_vector(ipha_tmp(27 downto 24)); 
---                            uarts_calc_array(uart)(UART_IPHB_RANGE  ) <= std_logic_vector(iphb_tmp(27 downto 16)); 
---                            uarts_calc_array(uart)(UART_IPHC_L_RANGE) <= std_logic_vector(iphc_tmp(23 downto 16));
---                            uarts_calc_array(uart)(UART_IPHC_H_RANGE) <= std_logic_vector(iphc_tmp(27 downto 24));
---                            uarts_calc_array(uart)(MAIN_BORD_CAP_EOL) <= uarts_d_array(uart)(MAIN_BORD_CAP_EOL);
---                            uarts_calc_array(uart)(MAIN_BORD_OVP    ) <= uarts_d_array(uart)(MAIN_BORD_OVP    );
---                            uarts_calc_array(uart)(MAIN_BORD_OCP    ) <= uarts_d_array(uart)(MAIN_BORD_OCP    );
---                            uarts_calc_array(uart)(MAIN_BORD_OTP    ) <= uarts_d_array(uart)(MAIN_BORD_OTP    );
---                            uarts_calc_array(uart)(MAIN_BORD_VINP   ) <= uarts_d_array(uart)(MAIN_BORD_VINP   );
                         end if;
                         uarts_calc_vld(uart) <= uarts_d_ap_vld(uart);
                     end if;
@@ -566,18 +508,6 @@ begin
                             dcdc_array(uart).OCP   <= uarts_d_array(uart)(UART_OCP );
                             dcdc_array(uart).OTP   <= uarts_d_array(uart)(UART_OTP );
                             dcdc_array(uart).VINP  <= uarts_d_array(uart)(UART_VINP);
---                            uarts_calc_array(uart) <= (others => '0');
---                            uarts_calc_array(uart)(UART_TEMP_RANGE)  <=  uarts_d_array(uart)(UART_TEMP_RANGE) - NORM_TEMP;
---                            uarts_calc_array(uart)(UART_VIN_L_RANGE) <= std_logic_vector(vin_tmp(23 downto 16)); 
---                            uarts_calc_array(uart)(UART_VIN_H_RANGE) <= std_logic_vector(vin_tmp(27 downto 24)); 
---                            uarts_calc_array(uart)(UART_VOUT_RANGE)  <= std_logic_vector(vout_tmp(27 downto 16)); 
---                            uarts_calc_array(uart)(UART_IIN_L_RANGE) <= std_logic_vector(iin_tmp(23 downto 16));
---                            uarts_calc_array(uart)(UART_IIN_H_RANGE) <= std_logic_vector(iin_tmp(27 downto 24));
---                            uarts_calc_array(uart)(UART_IOUT_RANGE)  <= std_logic_vector(iout_tmp(27 downto 16));
---                            uarts_calc_array(uart)(UART_OVP ) <= uarts_d_array(uart)(UART_OVP );
---                            uarts_calc_array(uart)(UART_OCP ) <= uarts_d_array(uart)(UART_OCP );
---                            uarts_calc_array(uart)(UART_OTP ) <= uarts_d_array(uart)(UART_OTP );
---                            uarts_calc_array(uart)(UART_VINP) <= uarts_d_array(uart)(UART_VINP);
                         end if;
                         uarts_calc_vld(uart) <= uarts_d_ap_vld(uart);
                     end if;
@@ -585,5 +515,37 @@ begin
             end process;
         end generate main_board_gen;        
     end generate gen_calc;
+    
+    log_regs_pr: process(clk)
+    begin
+        if rising_edge(clk) then                                                                --IRS        Spec            vhdl   
+            if uarts_calc_vld(0) then log_regs(LOG_V_OUT_1 ) <=   X"0000" & dcdc_array(0).v_out; end if;--V_OUT_1    DCDC1_VOUT      uart 0 
+            if uarts_calc_vld(0) then log_regs(LOG_V_OUT_2 ) <=   X"0000" & dcdc_array(0).v_out; end if;--V_OUT_2    DCDC1_VOUT      uart 0 
+            if uarts_calc_vld(2) then log_regs(LOG_V_OUT_5 ) <=   X"0000" & dcdc_array(2).v_out; end if;--V_OUT_5    DCDC5_VOUT      uart 2 
+            if uarts_calc_vld(3) then log_regs(LOG_V_OUT_6 ) <=   X"0000" & dcdc_array(3).v_out; end if;--V_OUT_6    DCDC6_VOUT      uart 3 
+            if uarts_calc_vld(4) then log_regs(LOG_V_OUT_7 ) <=   X"0000" & dcdc_array(4).v_out; end if;--V_OUT_7    DCDC7_VOUT      uart 4 
+            if uarts_calc_vld(5) then log_regs(LOG_V_OUT_8 ) <=   X"0000" & dcdc_array(5).v_out; end if;--V_OUT_8    DCDC8_VOUT      uart 5 
+            if uarts_calc_vld(6) then log_regs(LOG_V_OUT_9 ) <=   X"0000" & dcdc_array(6).v_out; end if;--V_OUT_9    DCDC9_VOUT      uart 6 
+            if uarts_calc_vld(7) then log_regs(LOG_V_OUT_10) <=   X"0000" & dcdc_array(7).v_out; end if;--V_OUT_10   DCDC10_VOUT     uart 7 
+            if uarts_calc_vld(0) then log_regs(LOG_I_OUT_1 ) <=   X"0000" & dcdc_array(0).i_out; end if;--I_OUT_1    DCDC1_IOUT      uart 0 
+            if uarts_calc_vld(1) then log_regs(LOG_I_OUT_2 ) <=   X"0000" & dcdc_array(1).i_out; end if;--I_OUT_2    DCDC2_IOUT      uart 1 
+            if uarts_calc_vld(2) then log_regs(LOG_I_OUT_5 ) <=   X"0000" & dcdc_array(2).i_out; end if;--I_OUT_5    DCDC5_IOUT      uart 2 
+            if uarts_calc_vld(3) then log_regs(LOG_I_OUT_6 ) <=   X"0000" & dcdc_array(3).i_out; end if;--I_OUT_6    DCDC6_IOUT      uart 3 
+            if uarts_calc_vld(4) then log_regs(LOG_I_OUT_7 ) <=   X"0000" & dcdc_array(4).i_out; end if;--I_OUT_7    DCDC7_IOUT      uart 4 
+            if uarts_calc_vld(5) then log_regs(LOG_I_OUT_8 ) <=   X"0000" & dcdc_array(5).i_out; end if;--I_OUT_8    DCDC8_IOUT      uart 5 
+            if uarts_calc_vld(6) then log_regs(LOG_I_OUT_9 ) <=   X"0000" & dcdc_array(6).i_out; end if;--I_OUT_9    DCDC9_IOUT      uart 6 
+            if uarts_calc_vld(7) then log_regs(LOG_I_OUT_10) <=   X"0000" & dcdc_array(7).i_out; end if;--I_OUT_10   DCDC10_IOUT     uart 7 
+            if uarts_calc_vld(0) then log_regs(LOG_T1      ) <= X"000000" & dcdc_array(0).t    ; end if;--T1         DCDC1_Temp      uart 0     
+            if uarts_calc_vld(1) then log_regs(LOG_T2      ) <= X"000000" & dcdc_array(1).t    ; end if;--T2         DCDC2_Temp      uart 1     
+            if uarts_calc_vld(7) then log_regs(LOG_T3      ) <= X"000000" & dcdc_array(7).t    ; end if;--T3         DCDC10_Temp     uart 7     
+            if uarts_calc_vld(8) then log_regs(LOG_T4      ) <= X"000000" & dcdc_array(8).t    ; end if;--T4         Main Board Temp uart 8     
+            if uarts_calc_vld(2) then log_regs(LOG_T5      ) <= X"000000" & dcdc_array(2).t    ; end if;--T5         DCDC5_Temp      uart 2     
+            if uarts_calc_vld(3) then log_regs(LOG_T6      ) <= X"000000" & dcdc_array(3).t    ; end if;--T6         DCDC6_Temp      uart 3     
+            if uarts_calc_vld(4) then log_regs(LOG_T7      ) <= X"000000" & dcdc_array(4).t    ; end if;--T7         DCDC7_Temp      uart 4     
+            if uarts_calc_vld(5) then log_regs(LOG_T8      ) <= X"000000" & dcdc_array(5).t    ; end if;--T8         DCDC8_Temp      uart 5     
+            if uarts_calc_vld(6) then log_regs(LOG_T9      ) <= X"000000" & dcdc_array(6).t    ; end if;--T9         DCDC9_Temp      uart 6                                                                 
+        end if;    
+    end process;
+    
     
 end architecture RTL;

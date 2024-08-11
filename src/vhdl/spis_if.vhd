@@ -18,7 +18,8 @@ entity spis_if is
         internal_regs_we : out reg_slv_array_t;
         HLS_to_BD        : out HLS_axim_to_interconnect_t;
         BD_to_HLS        : in  HLS_axim_from_interconnect_t;
-        z_cross          : out std_logic
+        z_cross          : out std_logic;
+        log_regs         : out log_reg_array_t
     );
 end entity spis_if;
 
@@ -296,68 +297,31 @@ begin
         internal_regs(SPI_Vsns_PH_B_RLY)(15 downto 0) <= v_vec(5);
         internal_regs(SPI_Vsns_PH_A_RLY)(15 downto 0) <= v_vec(6);
         
-        --internal_regs_we(SPI_RMS_OUT4_Isns    ) <= a_rms_valid_vec(0);
-        --internal_regs_we(SPI_RMS_DC_PWR_I_sns ) <= a_rms_valid_vec(1);
-        --internal_regs_we(SPI_RMS_PH1_I_sns    ) <= a_rms_valid_vec(2);
-        --internal_regs_we(SPI_RMS_PH2_I_sns    ) <= a_rms_valid_vec(3);
-        --internal_regs_we(SPI_RMS_PH3_I_sns    ) <= a_rms_valid_vec(4);
-        --internal_regs_we(SPI_RMS_OUT4_sns     ) <= v_rms_valid_vec(0);
-        --internal_regs_we(SPI_RMS_Vsns_PH1     ) <= v_rms_valid_vec(1);
-        --internal_regs_we(SPI_RMS_Vsns_PH2     ) <= v_rms_valid_vec(2);
-        --internal_regs_we(SPI_RMS_Vsns_PH3     ) <= v_rms_valid_vec(3);
-        --internal_regs_we(SPI_RMS_Vsns_PH_C_RLY) <= v_rms_valid_vec(4);
-        --internal_regs_we(SPI_RMS_Vsns_PH_B_RLY) <= v_rms_valid_vec(5);
-        --internal_regs_we(SPI_RMS_Vsns_PH_A_RLY) <= v_rms_valid_vec(6);
-        --
-        --internal_regs(SPI_RMS_OUT4_Isns    )(15 downto 0) <= a_rms_vec(0);
-        --internal_regs(SPI_RMS_DC_PWR_I_sns )(15 downto 0) <= a_rms_vec(1);
-        --internal_regs(SPI_RMS_PH1_I_sns    )(15 downto 0) <= a_rms_vec(2);
-        --internal_regs(SPI_RMS_PH2_I_sns    )(15 downto 0) <= a_rms_vec(3);
-        --internal_regs(SPI_RMS_PH3_I_sns    )(15 downto 0) <= a_rms_vec(4);
-        --internal_regs(SPI_RMS_OUT4_sns     )(15 downto 0) <= v_rms_vec(0);
-        --internal_regs(SPI_RMS_Vsns_PH1     )(15 downto 0) <= v_rms_vec(1);
-        --internal_regs(SPI_RMS_Vsns_PH2     )(15 downto 0) <= v_rms_vec(2);
-        --internal_regs(SPI_RMS_Vsns_PH3     )(15 downto 0) <= v_rms_vec(3);
-        --internal_regs(SPI_RMS_Vsns_PH_C_RLY)(15 downto 0) <= v_rms_vec(4);
-        --internal_regs(SPI_RMS_Vsns_PH_B_RLY)(15 downto 0) <= v_rms_vec(5);
-        --internal_regs(SPI_RMS_Vsns_PH_A_RLY)(15 downto 0) <= v_rms_vec(6);
+        internal_regs_we(SPI_RMS_OUT4_Isns    ) <= a_rms_valid_vec(0);
+        internal_regs_we(SPI_RMS_DC_PWR_I_sns ) <= a_rms_valid_vec(1);
+        internal_regs_we(SPI_RMS_PH1_I_sns    ) <= a_rms_valid_vec(2);
+        internal_regs_we(SPI_RMS_PH2_I_sns    ) <= a_rms_valid_vec(3);
+        internal_regs_we(SPI_RMS_PH3_I_sns    ) <= a_rms_valid_vec(4);
+        internal_regs_we(SPI_RMS_OUT4_sns     ) <= v_rms_valid_vec(0);
+        internal_regs_we(SPI_RMS_Vsns_PH1     ) <= v_rms_valid_vec(1);
+        internal_regs_we(SPI_RMS_Vsns_PH2     ) <= v_rms_valid_vec(2);
+        internal_regs_we(SPI_RMS_Vsns_PH3     ) <= v_rms_valid_vec(3);
+        internal_regs_we(SPI_RMS_Vsns_PH_C_RLY) <= v_rms_valid_vec(4);
+        internal_regs_we(SPI_RMS_Vsns_PH_B_RLY) <= v_rms_valid_vec(5);
+        internal_regs_we(SPI_RMS_Vsns_PH_A_RLY) <= v_rms_valid_vec(6);
         
-        internal_regs_we(LOG_I_OUT_4          ) <= a_rms_valid_vec(0);
-        internal_regs_we(LOG_I_DC_IN          ) <= a_valid_vec(1);-- pre RMS as per spec
-        internal_regs_we(LOG_I_AC_IN_PH_A     ) <= a_rms_valid_vec(2);
-        internal_regs_we(LOG_I_AC_IN_PH_B     ) <= a_rms_valid_vec(3);
-        internal_regs_we(LOG_I_AC_IN_PH_C     ) <= a_rms_valid_vec(4);
-        internal_regs_we(LOG_V_OUT_4          ) <= v_rms_valid_vec(0);
-        internal_regs_we(LOG_VAC_IN_PH_A      ) <= v_rms_valid_vec(1);
-        internal_regs_we(LOG_VAC_IN_PH_B      ) <= v_rms_valid_vec(2);
-        internal_regs_we(LOG_VAC_IN_PH_C      ) <= v_rms_valid_vec(3);
-        internal_regs_we(LOG_V_OUT_3_ph3      ) <= v_rms_valid_vec(4);
-        internal_regs_we(LOG_V_OUT_3_ph2      ) <= v_rms_valid_vec(5);
-        internal_regs_we(LOG_V_OUT_3_ph1      ) <= v_rms_valid_vec(6);
-
-        internal_regs_we(LOG_I_OUT_3_ph1      ) <= a_rms_valid_vec(2); -- same as I_AC_IN_PH_A/B/C
-        internal_regs_we(LOG_I_OUT_3_ph2      ) <= a_rms_valid_vec(3); -- same as I_AC_IN_PH_A/B/C
-        internal_regs_we(LOG_I_OUT_3_ph3      ) <= a_rms_valid_vec(4); -- same as I_AC_IN_PH_A/B/C
-
-        internal_regs(LOG_I_OUT_4          )(15 downto 0) <= a_rms_vec(0);
-        internal_regs(LOG_I_DC_IN          )(15 downto 0) <= a_vec(1);--pre RMS as per spec
-        internal_regs(LOG_I_AC_IN_PH_A     )(15 downto 0) <= a_rms_vec(2);
-        internal_regs(LOG_I_AC_IN_PH_B     )(15 downto 0) <= a_rms_vec(3);
-        internal_regs(LOG_I_AC_IN_PH_C     )(15 downto 0) <= a_rms_vec(4);
-        internal_regs(LOG_V_OUT_4          )(15 downto 0) <= v_rms_vec(0);
-        internal_regs(LOG_VAC_IN_PH_A      )(15 downto 0) <= v_rms_vec(1);
-        internal_regs(LOG_VAC_IN_PH_B      )(15 downto 0) <= v_rms_vec(2);
-        internal_regs(LOG_VAC_IN_PH_C      )(15 downto 0) <= v_rms_vec(3);
-        internal_regs(LOG_V_OUT_3_ph3      )(15 downto 0) <= v_rms_vec(4);
-        internal_regs(LOG_V_OUT_3_ph2      )(15 downto 0) <= v_rms_vec(5);
-        internal_regs(LOG_V_OUT_3_ph1      )(15 downto 0) <= v_rms_vec(6);
-
-        internal_regs(LOG_I_OUT_3_ph1      )(15 downto 0) <= a_rms_vec(2); -- same as I_AC_IN_PH_A/B/C
-        internal_regs(LOG_I_OUT_3_ph2      )(15 downto 0) <= a_rms_vec(3); -- same as I_AC_IN_PH_A/B/C
-        internal_regs(LOG_I_OUT_3_ph3      )(15 downto 0) <= a_rms_vec(4); -- same as I_AC_IN_PH_A/B/C
-        
-        internal_regs_we(LOG_AC_POWER) <= p_valid;
-        internal_regs(LOG_AC_POWER)    <= X"0000" & p;
+        internal_regs(SPI_RMS_OUT4_Isns    )(15 downto 0) <= a_rms_vec(0);
+        internal_regs(SPI_RMS_DC_PWR_I_sns )(15 downto 0) <= a_rms_vec(1);
+        internal_regs(SPI_RMS_PH1_I_sns    )(15 downto 0) <= a_rms_vec(2);
+        internal_regs(SPI_RMS_PH2_I_sns    )(15 downto 0) <= a_rms_vec(3);
+        internal_regs(SPI_RMS_PH3_I_sns    )(15 downto 0) <= a_rms_vec(4);
+        internal_regs(SPI_RMS_OUT4_sns     )(15 downto 0) <= v_rms_vec(0);
+        internal_regs(SPI_RMS_Vsns_PH1     )(15 downto 0) <= v_rms_vec(1);
+        internal_regs(SPI_RMS_Vsns_PH2     )(15 downto 0) <= v_rms_vec(2);
+        internal_regs(SPI_RMS_Vsns_PH3     )(15 downto 0) <= v_rms_vec(3);
+        internal_regs(SPI_RMS_Vsns_PH_C_RLY)(15 downto 0) <= v_rms_vec(4);
+        internal_regs(SPI_RMS_Vsns_PH_B_RLY)(15 downto 0) <= v_rms_vec(5);
+        internal_regs(SPI_RMS_Vsns_PH_A_RLY)(15 downto 0) <= v_rms_vec(6);
         
     end process;
     
@@ -582,5 +546,27 @@ begin
         p        => p,
         p_valid  => p_valid
     );
+
+    log_regs_pr: process(clk)
+    begin
+        if rising_edge(clk) then                                                                
+            if a_rms_valid_vec(0) then log_regs(LOG_I_OUT_4     ) <=   X"0000" & a_rms_vec(0); end if; 
+            if a_valid_vec(1)     then log_regs(LOG_I_DC_IN     ) <=   X"0000" & a_vec(1)    ; end if; --pre RMS as per spec
+            if a_rms_valid_vec(2) then log_regs(LOG_I_AC_IN_PH_A) <=   X"0000" & a_rms_vec(2); end if; 
+            if a_rms_valid_vec(3) then log_regs(LOG_I_AC_IN_PH_B) <=   X"0000" & a_rms_vec(3); end if; 
+            if a_rms_valid_vec(4) then log_regs(LOG_I_AC_IN_PH_C) <=   X"0000" & a_rms_vec(4); end if; 
+            if v_rms_valid_vec(0) then log_regs(LOG_V_OUT_4     ) <=   X"0000" & v_rms_vec(0); end if; 
+            if v_rms_valid_vec(1) then log_regs(LOG_VAC_IN_PH_A ) <=   X"0000" & v_rms_vec(1); end if; 
+            if v_rms_valid_vec(2) then log_regs(LOG_VAC_IN_PH_B ) <=   X"0000" & v_rms_vec(2); end if; 
+            if v_rms_valid_vec(3) then log_regs(LOG_VAC_IN_PH_C ) <=   X"0000" & v_rms_vec(3); end if; 
+            if v_rms_valid_vec(4) then log_regs(LOG_V_OUT_3_ph3 ) <=   X"0000" & v_rms_vec(4); end if; 
+            if v_rms_valid_vec(5) then log_regs(LOG_V_OUT_3_ph2 ) <=   X"0000" & v_rms_vec(5); end if; 
+            if v_rms_valid_vec(6) then log_regs(LOG_V_OUT_3_ph1 ) <=   X"0000" & v_rms_vec(6); end if; 
+            if p_valid            then log_regs(LOG_AC_POWER    ) <=   X"0000" & p           ; end if; 
+            if a_rms_valid_vec(2) then log_regs(LOG_I_OUT_3_ph1 ) <=   X"0000" & a_rms_vec(2); end if; -- same as I_AC_IN_PH_A/B/C
+            if a_rms_valid_vec(3) then log_regs(LOG_I_OUT_3_ph2 ) <=   X"0000" & a_rms_vec(3); end if; -- same as I_AC_IN_PH_A/B/C
+            if a_rms_valid_vec(4) then log_regs(LOG_I_OUT_3_ph3 ) <=   X"0000" & a_rms_vec(4); end if; -- same as I_AC_IN_PH_A/B/C
+        end if;    
+    end process;
     
 end architecture RTL;

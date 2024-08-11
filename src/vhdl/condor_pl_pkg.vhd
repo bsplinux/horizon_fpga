@@ -14,7 +14,7 @@ package condor_pl_pkg is
     subtype log_regs_range is regs_names_t range LOG_MESSAGE_ID to LOG_LAMP_IND;
     type log_reg_array_t is array (log_regs_range) of std_logic_vector(full_reg_range);
 
-    subtype rs485_regs_range is regs_names_t range UARTS_CONTROL to UART_CALC8_H;
+    subtype rs485_regs_range is regs_names_t range UARTS_CONTROL to UART_T9;
     subtype spi_regs_range is regs_names_t range SPIS_CONTROL to SPI_RMS_OUT4_sns;
     
     type ios_2_app_t is record

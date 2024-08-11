@@ -44,6 +44,8 @@ architecture RTL of app is
     signal internal_regs_power         : reg_array_t;
     signal internal_regs_we_power      : reg_slv_array_t;
     signal log_regs                    : log_reg_array_t;
+    signal log_regs_uart               : log_reg_array_t;
+    signal log_regs_spi                : log_reg_array_t;
     signal ETI                         : std_logic_vector(31 downto 0);
     signal SN                          : std_logic_vector(7 downto 0);
     signal fan_pwm                     : std_logic_vector(1 to 3);
@@ -139,102 +141,12 @@ begin
                     internal_regs_we(i) <= internal_regs_we_rs485(i);
                     internal_regs(i) <= internal_regs_rs485(i);
                 end loop;
-                internal_regs_we(LOG_V_OUT_1 ) <= internal_regs_we_rs485(LOG_V_OUT_1 );
-                internal_regs_we(LOG_V_OUT_2 ) <= internal_regs_we_rs485(LOG_V_OUT_2 );
-                internal_regs_we(LOG_V_OUT_5 ) <= internal_regs_we_rs485(LOG_V_OUT_5 );
-                internal_regs_we(LOG_V_OUT_6 ) <= internal_regs_we_rs485(LOG_V_OUT_6 );
-                internal_regs_we(LOG_V_OUT_7 ) <= internal_regs_we_rs485(LOG_V_OUT_7 );
-                internal_regs_we(LOG_V_OUT_8 ) <= internal_regs_we_rs485(LOG_V_OUT_8 );
-                internal_regs_we(LOG_V_OUT_9 ) <= internal_regs_we_rs485(LOG_V_OUT_9 );
-                internal_regs_we(LOG_V_OUT_10) <= internal_regs_we_rs485(LOG_V_OUT_10);
-                internal_regs_we(LOG_I_OUT_1 ) <= internal_regs_we_rs485(LOG_I_OUT_1 );
-                internal_regs_we(LOG_I_OUT_2 ) <= internal_regs_we_rs485(LOG_I_OUT_2 );
-                internal_regs_we(LOG_I_OUT_5 ) <= internal_regs_we_rs485(LOG_I_OUT_5 );
-                internal_regs_we(LOG_I_OUT_6 ) <= internal_regs_we_rs485(LOG_I_OUT_6 );
-                internal_regs_we(LOG_I_OUT_7 ) <= internal_regs_we_rs485(LOG_I_OUT_7 );
-                internal_regs_we(LOG_I_OUT_8 ) <= internal_regs_we_rs485(LOG_I_OUT_8 );
-                internal_regs_we(LOG_I_OUT_9 ) <= internal_regs_we_rs485(LOG_I_OUT_9 );
-                internal_regs_we(LOG_I_OUT_10) <= internal_regs_we_rs485(LOG_I_OUT_10);
-                internal_regs_we(LOG_T1      ) <= internal_regs_we_rs485(LOG_T1      );
-                internal_regs_we(LOG_T2      ) <= internal_regs_we_rs485(LOG_T2      );
-                internal_regs_we(LOG_T3      ) <= internal_regs_we_rs485(LOG_T3      );
-                internal_regs_we(LOG_T4      ) <= internal_regs_we_rs485(LOG_T4      );
-                internal_regs_we(LOG_T5      ) <= internal_regs_we_rs485(LOG_T5      );
-                internal_regs_we(LOG_T6      ) <= internal_regs_we_rs485(LOG_T6      );
-                internal_regs_we(LOG_T7      ) <= internal_regs_we_rs485(LOG_T7      );
-                internal_regs_we(LOG_T8      ) <= internal_regs_we_rs485(LOG_T8      );
-                internal_regs_we(LOG_T9      ) <= internal_regs_we_rs485(LOG_T9      );
-                                                                                 
-                internal_regs(LOG_V_OUT_1 ) <= internal_regs_rs485(LOG_V_OUT_1 );
-                internal_regs(LOG_V_OUT_2 ) <= internal_regs_rs485(LOG_V_OUT_2 );
-                internal_regs(LOG_V_OUT_5 ) <= internal_regs_rs485(LOG_V_OUT_5 );
-                internal_regs(LOG_V_OUT_6 ) <= internal_regs_rs485(LOG_V_OUT_6 );
-                internal_regs(LOG_V_OUT_7 ) <= internal_regs_rs485(LOG_V_OUT_7 );
-                internal_regs(LOG_V_OUT_8 ) <= internal_regs_rs485(LOG_V_OUT_8 );
-                internal_regs(LOG_V_OUT_9 ) <= internal_regs_rs485(LOG_V_OUT_9 );
-                internal_regs(LOG_V_OUT_10) <= internal_regs_rs485(LOG_V_OUT_10);
-                internal_regs(LOG_I_OUT_1 ) <= internal_regs_rs485(LOG_I_OUT_1 );
-                internal_regs(LOG_I_OUT_2 ) <= internal_regs_rs485(LOG_I_OUT_2 );
-                internal_regs(LOG_I_OUT_5 ) <= internal_regs_rs485(LOG_I_OUT_5 );
-                internal_regs(LOG_I_OUT_6 ) <= internal_regs_rs485(LOG_I_OUT_6 );
-                internal_regs(LOG_I_OUT_7 ) <= internal_regs_rs485(LOG_I_OUT_7 );
-                internal_regs(LOG_I_OUT_8 ) <= internal_regs_rs485(LOG_I_OUT_8 );
-                internal_regs(LOG_I_OUT_9 ) <= internal_regs_rs485(LOG_I_OUT_9 );
-                internal_regs(LOG_I_OUT_10) <= internal_regs_rs485(LOG_I_OUT_10);
-                internal_regs(LOG_T1      ) <= internal_regs_rs485(LOG_T1      ); 
-                internal_regs(LOG_T2      ) <= internal_regs_rs485(LOG_T2      ); 
-                internal_regs(LOG_T3      ) <= internal_regs_rs485(LOG_T3      ); 
-                internal_regs(LOG_T4      ) <= internal_regs_rs485(LOG_T4      ); 
-                internal_regs(LOG_T5      ) <= internal_regs_rs485(LOG_T5      ); 
-                internal_regs(LOG_T6      ) <= internal_regs_rs485(LOG_T6      ); 
-                internal_regs(LOG_T7      ) <= internal_regs_rs485(LOG_T7      ); 
-                internal_regs(LOG_T8      ) <= internal_regs_rs485(LOG_T8      ); 
-                internal_regs(LOG_T9      ) <= internal_regs_rs485(LOG_T9      ); 
                     
                 for i in spi_regs_range loop
                     internal_regs_we(i) <= internal_regs_we_spis(i);
                     internal_regs(i) <= internal_regs_spis(i);
                 end loop;
-                internal_regs_we(LOG_I_OUT_4     ) <= internal_regs_we_spis(LOG_I_OUT_4     ); 
-                internal_regs_we(LOG_I_DC_IN     ) <= internal_regs_we_spis(LOG_I_DC_IN     );
-                internal_regs_we(LOG_I_AC_IN_PH_A) <= internal_regs_we_spis(LOG_I_AC_IN_PH_A);
-                internal_regs_we(LOG_I_AC_IN_PH_B) <= internal_regs_we_spis(LOG_I_AC_IN_PH_B);
-                internal_regs_we(LOG_I_AC_IN_PH_C) <= internal_regs_we_spis(LOG_I_AC_IN_PH_C);
-                internal_regs_we(LOG_V_OUT_4     ) <= internal_regs_we_spis(LOG_V_OUT_4     );
-                internal_regs_we(LOG_VAC_IN_PH_A ) <= internal_regs_we_spis(LOG_VAC_IN_PH_A );
-                internal_regs_we(LOG_VAC_IN_PH_B ) <= internal_regs_we_spis(LOG_VAC_IN_PH_B );
-                internal_regs_we(LOG_VAC_IN_PH_C ) <= internal_regs_we_spis(LOG_VAC_IN_PH_C );
-                internal_regs_we(LOG_V_OUT_3_ph3 ) <= internal_regs_we_spis(LOG_V_OUT_3_ph3 );
-                internal_regs_we(LOG_V_OUT_3_ph2 ) <= internal_regs_we_spis(LOG_V_OUT_3_ph2 );
-                internal_regs_we(LOG_V_OUT_3_ph1 ) <= internal_regs_we_spis(LOG_V_OUT_3_ph1 );
-                internal_regs_we(LOG_I_OUT_3_ph1 ) <= internal_regs_we_spis(LOG_I_OUT_3_ph1 ); 
-                internal_regs_we(LOG_I_OUT_3_ph2 ) <= internal_regs_we_spis(LOG_I_OUT_3_ph2 ); 
-                internal_regs_we(LOG_I_OUT_3_ph3 ) <= internal_regs_we_spis(LOG_I_OUT_3_ph3 ); 
-                internal_regs_we(LOG_AC_POWER    )  <= internal_regs_we_spis(LOG_AC_POWER   );
-        
-                internal_regs(LOG_I_OUT_4     ) <= internal_regs_spis(LOG_I_OUT_4     );
-                internal_regs(LOG_I_DC_IN     ) <= internal_regs_spis(LOG_I_DC_IN     );
-                internal_regs(LOG_I_AC_IN_PH_A) <= internal_regs_spis(LOG_I_AC_IN_PH_A);
-                internal_regs(LOG_I_AC_IN_PH_B) <= internal_regs_spis(LOG_I_AC_IN_PH_B);
-                internal_regs(LOG_I_AC_IN_PH_C) <= internal_regs_spis(LOG_I_AC_IN_PH_C);
-                internal_regs(LOG_V_OUT_4     ) <= internal_regs_spis(LOG_V_OUT_4     );
-                internal_regs(LOG_VAC_IN_PH_A ) <= internal_regs_spis(LOG_VAC_IN_PH_A );
-                internal_regs(LOG_VAC_IN_PH_B ) <= internal_regs_spis(LOG_VAC_IN_PH_B );
-                internal_regs(LOG_VAC_IN_PH_C ) <= internal_regs_spis(LOG_VAC_IN_PH_C );
-                internal_regs(LOG_V_OUT_3_ph3 ) <= internal_regs_spis(LOG_V_OUT_3_ph3 );
-                internal_regs(LOG_V_OUT_3_ph2 ) <= internal_regs_spis(LOG_V_OUT_3_ph2 );
-                internal_regs(LOG_V_OUT_3_ph1 ) <= internal_regs_spis(LOG_V_OUT_3_ph1 );
-                internal_regs(LOG_I_OUT_3_ph1 ) <= internal_regs_spis(LOG_I_OUT_3_ph1 );
-                internal_regs(LOG_I_OUT_3_ph2 ) <= internal_regs_spis(LOG_I_OUT_3_ph2 );
-                internal_regs(LOG_I_OUT_3_ph3 ) <= internal_regs_spis(LOG_I_OUT_3_ph3 );
-                internal_regs(LOG_AC_POWER    ) <= internal_regs_spis(LOG_AC_POWER    );
-                
-                    
-                internal_regs_we(LOG_PSU_STATUS_L) <= '1';
-                internal_regs_we(LOG_PSU_STATUS_H) <= '1';
-                internal_regs(LOG_PSU_STATUS_L) <= PSU_status(31 downto 0);
-                internal_regs(LOG_PSU_STATUS_H) <= PSU_status(63 downto 32);
-                    
+
             end if;
         end if;
     end process;
@@ -310,11 +222,60 @@ begin
         end if;
     end process;
 
-    process(all)
+    process(clk)
     begin
-        log_regs <= (others => X"00000000");
-        log_regs(LOG_ETM) <= ETI;
-        log_regs(LOG_SN)(SN'range) <= SN;
+        if rising_edge(clk) then
+            log_regs <= (others => X"00000000");
+            
+            log_regs(LOG_ETM) <= ETI;
+            log_regs(LOG_SN)(SN'range) <= SN;
+            
+            log_regs(LOG_V_OUT_1 ) <= log_regs_uart(LOG_V_OUT_1 );
+            log_regs(LOG_V_OUT_2 ) <= log_regs_uart(LOG_V_OUT_2 );
+            log_regs(LOG_V_OUT_5 ) <= log_regs_uart(LOG_V_OUT_5 );
+            log_regs(LOG_V_OUT_6 ) <= log_regs_uart(LOG_V_OUT_6 );
+            log_regs(LOG_V_OUT_7 ) <= log_regs_uart(LOG_V_OUT_7 );
+            log_regs(LOG_V_OUT_8 ) <= log_regs_uart(LOG_V_OUT_8 );
+            log_regs(LOG_V_OUT_9 ) <= log_regs_uart(LOG_V_OUT_9 );
+            log_regs(LOG_V_OUT_10) <= log_regs_uart(LOG_V_OUT_10);
+            log_regs(LOG_I_OUT_1 ) <= log_regs_uart(LOG_I_OUT_1 );
+            log_regs(LOG_I_OUT_2 ) <= log_regs_uart(LOG_I_OUT_2 );
+            log_regs(LOG_I_OUT_5 ) <= log_regs_uart(LOG_I_OUT_5 );
+            log_regs(LOG_I_OUT_6 ) <= log_regs_uart(LOG_I_OUT_6 );
+            log_regs(LOG_I_OUT_7 ) <= log_regs_uart(LOG_I_OUT_7 );
+            log_regs(LOG_I_OUT_8 ) <= log_regs_uart(LOG_I_OUT_8 );
+            log_regs(LOG_I_OUT_9 ) <= log_regs_uart(LOG_I_OUT_9 );
+            log_regs(LOG_I_OUT_10) <= log_regs_uart(LOG_I_OUT_10);
+            log_regs(LOG_T1      ) <= log_regs_uart(LOG_T1      );
+            log_regs(LOG_T2      ) <= log_regs_uart(LOG_T2      );
+            log_regs(LOG_T3      ) <= log_regs_uart(LOG_T3      );
+            log_regs(LOG_T4      ) <= log_regs_uart(LOG_T4      );
+            log_regs(LOG_T5      ) <= log_regs_uart(LOG_T5      );
+            log_regs(LOG_T6      ) <= log_regs_uart(LOG_T6      );
+            log_regs(LOG_T7      ) <= log_regs_uart(LOG_T7      );
+            log_regs(LOG_T8      ) <= log_regs_uart(LOG_T8      );
+            log_regs(LOG_T9      ) <= log_regs_uart(LOG_T9      );       
+
+            log_regs(LOG_I_OUT_4     ) <= log_regs_spi(LOG_I_OUT_4     );     
+            log_regs(LOG_I_DC_IN     ) <= log_regs_spi(LOG_I_DC_IN     );     
+            log_regs(LOG_I_AC_IN_PH_A) <= log_regs_spi(LOG_I_AC_IN_PH_A);     
+            log_regs(LOG_I_AC_IN_PH_B) <= log_regs_spi(LOG_I_AC_IN_PH_B);     
+            log_regs(LOG_I_AC_IN_PH_C) <= log_regs_spi(LOG_I_AC_IN_PH_C);     
+            log_regs(LOG_V_OUT_4     ) <= log_regs_spi(LOG_V_OUT_4     );     
+            log_regs(LOG_VAC_IN_PH_A ) <= log_regs_spi(LOG_VAC_IN_PH_A );     
+            log_regs(LOG_VAC_IN_PH_B ) <= log_regs_spi(LOG_VAC_IN_PH_B );     
+            log_regs(LOG_VAC_IN_PH_C ) <= log_regs_spi(LOG_VAC_IN_PH_C );     
+            log_regs(LOG_V_OUT_3_ph3 ) <= log_regs_spi(LOG_V_OUT_3_ph3 );     
+            log_regs(LOG_V_OUT_3_ph2 ) <= log_regs_spi(LOG_V_OUT_3_ph2 );     
+            log_regs(LOG_V_OUT_3_ph1 ) <= log_regs_spi(LOG_V_OUT_3_ph1 );     
+            log_regs(LOG_AC_POWER    ) <= log_regs_spi(LOG_AC_POWER    );     
+            log_regs(LOG_I_OUT_3_ph1 ) <= log_regs_spi(LOG_I_OUT_3_ph1 );     
+            log_regs(LOG_I_OUT_3_ph2 ) <= log_regs_spi(LOG_I_OUT_3_ph2 );     
+            log_regs(LOG_I_OUT_3_ph3 ) <= log_regs_spi(LOG_I_OUT_3_ph3 );
+            
+            log_regs(LOG_PSU_STATUS_L) <= psu_status(31 downto 0);
+            log_regs(LOG_PSU_STATUS_H) <= psu_status(63 downto 32);
+        end if;
     end process;
     
     --FANs
@@ -342,7 +303,8 @@ begin
         HLS_to_BD        => HLS_to_BD(0),
         BD_to_HLS        => BD_to_HLS(0),
         one_ms_interrupt => free_running_1ms,
-        de               => de
+        de               => de,
+        log_regs         => log_regs_uart
     );
     
     spis_i: entity work.spis_if
@@ -357,7 +319,8 @@ begin
         internal_regs_we => internal_regs_we_spis,
         HLS_to_BD        => HLS_to_BD(1),
         BD_to_HLS        => BD_to_HLS(1),
-        z_cross          => zero_cross
+        z_cross          => zero_cross,
+        log_regs         => log_regs_spi
     );
     
     ios_i: entity work.app_ios

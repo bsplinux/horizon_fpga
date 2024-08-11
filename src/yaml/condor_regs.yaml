@@ -382,24 +382,31 @@ regs:
   - UART_RAW7_H       : *reg_uart_d_h
   - UART_RAW8_L       : *reg_uart_main_l
   - UART_RAW8_H       : *reg_uart_main_h
-  - UART_CALC0_L      : *reg_uart_d_l
-  - UART_CALC0_H      : *reg_uart_d_h
-  - UART_CALC1_L      : *reg_uart_d_l
-  - UART_CALC1_H      : *reg_uart_d_h
-  - UART_CALC2_L      : *reg_uart_d_l
-  - UART_CALC2_H      : *reg_uart_d_h
-  - UART_CALC3_L      : *reg_uart_d_l
-  - UART_CALC3_H      : *reg_uart_d_h
-  - UART_CALC4_L      : *reg_uart_d_l
-  - UART_CALC4_H      : *reg_uart_d_h
-  - UART_CALC5_L      : *reg_uart_d_l
-  - UART_CALC5_H      : *reg_uart_d_h
-  - UART_CALC6_L      : *reg_uart_d_l
-  - UART_CALC6_H      : *reg_uart_d_h
-  - UART_CALC7_L      : *reg_uart_d_l
-  - UART_CALC7_H      : *reg_uart_d_h
-  - UART_CALC8_L      : *reg_uart_main_l
-  - UART_CALC8_H      : *reg_uart_main_h
+  - UART_V_OUT_1      : *reg_d_int
+  - UART_V_OUT_2      : *reg_d_int
+  - UART_V_OUT_5      : *reg_d_int
+  - UART_V_OUT_6      : *reg_d_int
+  - UART_V_OUT_7      : *reg_d_int
+  - UART_V_OUT_8      : *reg_d_int
+  - UART_V_OUT_9      : *reg_d_int
+  - UART_V_OUT_10     : *reg_d_int
+  - UART_I_OUT_1      : *reg_d_int
+  - UART_I_OUT_2      : *reg_d_int
+  - UART_I_OUT_5      : *reg_d_int
+  - UART_I_OUT_6      : *reg_d_int
+  - UART_I_OUT_7      : *reg_d_int
+  - UART_I_OUT_8      : *reg_d_int
+  - UART_I_OUT_9      : *reg_d_int
+  - UART_I_OUT_10     : *reg_d_int
+  - UART_T1           : *reg_d_int
+  - UART_T2           : *reg_d_int
+  - UART_T3           : *reg_d_int
+  - UART_T4           : *reg_d_int
+  - UART_T5           : *reg_d_int
+  - UART_T6           : *reg_d_int
+  - UART_T7           : *reg_d_int
+  - UART_T8           : *reg_d_int
+  - UART_T9           : *reg_d_int
   - SPIS_CONTROL      : *reg_spis_ctl
     init: 0x0
   - SPIS_STATUS       : *reg_spis_status
