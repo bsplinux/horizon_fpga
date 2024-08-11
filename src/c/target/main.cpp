@@ -38,14 +38,14 @@ std::atomic<bool> stopTask(false); // Global variable to stop the task
 void ETI_task() {
 	static unsigned int ETI = 0;
 	printf("starting ETI task (should operate once an hour)\n\r");
-	// read current ETI from SPI FLASH
+	// read current ETI from SPI FLASH and update register
     // TODO
 	while (!stopTask.load()) {
         // store ETI into SPI FLASH
         // TODO
-        // set ETI in message
-        server_status.message.log.message_base.ETM = ETI;
-        printf("ETI updated to %d \n\r",ETI);
+        // set ETI in register
+
+		printf("ETI updated to %d \n\r",ETI);
 
         // Sleep for 1 hour
         std::this_thread::sleep_for(std::chrono::hours(1));
