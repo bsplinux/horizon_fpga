@@ -238,9 +238,23 @@ typedef union {
 	char raw[sizeof(log_header_t) - 1 + TELEMETRY_BYTES + 1];
 } message_superset_union_t;
 
-typedef struct {
-    char m_recordId[5] = {'L','F','C','F','G'};
+typedef struct
+{
+	unsigned short flag : 1; /* Flag */
+	unsigned short reserved : 15; /* Reserved */
+} BIT_CONFIG_DT;
 
+typedef struct {
+    char m_recordId[5]; // = {'L','F','C','F','G'};
+    unsigned short m_recordSize; // = 15
+    unsigned int m_gmtTime;
+    unsigned short m_microSec;
+    unsigned int m_endian; // = 0xCAFE2BED;
+    BIT_CONFIG_DT m_bitConfig;
+    unsigned int m_version1;
+    unsigned int m_version2;
+    unsigned char m_lenSize; // = 2;
+    unsigned char m_cs;
 }log_file_header_t;
     
 enum{
