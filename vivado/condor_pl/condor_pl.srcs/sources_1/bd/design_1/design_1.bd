@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x4C81AFE073832BD3",
+      "boundary_crc": "0xB4A7041B9A0FB974",
       "device": "xa7z020clg400-1Q",
       "gen_directory": "../../../../condor_pl.gen/sources_1/bd/design_1",
       "name": "design_1",
@@ -27,7 +27,8 @@
       "axi_quad_spi_1": "",
       "axi_quad_spi_2": "",
       "axi2regs_0": "",
-      "system_ila_0": ""
+      "system_ila_0": "",
+      "xadc_wiz_0": ""
     },
     "interface_ports": {
       "DDR": {
@@ -907,6 +908,21 @@
           },
           "RREADY": {
             "physical_name": "SPIS_AXI_rready",
+            "direction": "I"
+          }
+        }
+      },
+      "Vp_Vn_0": {
+        "mode": "Slave",
+        "vlnv_bus_definition": "xilinx.com:interface:diff_analog_io:1.0",
+        "vlnv": "xilinx.com:interface:diff_analog_io_rtl:1.0",
+        "port_maps": {
+          "V_N": {
+            "physical_name": "Vp_Vn_0_v_n",
+            "direction": "I"
+          },
+          "V_P": {
+            "physical_name": "Vp_Vn_0_v_p",
             "direction": "I"
           }
         }
@@ -2884,7 +2900,7 @@
         "inst_hier_path": "smartconnect_0",
         "parameters": {
           "NUM_MI": {
-            "value": "13"
+            "value": "14"
           },
           "NUM_SI": {
             "value": "3"
@@ -2916,7 +2932,8 @@
               "M09_AXI",
               "M10_AXI",
               "M11_AXI",
-              "M12_AXI"
+              "M12_AXI",
+              "M13_AXI"
             ]
           },
           "S01_AXI": {
@@ -2944,7 +2961,8 @@
               "M09_AXI",
               "M10_AXI",
               "M11_AXI",
-              "M12_AXI"
+              "M12_AXI",
+              "M13_AXI"
             ]
           },
           "S02_AXI": {
@@ -2972,7 +2990,8 @@
               "M09_AXI",
               "M10_AXI",
               "M11_AXI",
-              "M12_AXI"
+              "M12_AXI",
+              "M13_AXI"
             ]
           },
           "M00_AXI": {
@@ -3377,6 +3396,37 @@
                 "value": "0"
               }
             }
+          },
+          "M13_AXI": {
+            "mode": "Master",
+            "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "parameters": {
+              "MAX_BURST_LENGTH": {
+                "value": "1"
+              },
+              "NUM_READ_OUTSTANDING": {
+                "value": "8"
+              },
+              "NUM_READ_THREADS": {
+                "value": "1"
+              },
+              "NUM_WRITE_OUTSTANDING": {
+                "value": "8"
+              },
+              "NUM_WRITE_THREADS": {
+                "value": "1"
+              },
+              "RUSER_BITS_PER_BYTE": {
+                "value": "0"
+              },
+              "SUPPORTS_NARROW_BURST": {
+                "value": "0"
+              },
+              "WUSER_BITS_PER_BYTE": {
+                "value": "0"
+              }
+            }
           }
         }
       },
@@ -3640,6 +3690,33 @@
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
           }
         }
+      },
+      "xadc_wiz_0": {
+        "vlnv": "xilinx.com:ip:xadc_wiz:3.3",
+        "ip_revision": "9",
+        "xci_name": "design_1_xadc_wiz_0_0",
+        "xci_path": "ip\\design_1_xadc_wiz_0_0\\design_1_xadc_wiz_0_0.xci",
+        "inst_hier_path": "xadc_wiz_0",
+        "parameters": {
+          "ADC_CONVERSION_RATE": {
+            "value": "100"
+          },
+          "CHANNEL_ENABLE_VP_VN": {
+            "value": "false"
+          },
+          "EXTERNAL_MUX_CHANNEL": {
+            "value": "VP_VN"
+          },
+          "SEQUENCER_MODE": {
+            "value": "Off"
+          },
+          "SINGLE_CHANNEL_SELECTION": {
+            "value": "VP_VN"
+          },
+          "XADC_STARUP_SELECTION": {
+            "value": "single_channel"
+          }
+        }
       }
     },
     "interface_nets": {
@@ -3654,6 +3731,12 @@
         "interface_ports": [
           "SPIS_AXI",
           "smartconnect_0/S02_AXI"
+        ]
+      },
+      "Vp_Vn_0_1": {
+        "interface_ports": [
+          "Vp_Vn_0",
+          "xadc_wiz_0/Vp_Vn"
         ]
       },
       "axi_uartlite_0_UART": {
@@ -3813,6 +3896,12 @@
             "value": "true"
           }
         }
+      },
+      "smartconnect_0_M13_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M13_AXI",
+          "xadc_wiz_0/s_axi_lite"
+        ]
       }
     },
     "nets": {
@@ -3950,7 +4039,8 @@
           "proc_sys_reset_0/slowest_sync_clk",
           "processing_system7_0/M_AXI_GP0_ACLK",
           "system_ila_0/clk",
-          "smartconnect_0/aclk"
+          "smartconnect_0/aclk",
+          "xadc_wiz_0/s_axi_aclk"
         ]
       },
       "processing_system7_0_FCLK_CLK1": {
@@ -3979,7 +4069,8 @@
           "axi_uartlite_7/s_axi_aresetn",
           "axi_uartlite_8/s_axi_aresetn",
           "system_ila_0/resetn",
-          "smartconnect_0/aresetn"
+          "smartconnect_0/aresetn",
+          "xadc_wiz_0/s_axi_aresetn"
         ]
       },
       "processing_system7_0_FCLK_RESET0_N1": {
@@ -4087,6 +4178,12 @@
                 "address_block": "/axi_uartlite_8/S_AXI/Reg",
                 "offset": "0x42C80000",
                 "range": "64K"
+              },
+              "SEG_xadc_wiz_0_Reg": {
+                "address_block": "/xadc_wiz_0/s_axi_lite/Reg",
+                "offset": "0x44A00000",
+                "range": "64K",
+                "is_excluded": "TRUE"
               }
             }
           },
@@ -4173,6 +4270,12 @@
                 "offset": "0x42C80000",
                 "range": "64K",
                 "is_excluded": "TRUE"
+              },
+              "SEG_xadc_wiz_0_Reg": {
+                "address_block": "/xadc_wiz_0/s_axi_lite/Reg",
+                "offset": "0x44A00000",
+                "range": "64K",
+                "is_excluded": "TRUE"
               }
             }
           }
@@ -4250,6 +4353,11 @@
               "SEG_axi_uartlite_8_Reg": {
                 "address_block": "/axi_uartlite_8/S_AXI/Reg",
                 "offset": "0x42C80000",
+                "range": "64K"
+              },
+              "SEG_xadc_wiz_0_Reg": {
+                "address_block": "/xadc_wiz_0/s_axi_lite/Reg",
+                "offset": "0x44A00000",
                 "range": "64K"
               }
             }

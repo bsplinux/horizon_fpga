@@ -97,7 +97,7 @@ int unmount(std::string dir){
 
     if(is_path_exist(dir)){
         sprintf(pcmd,"umount %s > /dev/null 2>&1",dir.c_str());
-        int ret = system(pcmd);
+        ret = system(pcmd);
        // fprintf(stderr,"%s.%d ret[%d] = [%s] \n\r",__func__,__LINE__,ret,pcmd);
         if(!is_mounted(dir)){
             fs::remove_all(dir);

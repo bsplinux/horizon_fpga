@@ -124,7 +124,9 @@ entity condor_pl is
     	lamp_status_fpga	    : in  std_logic;
     	PH_A_ON_fpga	        : in  std_logic;
     	PH_B_ON_fpga	        : in  std_logic;
-    	PH_C_ON_fpga	        : in  std_logic
+    	PH_C_ON_fpga	        : in  std_logic;
+    	VP_0                    : in  std_logic;
+    	VN_0                    : in  std_logic
     );
 
 end condor_pl;
@@ -331,7 +333,9 @@ begin
             rx : in std_logic_vector(0 to 0);
             tx : in std_logic_vector(0 to 0);
             de : in std_logic_vector(0 to 0);
-            onemili : in std_logic_vector(0 to 0)
+            onemili : in std_logic_vector(0 to 0);
+            Vp_Vn_0_v_n : in STD_LOGIC;
+            Vp_Vn_0_v_p : in STD_LOGIC            
         );
         end component design_1;
     begin
@@ -466,7 +470,9 @@ begin
           rx(0) => RS485_RXD_1,
           tx(0) => RS485_TXD_1,
           de(0) => RS485_DE_1,
-          onemili(0) => one_ms_tick
+          onemili(0) => one_ms_tick,
+          Vp_Vn_0_v_n => VN_0,
+          Vp_Vn_0_v_p => VP_0
         );
     end generate bd_gen;
 

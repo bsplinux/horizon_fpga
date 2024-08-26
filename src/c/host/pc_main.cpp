@@ -6,15 +6,17 @@
 #include "sharedcmd.h"
 
 int gcount=0;
-int gport = COMMAD_SERVER_PORT;
+int gport = PSU_PORT;
 int msg_count=1;
-
+            
 int cli_cmd(parse_t * pars_p, char *result){
     int opcode =0;
 	int src_ip=0,src_port=0;
     udpcmd_t txudpcmd;
 	udpcmd_t rxudpcmd;
 	int ret;
+    int dst_ip  = Socket_Str2Addr((char*)TARGET_IP);
+
     memset(&txudpcmd,0,sizeof(txudpcmd));
     memset(&rxudpcmd,0,sizeof(rxudpcmd));
     cget_integer(pars_p,opcode,&opcode);
@@ -22,7 +24,6 @@ int cli_cmd(parse_t * pars_p, char *result){
 	switch(opcode){
 		case CMD_OP1 :{
             //int rx_size;	
-            int dst_ip  = Socket_Str2Addr((char*)"192.168.1.30");
             txudpcmd.hdr = cmdhdr_t(opcode,gcount++,sizeof(cmd1_keep_alive_t))	;
             txudpcmd.data.cmd1.message_id = opcode;
             //txudpcmd.data.cmd1.param2 = 2;
@@ -37,7 +38,6 @@ int cli_cmd(parse_t * pars_p, char *result){
 		case CMD_OP2 :{
             int param1 = 0;
             int param2 = 0;
-            int dst_ip  = Socket_Str2Addr((char*)"192.168.1.30");
             txudpcmd.hdr = cmdhdr_t(opcode,gcount++,sizeof(cmd2_tcu_control_t));
             txudpcmd.data.cmd2.message_id = opcode;
             cget_integer(pars_p,param1,&param1);
@@ -50,7 +50,6 @@ int cli_cmd(parse_t * pars_p, char *result){
         break;
 		case CMD_OP3 :{
             int param = 0;
-            int dst_ip  = Socket_Str2Addr((char*)"192.168.1.30");
             txudpcmd.hdr = cmdhdr_t(opcode,gcount++,sizeof(cmd3_logfile_maintenance_t));
             txudpcmd.data.cmd3.message_id = opcode;
             cget_integer(pars_p,param,&param);
@@ -62,7 +61,6 @@ int cli_cmd(parse_t * pars_p, char *result){
 		case CMD_OP4 :{
             int param1 = 0;
             int param2 = 0;
-            int dst_ip  = Socket_Str2Addr((char*)"192.168.1.30");
             txudpcmd.hdr = cmdhdr_t(opcode,gcount++,sizeof(cmd4_gmt_t));
             txudpcmd.data.cmd4.message_id = opcode;
             cget_integer(pars_p,param1,&param1);
@@ -77,7 +75,6 @@ int cli_cmd(parse_t * pars_p, char *result){
             int param1 = 0;
             int param2 = 0;
             int param3 = 0;
-            int dst_ip  = Socket_Str2Addr((char*)"192.168.1.30");
             txudpcmd.hdr = cmdhdr_t(opcode,gcount++,sizeof(cmd5_reg_rw_t));
             txudpcmd.data.cmd4.message_id = opcode;
             cget_integer(pars_p,param1,&param1);
@@ -97,7 +94,6 @@ int cli_cmd(parse_t * pars_p, char *result){
             int param1 = 0;
             int param2 = 0;
             int param3 = 0;
-            int dst_ip  = Socket_Str2Addr((char*)"192.168.1.30");
             txudpcmd.hdr = cmdhdr_t(opcode,gcount++,sizeof(cmd6_maintenace_t));
             txudpcmd.data.cmd6.message_id = opcode;
             cget_integer(pars_p,param1,&param1);
@@ -129,10 +125,10 @@ void RegisterDebug(void){
     short counter =0;
     unsigned int src_ip  ;
     int src_port ;
-    int server_port = LOG_PORT;
+    int server_port = MDC_PORT;
     int pkt_size = sizeof(cmd81_telemetry_t) *4;
     cmd81_telemetry_t *p = ( cmd81_telemetry_t *)malloc(pkt_size);
-    int  print_cnt = 0;
+    int print_cnt = 0;
 
     int socket = Socket_UDPServer(server_port);
     printf("%s.%d Start Log Server port(%d)  socket(%d)\n\r",__func__,__LINE__,server_port,socket);
@@ -187,12 +183,11 @@ void RegisterDebug(void){
                 printf("I_OUT_9      = %d \n\r",p->message_base.I_OUT_9     );
                 printf("I_OUT_10     = %d \n\r",p->message_base.I_OUT_10    );
                 printf("AC_Power     = %d \n\r",p->message_base.AC_Power    );
-                printf("Fan_Speed    = %d \n\r",p->message_base.Fan_Speed   );
                 printf("Fan1_Speed   = %d \n\r",p->message_base.Fan1_Speed  );
                 printf("Fan2_Speed   = %d \n\r",p->message_base.Fan2_Speed  );
                 printf("Fan3_Speed   = %d \n\r",p->message_base.Fan3_Speed  );
-                printf("Volume_size  = %d \n\r",p->message_base.Volume_size );
-                printf("Logfile_size = %d \n\r",p->message_base.Logfile_size);
+                printf("Volume_size  = %ld \n\r",p->message_base.Volume_size );
+                printf("Logfile_size = %ld \n\r",p->message_base.Logfile_size);
                 printf("T1           = %d \n\r",p->message_base.T1          );
                 printf("T2           = %d \n\r",p->message_base.T2          );
                 printf("T3           = %d \n\r",p->message_base.T3          );
@@ -202,14 +197,18 @@ void RegisterDebug(void){
                 printf("T7           = %d \n\r",p->message_base.T7          );
                 printf("T8           = %d \n\r",p->message_base.T8          );
                 printf("T9           = %d \n\r",p->message_base.T9          );
-                printf("ETM          = %d \n\r",p->message_base.ETM         );
+                printf("ETM          = 0x%08X \n\r",p->message_base.ETM         );
                 printf("Major        = %d \n\r",p->message_base.Major       );
                 printf("Minor        = %d \n\r",p->message_base.Minor       );
                 printf("Build        = %d \n\r",p->message_base.Build       );
                 printf("Hotfix       = %d \n\r",p->message_base.Hotfix      );
                 printf("SN           = %d \n\r",p->message_base.SN          );
-                printf("PSU_Status   = %d \n\r",p->message_base.PSU_Status  );
+                printf("PSU_Status   = 0x%016lX \n\r",p->message_base.PSU_Status  );
                 printf("Lamp_Ind     = %d \n\r",p->message_base.Lamp_Ind    );
+                printf("FW_Major     = %d \n\r",p->message_base.FW_Major    );
+                printf("FW_Minor     = %d \n\r",p->message_base.FW_Minor    );
+                printf("FW_Build     = %d \n\r",p->message_base.FW_Build    );
+                printf("FW_Hotfix    = %d \n\r",p->message_base.FW_Hotfix   );
                 printf("Spare0       = %d \n\r",p->message_base.Spare0      );
                 printf("Spare1       = %d \n\r",p->message_base.Spare1      );
                 printf("Spare2       = %d \n\r",p->message_base.Spare2      );

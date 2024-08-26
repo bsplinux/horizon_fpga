@@ -86,4 +86,7 @@ set_property -dict {PACKAGE_PIN H16 IOSTANDARD LVCMOS33} [get_ports PH_A_ON_fpga
 set_property -dict {PACKAGE_PIN H17 IOSTANDARD LVCMOS33} [get_ports PH_B_ON_fpga]
 set_property -dict {PACKAGE_PIN J18 IOSTANDARD LVCMOS33} [get_ports PH_C_ON_fpga]
 
+set_property -dict {PACKAGE_PIN K9  IOSTANDARD LVCMOS18} [get_ports VP_0]
+set_property -dict {PACKAGE_PIN L10 IOSTANDARD LVCMOS18} [get_ports VN_0]
+
 

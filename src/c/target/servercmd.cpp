@@ -22,7 +22,7 @@ ServerStatus::ServerStatus() :
 		received_first_keep_alive(false),
 		keep_alive_cnt(0),
 		log_mseconds(1),
-		log_udp_port(4000),
+		log_udp_port(MDC_PORT),
 		log_paused(false),
 		ETI_task_acitve(true),
 		host_ip(0),
@@ -33,7 +33,7 @@ ServerStatus::ServerStatus() :
 ServerStatus::~ServerStatus() {
 }
 
-std::string log_mount_path="/mmcdev"; 
+std::string log_mount_path;
 //board command server
 int servercmd_start(int server_port, ServerStatus &server_status){
     int count=1;
@@ -44,7 +44,8 @@ int servercmd_start(int server_port, ServerStatus &server_status){
 
 	task_active = 1;
     fprintf(stderr,"start %d readers \n\r",count);
-    start_async_log(1024, log_mount_path, server_status);
+	log_mount_path = create_log_dir();
+	start_async_log(1024, log_mount_path, server_status); //FIXME enable this. log should start automatically
 
     std::thread t([&count,server_port, &server_status] {
     	int src_ip=0,src_port=0;
@@ -76,7 +77,7 @@ int servercmd_start(int server_port, ServerStatus &server_status){
 					if(!server_status.received_first_keep_alive){  //  first keep alive received
 						server_status.received_first_keep_alive = true;
 						server_status.host_ip = src_ip;
-						printf("received first keep alive, from ip = %d", src_ip);
+						printf("received first keep alive, from ip = %d\n\r", src_ip);
 					}
 					printf("Got cmd(%d) \n\r",pcmd->cmd1.message_id);
 					count++;
@@ -172,6 +173,7 @@ int servercmd_start(int server_port, ServerStatus &server_status){
 					}
 					else if (pcmd->cmd5.command == 1){ // read
 						//reg_val = regs_a[pcmd->cmd5.reg_address];
+						reg_val = pcmd->cmd5.reg_data + 1;
 					}
 
 					cmd5_reg_rw_t *resp = (cmd5_reg_rw_t *) calloc(1,sizeof(cmd5_reg_rw_t));
@@ -226,66 +228,71 @@ void init_message(ServerStatus &server_status)
 {
 	server_status.message.log.header.Log_ID             = 0x12345678;
 	server_status.message.log.header.Log_Payload_Size   = TELEMETRY_BYTES - 1; //the -1 as we do not include the messaage id
+	printf("compile Log_Payload_Size %d\n\r",server_status.message.log.header.Log_Payload_Size);
 	server_status.message.log.header.GMT_Time           = 0;
 	server_status.message.log.header.Micro_Sec          = 0;
 	server_status.message.log.footer_checksum           = 0;
 
-	server_status.message.log.message_base.VDC_IN       = 0;
-	server_status.message.log.message_base.VAC_IN_PH_A  = 0;
-	server_status.message.log.message_base.VAC_IN_PH_B  = 0;
-	server_status.message.log.message_base.VAC_IN_PH_C  = 0;
-	server_status.message.log.message_base.I_DC_IN      = 0;
-	server_status.message.log.message_base.I_AC_IN_PH_A = 0;
-	server_status.message.log.message_base.I_AC_IN_PH_B = 0;
-	server_status.message.log.message_base.I_AC_IN_PH_C = 0;
-	server_status.message.log.message_base.V_OUT_1      = 0;
-	server_status.message.log.message_base.V_OUT_2      = 0;
-	server_status.message.log.message_base.V_OUT_3_ph1  = 0;
-	server_status.message.log.message_base.V_OUT_3_ph2  = 0;
-	server_status.message.log.message_base.V_OUT_3_ph3  = 0;
-	server_status.message.log.message_base.V_OUT_4      = 0;
-	server_status.message.log.message_base.V_OUT_5      = 0;
-	server_status.message.log.message_base.V_OUT_6      = 0;
-	server_status.message.log.message_base.V_OUT_7      = 0;
-	server_status.message.log.message_base.V_OUT_8      = 0;
-	server_status.message.log.message_base.V_OUT_9      = 0;
-	server_status.message.log.message_base.V_OUT_10     = 0;
-	server_status.message.log.message_base.I_OUT_1      = 0;
-	server_status.message.log.message_base.I_OUT_2      = 0;
-	server_status.message.log.message_base.I_OUT_3_ph1  = 0;
-	server_status.message.log.message_base.I_OUT_3_ph2  = 0;
-	server_status.message.log.message_base.I_OUT_3_ph3  = 0;
-	server_status.message.log.message_base.I_OUT_4      = 0;
-	server_status.message.log.message_base.I_OUT_5      = 0;
-	server_status.message.log.message_base.I_OUT_6      = 0;
-	server_status.message.log.message_base.I_OUT_7      = 0;
-	server_status.message.log.message_base.I_OUT_8      = 0;
-	server_status.message.log.message_base.I_OUT_9      = 0;
-	server_status.message.log.message_base.I_OUT_10     = 0;
-	server_status.message.log.message_base.AC_Power     = 0;
-	server_status.message.log.message_base.Fan_Speed    = 0;
-	server_status.message.log.message_base.Fan1_Speed   = 0;
-	server_status.message.log.message_base.Fan2_Speed   = 0;
-	server_status.message.log.message_base.Fan3_Speed   = 0;
+	server_status.message.log.message_base.VDC_IN       = 2;
+	server_status.message.log.message_base.VAC_IN_PH_A  = 3;
+	server_status.message.log.message_base.VAC_IN_PH_B  = 4;
+	server_status.message.log.message_base.VAC_IN_PH_C  = 5;
+	server_status.message.log.message_base.I_DC_IN      = 6;
+	server_status.message.log.message_base.I_AC_IN_PH_A = 7;
+	server_status.message.log.message_base.I_AC_IN_PH_B = 8;
+	server_status.message.log.message_base.I_AC_IN_PH_C = 9;
+	server_status.message.log.message_base.V_OUT_1      = 10;
+	server_status.message.log.message_base.V_OUT_2      = 11;
+	server_status.message.log.message_base.V_OUT_3_ph1  = 12;
+	server_status.message.log.message_base.V_OUT_3_ph2  = 13;
+	server_status.message.log.message_base.V_OUT_3_ph3  = 14;
+	server_status.message.log.message_base.V_OUT_4      = 15;
+	server_status.message.log.message_base.V_OUT_5      = 16;
+	server_status.message.log.message_base.V_OUT_6      = 17;
+	server_status.message.log.message_base.V_OUT_7      = 18;
+	server_status.message.log.message_base.V_OUT_8      = 19;
+	server_status.message.log.message_base.V_OUT_9      = 20;
+	server_status.message.log.message_base.V_OUT_10     = 21;
+	server_status.message.log.message_base.I_OUT_1      = 22;
+	server_status.message.log.message_base.I_OUT_2      = 23;
+	server_status.message.log.message_base.I_OUT_3_ph1  = 24;
+	server_status.message.log.message_base.I_OUT_3_ph2  = 25;
+	server_status.message.log.message_base.I_OUT_3_ph3  = 26;
+	server_status.message.log.message_base.I_OUT_4      = 27;
+	server_status.message.log.message_base.I_OUT_5      = 28;
+	server_status.message.log.message_base.I_OUT_6      = 29;
+	server_status.message.log.message_base.I_OUT_7      = 30;
+	server_status.message.log.message_base.I_OUT_8      = 31;
+	server_status.message.log.message_base.I_OUT_9      = 32;
+	server_status.message.log.message_base.I_OUT_10     = 33;
+	server_status.message.log.message_base.AC_Power     = 34;
+	server_status.message.log.message_base.Fan1_Speed   = 35;
+	server_status.message.log.message_base.Fan2_Speed   = 36;
+	server_status.message.log.message_base.Fan3_Speed   = 37;
 	server_status.message.log.message_base.Volume_size  = 0;
 	server_status.message.log.message_base.Logfile_size = 0;
-	server_status.message.log.message_base.T1           = 0;
-	server_status.message.log.message_base.T2           = 0;
-	server_status.message.log.message_base.T3           = 0;
-	server_status.message.log.message_base.T4           = 0;
-	server_status.message.log.message_base.T5           = 0;
-	server_status.message.log.message_base.T6           = 0;
-	server_status.message.log.message_base.T7           = 0;
-	server_status.message.log.message_base.T8           = 0;
-	server_status.message.log.message_base.T9           = 0;
-	server_status.message.log.message_base.ETM          = 0;
+	server_status.message.log.message_base.T1           = 40;
+	server_status.message.log.message_base.T2           = 41;
+	server_status.message.log.message_base.T3           = 42;
+	server_status.message.log.message_base.T4           = 43;
+	server_status.message.log.message_base.T5           = 44;
+	server_status.message.log.message_base.T6           = 45;
+	server_status.message.log.message_base.T7           = 46;
+	server_status.message.log.message_base.T8           = 47;
+	server_status.message.log.message_base.T9           = 48;
+	server_status.message.log.message_base.ETM          = registers->COMPILE_TIME.raw;
+	printf("compile time 0x%08X\n\r",server_status.message.log.message_base.ETM);
 	server_status.message.log.message_base.Major        = 0;
-	server_status.message.log.message_base.Minor        = 0;
-	server_status.message.log.message_base.Build        = 0;
+	server_status.message.log.message_base.Minor        = 1;
+	server_status.message.log.message_base.Build        = 5;
 	server_status.message.log.message_base.Hotfix       = 0;
 	server_status.message.log.message_base.SN           = 0;
     server_status.message.log.message_base.PSU_Status.word  = 0;
     server_status.message.log.message_base.Lamp_Ind     = 56;
+    server_status.message.log.message_base.FW_Major     = registers->FPGA_VERSION.fields.REV_MAJOR & 0xFF;
+    server_status.message.log.message_base.FW_Minor     = registers->FPGA_VERSION.fields.REV_MINOR & 0xFF;
+    server_status.message.log.message_base.FW_Build     = 0;
+    server_status.message.log.message_base.FW_Hotfix    = 0;
     server_status.message.log.message_base.Spare0       = 57;
     server_status.message.log.message_base.Spare1       = 58;
     server_status.message.log.message_base.Spare2       = 59;
@@ -300,14 +307,16 @@ void init_message(ServerStatus &server_status)
     server_status.message.tele.tele.Message_ID          = MESSAGE_ID_CONST;
 }
 
-void format_message(ServerStatus &server_status)
+void format_message(ServerStatus &server_status, unsigned int disk_size,unsigned int disk_use)
 {
+	static short cnt = 0;
+	unsigned char checksum;
 	// read status from HW and format correctly for LOG
 	server_status.message.log.header.GMT_Time           ++;
 	server_status.message.log.header.Micro_Sec          ++;
 
-	server_status.message.log.message_base.VDC_IN       ++;
-	server_status.message.log.message_base.VAC_IN_PH_A  =          (short)(registers->LOG_VAC_IN_PH_A.raw  & 0xFFFF);
+	server_status.message.log.message_base.VDC_IN       = cnt++;//  not samples in this version of the board, for debug = cnt
+	/*server_status.message.log.message_base.VAC_IN_PH_A  =          (short)(registers->LOG_VAC_IN_PH_A.raw  & 0xFFFF);
 	server_status.message.log.message_base.VAC_IN_PH_B  =          (short)(registers->LOG_VAC_IN_PH_B.raw  & 0xFFFF);
 	server_status.message.log.message_base.VAC_IN_PH_C  =          (short)(registers->LOG_VAC_IN_PH_C.raw  & 0xFFFF);
 	server_status.message.log.message_base.I_DC_IN      =          (short)(registers->LOG_I_DC_IN.raw      & 0xFFFF);
@@ -339,32 +348,32 @@ void format_message(ServerStatus &server_status)
 	server_status.message.log.message_base.I_OUT_9      =          (short)(registers->LOG_I_OUT_9.raw      & 0xFFFF);
 	server_status.message.log.message_base.I_OUT_10     =          (short)(registers->LOG_I_OUT_10.raw     & 0xFFFF);
 	server_status.message.log.message_base.AC_Power     = (unsigned short)(registers->LOG_AC_POWER.raw     & 0xFFFF);
-	server_status.message.log.message_base.Fan_Speed    ++;
 	server_status.message.log.message_base.Fan1_Speed   ++;
 	server_status.message.log.message_base.Fan2_Speed   ++;
 	server_status.message.log.message_base.Fan3_Speed   ++;
-	server_status.message.log.message_base.Volume_size  ++;
-	server_status.message.log.message_base.Logfile_size ++;
-	server_status.message.log.message_base.T1           =          (char )(registers->LOG_T1.raw           & 0xFFFFFF);
-	server_status.message.log.message_base.T2           =          (char )(registers->LOG_T2.raw           & 0xFFFFFF);
-	server_status.message.log.message_base.T3           =          (char )(registers->LOG_T3.raw           & 0xFFFFFF);
-	server_status.message.log.message_base.T4           =          (char )(registers->LOG_T4.raw           & 0xFFFFFF);
-	server_status.message.log.message_base.T5           =          (char )(registers->LOG_T5.raw           & 0xFFFFFF);
-	server_status.message.log.message_base.T6           =          (char )(registers->LOG_T6.raw           & 0xFFFFFF);
-	server_status.message.log.message_base.T7           =          (char )(registers->LOG_T7.raw           & 0xFFFFFF);
-	server_status.message.log.message_base.T8           =          (char )(registers->LOG_T8.raw           & 0xFFFFFF);
-	server_status.message.log.message_base.T9           =          (char )(registers->LOG_T9.raw           & 0xFFFFFF);
-	server_status.message.log.message_base.ETM        =  (unsigned int)(registers->LOG_ETM.raw);
-	server_status.message.log.message_base.Major        ++;
-	server_status.message.log.message_base.Minor        ++;
-	server_status.message.log.message_base.Build        ++;
-	server_status.message.log.message_base.Hotfix       ++;
-	server_status.message.log.message_base.SN           = (unsigned char)(registers->LOG_SN.raw & 0xFF);
-    //server_status.message.log.message_base.PSU_Status.word   = 0;
-    server_status.message.log.message_base.Lamp_Ind     ++;
+	*/
+	server_status.message.log.message_base.Volume_size  = disk_size;
+	server_status.message.log.message_base.Logfile_size = disk_use;
+	/*
+	server_status.message.log.message_base.T1           =          (char )(registers->LOG_T1.raw           & 0xFF);
+	server_status.message.log.message_base.T2           =          (char )(registers->LOG_T2.raw           & 0xFF);
+	server_status.message.log.message_base.T3           =          (char )(registers->LOG_T3.raw           & 0xFF);
+	server_status.message.log.message_base.T4           =          (char )(registers->LOG_T4.raw           & 0xFF);
+	server_status.message.log.message_base.T5           =          (char )(registers->LOG_T5.raw           & 0xFF);
+	server_status.message.log.message_base.T6           =          (char )(registers->LOG_T6.raw           & 0xFF);
+	server_status.message.log.message_base.T7           =          (char )(registers->LOG_T7.raw           & 0xFF);
+	server_status.message.log.message_base.T8           =          (char )(registers->LOG_T8.raw           & 0xFF);
+	server_status.message.log.message_base.T9           =          (char )(registers->LOG_T9.raw           & 0xFF);
+	*/
+	//server_status.message.log.message_base.ETM        ++;//=  (unsigned int)(registers->LOG_ETM.raw);
+	//server_status.message.log.message_base.SN           = (unsigned char)(registers->LOG_SN.raw & 0xFF);
+    server_status.message.log.message_base.PSU_Status.word   = server_status.message.log.message_base.PSU_Status.word | 0xDEADBEAF;
+    //server_status.message.log.message_base.Lamp_Ind     ++;
 
     // calculate checksum
-	server_status.message.log.footer_checksum           ++;
-
+    for(unsigned int i = 0 ; i < sizeof(server_status.message.raw - 1); i++) // -1 to exclude the checksum itself
+    	checksum += server_status.message.raw[i];
+    //checksum = ~checksum;
+	server_status.message.log.footer_checksum           = checksum;
 }
 

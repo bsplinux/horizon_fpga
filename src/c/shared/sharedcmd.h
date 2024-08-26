@@ -1,10 +1,14 @@
 #ifndef __SHAREDCMD_H__
 #define __SHAREDCMD_H__
 
-#define COMMAD_SERVER_PORT (1234)
-#define LOG_PORT (1235)
+// MDC is the host
+#define MDC_PORT (10601)
+// PSU is the Linux application on target
+#define PSU_PORT (60101)
+//#define LOG_PORT (60101)
 #define SYNC 0xa5
-#define TARGET_IP "192.168.1.30"
+//#define TARGET_IP "192.168.1.60"
+#define TARGET_IP "172.20.42.25"
 #define MESSAGE_ID_CONST 0x81
 
 #pragma pack(1)
@@ -17,7 +21,7 @@ struct cmdhdr_t{
     cmdhdr_t(int op,int cnt,int len) : opcode(op),sync(SYNC),count(cnt),length(len) {}
 };
 
-#define TELEMETRY_BYTES (198) // spec says 196???
+#define TELEMETRY_BYTES (196)
 
 typedef struct{
     unsigned char message_id;          // must be 1
@@ -161,7 +165,6 @@ typedef struct{                        //                                       
 	short 	            I_OUT_9      ; // Output Current to LOS motors                   A DC	+/- 100A	  50mA
 	short 	            I_OUT_10     ; // Output Current to INS / EDU / SPARE            A DC	+/- 100A	  50mA
 	unsigned short 	    AC_Power     ; // Total AC Power Consumption                     VA	    10KW	      1VA
-	unsigned short 	    Fan_Speed    ; // PSU Fan Speed                                  RPM	[1 - 30,000]  1RPM
 	unsigned short 	    Fan1_Speed   ; // PSU Fan1 Speed                                 RPM	[1 - 30,000]  1RPM
 	unsigned short 	    Fan2_Speed   ; // PSU Fan2 Speed                                 RPM	[1 - 30,000]  1RPM
 	unsigned short 	    Fan3_Speed   ; // PSU Fan3 Speed                                 RPM	[1 - 30,000]  1RPM
@@ -184,7 +187,11 @@ typedef struct{                        //                                       
 	unsigned char 	    SN           ; // Serial Number                                  N/A	00-FF	      N/A
 	PSU_Status_union_t	PSU_Status   ; // PSU Status                                     N/A	N/A	          N/A
 	unsigned char 	    Lamp_Ind     ; // Control Panel Lamp Indication                  N/A	0 � 3	      N/A
-	unsigned long long	Spare0       ; // N/A                                            N/A	N/A	          N/A
+	unsigned char 	    FW_Major     ; // Firmware Version Major                         N/A	00-FF	      N/A
+	unsigned char 	    FW_Minor     ; // Firmware Version Minor                         N/A	00-FF	      N/A
+	unsigned char 	    FW_Build     ; // Firmware Version Build                         N/A	00-FF	      N/A
+	unsigned char 	    FW_Hotfix    ; // Firmware Version Hotfix                        N/A	00-FF	      N/A
+	unsigned int    	Spare0       ; // N/A                                            N/A	N/A	          N/A
 	unsigned long long	Spare1       ; // N/A                                            N/A	N/A	          N/A
 	unsigned long long	Spare2       ; // N/A                                            N/A	N/A	          N/A
 	unsigned long long	Spare3       ; // N/A                                            N/A	N/A	          N/A
@@ -231,6 +238,11 @@ typedef union {
 	char raw[sizeof(log_header_t) - 1 + TELEMETRY_BYTES + 1];
 } message_superset_union_t;
 
+typedef struct {
+    char m_recordId[5] = {'L','F','C','F','G'};
+
+}log_file_header_t;
+    
 enum{
     CMD_OP0,
     CMD_OP1,

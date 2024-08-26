@@ -25,20 +25,21 @@
 #include <atomic>
 #include <cstdio> // Include C standard IO
 
-
-
-
 #include  "socket.h"
 #include  "asynclog.h"
 #include  "utils.h"
 #include  "servercmd.h"
 
 #define MAX_ALLOW_FREE_SIZE_B 0x100000
+#define MOUNT_POINT "/mnt/mmc"
 
 namespace fs = std::filesystem;
 
+unsigned int get_sysmon_sample();
+
 //static const int        PACKET_SIZE;    // packet size
 static const int        PACKET_COUNT=10;   // fifo size 
+static int              running_task =0;
 static int              active_task =0;
 static std::string         g_log_path;
 static std::thread         g_log_hread_h;
@@ -128,10 +129,11 @@ public:
 #ifdef WIN32
         fd = open(current_fn.c_str(),O_CREAT | O_WRONLY,0640 );
 #else
-        fd = open(current_fn.c_str(),O_SYNC | O_DIRECT | O_CREAT | O_WRONLY ,0666 );
+//        fd = open(current_fn.c_str(),O_SYNC | O_DIRECT | O_CREAT | O_WRONLY ,0666 );
+        fd = open(current_fn.c_str(),O_CREAT | O_WRONLY ,0666 );
 #endif
         if(fd <0){
-            printf("ERROR fail to open %s file (error=%d) \n\r",current_fn.c_str(),fd);
+            printf("%s.%d ERROR fail to open %s file (error=%d) \n\r",__func__,__LINE__,current_fn.c_str(),fd);
            // return -1;
         }
 		
@@ -150,11 +152,12 @@ public:
         fd = open(current_fn.c_str(),O_CREAT | O_WRONLY,0640 );
         buffer = new unsigned char [buffer_size];
 #else
-        fd = open(current_fn.c_str(),O_SYNC | O_DIRECT | O_CREAT | O_WRONLY ,0666 );
+        //fd = open(current_fn.c_str(),O_SYNC | O_DIRECT | O_CREAT | O_WRONLY ,0666 );
+        fd = open(current_fn.c_str(), O_CREAT | O_WRONLY ,0666 );
         buffer = (unsigned char*)aligned_alloc(512, buffer_size);
 #endif
         if(fd <0){
-            printf("ERROR fail to open %s file (error=%d) \n\r",current_fn.c_str(),fd);
+            printf("%s.%d ERROR fail to open %s file (error=%d) \n\r",__func__,__LINE__,current_fn.c_str(),fd);
            // return -1;
         }
 		
@@ -267,7 +270,7 @@ static void reader_thread(BufferedFileWriter * &gbuffer,FIFOBuffer *& gfifo) {
 
 static std::string formatNumber(int number) {
     std::ostringstream oss;
-    oss << std::setw(5) << std::setfill('0') << number;
+    oss << std::setw(4) << std::setfill('0') << number;
     return oss.str();
 }
 
@@ -276,14 +279,16 @@ static std::string getCurrentTimeFormatted() {
     auto in_time_t = std::chrono::system_clock::to_time_t(now);
 
     std::stringstream ss;
-    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d-%H-%M-%S");
+    ss << std::put_time(std::localtime(&in_time_t), "%Y_%m_%d_%H_%M_%S");
     return ss.str();
 }
 
 static int getLastNumberFromFilename(const fs::path& path) {
     std::string filename = path.filename().string();
     // Assuming the filename is correctly formatted and the number is at the end
-    std::string numberStr = filename.substr(filename.find_last_of('-') + 1);
+    //std::string numberStr = filename.substr(filename.find_last_of('_') + 1);
+    std::string numberStr = filename.substr(0,4);
+    //std::cout << "The filename is: " << filename << " the no. is: " << numberStr << std::endl;
     return std::stoi(numberStr);
 }
 
@@ -334,7 +339,7 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 		// Sort files by their names
 		std::sort(files.begin(), files.end(), [](const fs::path& a, const fs::path& b) {
 			// Assuming filenames are in a format that allows alphabetical sorting
-			return a.filename().string() < b.filename().string();
+			return a.filename().string().substr(1,4) < b.filename().string().substr(1,4);
 		});
 
 		// Check if there are any files in the directory
@@ -347,7 +352,7 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 			  std::cout << "No files found in the directory." << std::endl;
 	 }
 
-	 std::string new_file_name = getCurrentTimeFormatted() + "-" + formatNumber(newNumber);
+	 std::string new_file_name = formatNumber(newNumber) + "_" + getCurrentTimeFormatted() + "_PSU.log";
 	 std::cout << "The new filename will be: " << new_file_name << std::endl;
 	 std::string new_log_file_name = log_path + "/" + new_file_name;
 	
@@ -361,11 +366,8 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 	  } catch (const fs::filesystem_error& e) {
 		  std::cerr << "Error: " << e.what() << std::endl;
 	  }
-		
-	  
-	        
-      active_task = 1;
 
+	  active_task = 1;
       gfifo   = new  FIFOBuffer(PACKET_COUNT);
       gbuffer = new BufferedFileWriter(new_log_file_name,save_block_size);
       reader_thread_h= std::thread([] { reader_thread(gbuffer,gfifo);});
@@ -373,6 +375,8 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 	  
       std::thread t([newNumber, &server_status, log_path, gbuffer,&files] {
 	  using namespace std::chrono;		  
+		   unsigned int rt_cnt = 0;
+	  	   bool unmount_flag = false;
            int pkt_count = 0;
            int log_count = 0;
 		   long long interval_micro = 1000; // 1 milliseconds
@@ -380,6 +384,7 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 		   uint64_t disk_use   =0;
 		   uint64_t disk_free  =0; 		   
            int socket = Socket_UDPSocket();
+           running_task = 1;
            assert(socket >0);
 		   int ret = storage_get_info(log_path,disk_size,disk_use,disk_free);	
 		   if(ret !=0){
@@ -391,23 +396,32 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 		   
             // Simulate packet data fill (for illustration, not actually filling data here)
             while(active_task){
-                if (server_status.update_log_name) { // on first keep alive we need to update log file name
-                	 std::string new_file_name = getCurrentTimeFormatted() + "-" + formatNumber(newNumber);
-                	 std::cout << "The new filename will be: " << new_file_name << std::endl;
-                	 std::string new_log_file_name = log_path + "/" + new_file_name;
+                // as per spec 2.2.1.6 check 12v before new log
+            	if (get_sysmon_sample() < 1700)
+            	{
+            		unmount_flag = true;
+            		// if less then 10v (1700 dec) we stop everything
+            		break;
+            	}
+
+            	if (server_status.update_log_name) { // on first keep alive we need to update log file name
+            		std::string new_file_name = formatNumber(newNumber) + "_" + getCurrentTimeFormatted() + "_PSU.log";
+                	std::cout << "The new filename will be: " << new_file_name << std::endl;
+                	std::string new_log_file_name = log_path + "/" + new_file_name;
 
                 	// TODO rename the log file name
-                	 gbuffer->update_file_name(new_log_file_name);
+                	gbuffer->update_file_name(new_log_file_name);
                 	server_status.update_log_name = false;
                 	//rename(new_log_file_name.c_str(),);
                 }
 				g_disk_free_size = disk_free - gbuffer->get_write_acc();
-				if(g_disk_free_size < MAX_ALLOW_FREE_SIZE_B){
+				if(g_disk_free_size < MAX_ALLOW_FREE_SIZE_B && server_status.log_active){
 					std::thread deleteThread([&files] { deleteFile(files); });  // Same here, copy capture
 					deleteThread.detach();  
 				}
 				
-                format_message(server_status);
+				storage_get_info(log_path,disk_size,disk_use,disk_free);
+                format_message(server_status,disk_size,disk_use);
 
                 Packet packet(&server_status.message,sizeof(message_superset_union_t)) ;
                 log_count = (log_count + 1) % server_status.log_mseconds;
@@ -433,20 +447,31 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 					std::this_thread::sleep_for(time2sleep);
 				}
 				else {
-					// worng time was spend
-					printf("%s.%d worng time was spend\n\r",__func__,__LINE__);
+					// missed 1m real time
+					rt_cnt++;
+					if(rt_cnt % 1000 == 1)
+						printf("%s.%d missed real time of 1MS per iteration; cnt=%d\n\r",__func__,__LINE__,rt_cnt);
 				}
 
 				// Schedule next execution
 				next_time += microseconds(interval_micro);
             }
+            active_task = 0;
 			if(socket)
 				Socket_Close(socket);
             if(reader_thread_h.joinable())
                 reader_thread_h.join();
 
 
-            active_task =1;
+            running_task = 0;
+
+            if (unmount_flag && is_mounted(MOUNT_POINT))
+        	{
+        		if (unmount(MOUNT_POINT) == 0)
+        			printf("%s.%d Unmounted eMMC Successfully\n\r",__func__,__LINE__);
+        		else
+        			printf("%s.%d ERROR: faild to unmount\n\r",__func__,__LINE__);
+        	}
             return 0;
         });
         t.detach();
@@ -458,18 +483,18 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
     return 0;
 }
 
-void end_async_log(void){
+void end_async_log(){
     if(active_task){
         active_task = 0;
-        while(active_task)
+        while(running_task)
          usleep(0);
     }
     printf("%s.%d exit\n\r",__func__,__LINE__);
 }
 
 
-std::string create_log_name(){
-    return "/work/log";
+std::string create_log_dir(){
+    return std::string(MOUNT_POINT) + std::string("/log");
 }
 
 void erase_log(){

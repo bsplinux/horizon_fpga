@@ -24,7 +24,7 @@ int  servercmd_start(int server_port, ServerStatus &server_status);
 void servercmd_stop(ServerStatus &server_status);
 
 void init_message(ServerStatus &server_status);
-void format_message(ServerStatus &server_status);
+void format_message(ServerStatus &server_status, unsigned int disk_size,unsigned int disk_use);
 
 
 #endif

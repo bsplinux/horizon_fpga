@@ -104,7 +104,7 @@ begin
                 case state is 
                     when idle =>
                         if power_on_debaunced and temperature_ok and all_in_range then
-                            state := start_pwron;
+                            --state := start_pwron; FIXME for now the whole SM is not active
                         end if;
                     when start_pwron =>
                         state := wt4_pg_buck;

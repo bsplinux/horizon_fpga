@@ -6,7 +6,7 @@ int start_async_log(int save_block_size_mul2,std::string log_path, ServerStatus 
 int rename_log(std::string newname); 
 void end_async_log();
 //int print_log(void *msg,int msg_size);
-std::string create_log_name();
+std::string create_log_dir();
 void erase_log();
 void init_message();
 
