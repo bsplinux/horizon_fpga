@@ -13,6 +13,7 @@ proc export_design {} {
 		file mkdir ./Deliveries/${proj_name}_${dateTime_32bit}
 	}
 	write_hw_platform -fixed -force  -include_bit -file ./Deliveries/${proj_name}_${dateTime_32bit}/${proj_name}.xsa
+	file copy ./Vivado/${proj_name}/${proj_name}.runs/impl_1/${proj_name}.bin  ./Deliveries/${proj_name}_${dateTime_32bit}
 }
 
 proc unset_cache {} {

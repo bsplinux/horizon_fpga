@@ -4,7 +4,7 @@ use ieee.std_logic_1164.all;
 use work.regs_pkg.all;
 
 package condor_pl_pkg is
-    constant FPGA_VERSION_CONST : std_logic_vector(full_reg_range) := X"00010008"; -- version (major,minor)
+    constant FPGA_VERSION_CONST : std_logic_vector(full_reg_range) := X"00010009"; -- version (major,minor)
     
     constant UART_A_SIZE        : integer := 12;
     constant AXI_A_SIZE         : integer := 12;
