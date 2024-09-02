@@ -138,6 +138,14 @@ architecture RTL of spis_if is
     signal a_valid_vec : std_logic_vector(sample2a_range);
     signal a_rms_vec : a_vec_t;
     signal a_rms_valid_vec : std_logic_vector(sample2a_range);
+    
+    signal vdc_raw_valid : std_logic;
+    signal vdc_raw   : std_logic_vector(11 downto 0);
+    signal vdc_norm_valid : std_logic;
+    signal vdc_norm   : std_logic_vector(15 downto 0);
+    signal vdc_rms_valid : std_logic;
+    signal vdc_rms   : std_logic_vector(15 downto 0);
+    
     signal p : std_logic_vector(15 downto 0);
     signal p_valid : std_logic;
     signal z_cross_error : std_logic;
@@ -249,6 +257,7 @@ begin
         
         internal_regs_we(SPI_RAW0_BA) <= spis_d_0_ap_vld;
         internal_regs_we(SPI_RAW0_DC) <= spis_d_0_ap_vld;
+        internal_regs_we(SPI_RAW0_0E) <= spis_d_0_ap_vld;
         --internal_regs_we(SPI_RAW1_BA) <= spis_d_1_ap_vld;
         --internal_regs_we(SPI_RAW1_DC) <= spis_d_1_ap_vld;
         internal_regs_we(SPI_RAW2_BA) <= spis_d_2_ap_vld;
@@ -258,6 +267,7 @@ begin
 
         internal_regs(SPI_RAW0_BA) <= spis_d_0( 31 downto  0);
         internal_regs(SPI_RAW0_DC) <= spis_d_0( 63 downto 32);
+        internal_regs(SPI_RAW0_0E) <= X"0000" & spis_d_0( 79 downto 64);
         --internal_regs(SPI_RAW1_BA) <= spis_d_1( 31 downto  0);
         --internal_regs(SPI_RAW1_DC) <= spis_d_1( 63 downto 32);
         internal_regs(SPI_RAW2_BA) <= spis_d_2( 31 downto  0);
@@ -283,6 +293,7 @@ begin
         internal_regs_we(SPI_Vsns_PH_C_RLY) <= v_valid_vec(4);
         internal_regs_we(SPI_Vsns_PH_B_RLY) <= v_valid_vec(5);
         internal_regs_we(SPI_Vsns_PH_A_RLY) <= v_valid_vec(6);
+        internal_regs_we(SPI_28V_IN_sns   ) <= vdc_norm_valid;
 
         internal_regs(SPI_OUT4_Isns    )(15 downto 0) <= a_vec(0);
         internal_regs(SPI_DC_PWR_I_sns )(15 downto 0) <= a_vec(1);
@@ -296,6 +307,7 @@ begin
         internal_regs(SPI_Vsns_PH_C_RLY)(15 downto 0) <= v_vec(4);
         internal_regs(SPI_Vsns_PH_B_RLY)(15 downto 0) <= v_vec(5);
         internal_regs(SPI_Vsns_PH_A_RLY)(15 downto 0) <= v_vec(6);
+        internal_regs(SPI_28V_IN_sns   )(15 downto 0) <= vdc_norm;
         
         internal_regs_we(SPI_RMS_OUT4_Isns    ) <= a_rms_valid_vec(0);
         internal_regs_we(SPI_RMS_DC_PWR_I_sns ) <= a_rms_valid_vec(1);
@@ -309,9 +321,10 @@ begin
         internal_regs_we(SPI_RMS_Vsns_PH_C_RLY) <= v_rms_valid_vec(4);
         internal_regs_we(SPI_RMS_Vsns_PH_B_RLY) <= v_rms_valid_vec(5);
         internal_regs_we(SPI_RMS_Vsns_PH_A_RLY) <= v_rms_valid_vec(6);
+        internal_regs_we(SPI_RMS_28V_IN_sns   ) <= vdc_rms_valid;
         
         internal_regs(SPI_RMS_OUT4_Isns    )(15 downto 0) <= a_rms_vec(0);
-        internal_regs(SPI_RMS_DC_PWR_I_sns )(15 downto 0) <= a_rms_vec(1);
+        internal_regs(SPI_RMS_DC_PWR_I_sns )(15 downto 0) <= a_rms_vec(1); -- FIXME unused as rms value is not needed for DC
         internal_regs(SPI_RMS_PH1_I_sns    )(15 downto 0) <= a_rms_vec(2);
         internal_regs(SPI_RMS_PH2_I_sns    )(15 downto 0) <= a_rms_vec(3);
         internal_regs(SPI_RMS_PH3_I_sns    )(15 downto 0) <= a_rms_vec(4);
@@ -322,6 +335,7 @@ begin
         internal_regs(SPI_RMS_Vsns_PH_C_RLY)(15 downto 0) <= v_rms_vec(4);
         internal_regs(SPI_RMS_Vsns_PH_B_RLY)(15 downto 0) <= v_rms_vec(5);
         internal_regs(SPI_RMS_Vsns_PH_A_RLY)(15 downto 0) <= v_rms_vec(6);
+        internal_regs(SPI_RMS_28V_IN_sns   )(15 downto 0) <= vdc_rms;
         
     end process;
     
@@ -377,7 +391,7 @@ begin
         m_axi_axi_RVALID   => BD_to_HLS.RVALID,
         m_axi_axi_RREADY   => HLS_to_BD.RREADY,
         spi_en             => registers(SPIS_CONTROL)(SPIS_CONTROL_EN_RANGE),
-        spis_d_0           => spis_d_0, -- has 4 chans
+        spis_d_0           => spis_d_0, -- has 5 chans
         spis_d_1           => open, --spis_d_1, -- has 4 chans  - this spi is disabled
         spis_d_2           => spis_d_2, -- has 8 chans
         ap_return          => spis_ok
@@ -431,14 +445,18 @@ begin
         signal sample_TREADY : std_logic;
     begin
         
-        sample2v_i: entity work.sample2v
+        sample2v_i: entity work.sample_conv
+        generic map (
+            PARAM_A => PARAM_A_VOLTAGE,
+            PARAM_B => PARAM_B_VOLTAGE
+        )
         port map(
             clk          => clk,
             sync_rst     => sync_rst,
             sample       => sample2v_vec(i),
             sample_valid => sample2v_valid_vec(i),
-            v            => v_vec(i),
-            v_valid      => v_valid_vec(i)
+            val          => v_vec(i),
+            val_valid    => v_valid_vec(i)
         );
         
         rms_v_i: component rms_0
@@ -483,14 +501,18 @@ begin
         signal sample_TREADY : std_logic;
     begin
         
-        sample2a_i: entity work.sample2a
+        sample2a_i: entity work.sample_conv
+        generic map (
+            PARAM_A => PARAM_A_current_vec(i),
+            PARAM_B => PARAM_B_current_vec(i)
+        )
         port map(
             clk          => clk,
             sync_rst     => sync_rst,
             sample       => sample2a_vec(i),
             sample_valid => sample2a_valid_vec(i),
-            a            => a_vec(i),
-            a_valid      => a_valid_vec(i)
+            val          => a_vec(i),
+            val_valid    => a_valid_vec(i)
         );
 
         rms_a_i: component rms_0
@@ -530,6 +552,61 @@ begin
     sample2a_vec <= (spis_d_0(59 downto 48), spis_d_0(43 downto 32), spis_d_0(27 downto 16), spis_d_0(11 downto 0), spis_d_2(75 downto 64));
     sample2a_valid_vec <= spis_d_0_ap_vld & spis_d_0_ap_vld & spis_d_0_ap_vld & spis_d_0_ap_vld & spis_d_2_ap_vld;
     
+    sample2vdc: if true generate
+        signal zero_cross : std_logic;
+        signal zero_cross_TREADY : std_logic;
+        signal sample_TREADY : std_logic;
+    begin
+        sample2a_i: entity work.sample_conv
+        generic map(
+            PARAM_A => PARAM_A_VDC,
+            PARAM_B => PARAM_B_VDC    
+        )
+        port map(
+            clk          => clk,
+            sync_rst     => sync_rst,
+            sample       => vdc_raw,
+            sample_valid => vdc_raw_valid,
+            val          => vdc_norm,
+            val_valid    => vdc_norm_valid
+        );
+    
+        rms_a_i: component rms_0
+        port map(
+            ap_clk            => clk,
+            ap_rst_n          => hls_rstn,
+            sample_TDATA      => vdc_norm,
+            sample_TVALID     => vdc_norm_valid,
+            sample_TREADY     => sample_TREADY,
+            zero_cross_TDATA  => "0000000" & zero_cross,
+            zero_cross_TVALID => '1',
+            zero_cross_TREADY => zero_cross_TREADY,
+            d_out_TDATA       => vdc_rms,
+            d_out_TVALID      => vdc_rms_valid,
+            d_out_TREADY      => '1',
+            cnt               => X"00000000" -- 0 stands for infinite run of this hls block this port is only used in simulation
+        );
+        process(clk)
+            variable z_cross_s: std_logic;
+        begin
+            if rising_edge(clk) then
+                if sync_rst then
+                    zero_cross <= '0';
+                    z_cross_s := '0';
+                else
+                    if z_cross and not z_cross_s then
+                        zero_cross <= '1';
+                    elsif zero_cross_TREADY then
+                        zero_cross <= '0';
+                    end if;
+                    z_cross_s := z_cross;    
+                end if;
+            end if;
+        end process;
+    end generate sample2vdc;
+    vdc_raw <= spis_d_0(75 downto 64);
+    vdc_raw_valid <= spis_d_0_ap_vld;
+    
     -- power calculation
     spi_power_i: entity work.spi_power
     port map(
@@ -563,9 +640,10 @@ begin
             if v_rms_valid_vec(5) then log_regs(LOG_V_OUT_3_ph2 ) <=   X"0000" & v_rms_vec(5); end if; 
             if v_rms_valid_vec(6) then log_regs(LOG_V_OUT_3_ph1 ) <=   X"0000" & v_rms_vec(6); end if; 
             if p_valid            then log_regs(LOG_AC_POWER    ) <=   X"0000" & p           ; end if; 
-            if a_rms_valid_vec(2) then log_regs(LOG_I_OUT_3_ph1 ) <=   X"0000" & a_rms_vec(2); end if; -- same as I_AC_IN_PH_A/B/C
-            if a_rms_valid_vec(3) then log_regs(LOG_I_OUT_3_ph2 ) <=   X"0000" & a_rms_vec(3); end if; -- same as I_AC_IN_PH_A/B/C
-            if a_rms_valid_vec(4) then log_regs(LOG_I_OUT_3_ph3 ) <=   X"0000" & a_rms_vec(4); end if; -- same as I_AC_IN_PH_A/B/C
+            --if a_rms_valid_vec(2) then log_regs(LOG_I_OUT_3_ph1 ) <=   X"0000" & a_rms_vec(2); end if; -- same as I_AC_IN_PH_A/B/C calculated in app.vhd
+            --if a_rms_valid_vec(3) then log_regs(LOG_I_OUT_3_ph2 ) <=   X"0000" & a_rms_vec(3); end if; -- same as I_AC_IN_PH_A/B/C calculated in app.vhd
+            --if a_rms_valid_vec(4) then log_regs(LOG_I_OUT_3_ph3 ) <=   X"0000" & a_rms_vec(4); end if; -- same as I_AC_IN_PH_A/B/C calculated in app.vhd
+            if vdc_rms_valid      then log_regs(LOG_VDC_IN      ) <=   X"0000" & vdc_rms     ; end if;
         end if;    
     end process;
     

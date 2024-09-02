@@ -65,6 +65,9 @@ architecture RTL of app is
     signal PSU_status_pwr_on           : std_logic_vector(PSU_Status_range);
     signal PSU_status_pwr_on_mask      : std_logic_vector(PSU_Status_range);
     signal lamp_temp                   : std_logic;
+    signal rpm1                        : std_logic_vector(15 downto 0);
+    signal rpm2                        : std_logic_vector(15 downto 0);
+    signal rpm3                        : std_logic_vector(15 downto 0);
 begin
     one_ms_tick <= free_running_1ms;
     
@@ -268,13 +271,26 @@ begin
             log_regs(LOG_V_OUT_3_ph3 ) <= log_regs_spi(LOG_V_OUT_3_ph3 );     
             log_regs(LOG_V_OUT_3_ph2 ) <= log_regs_spi(LOG_V_OUT_3_ph2 );     
             log_regs(LOG_V_OUT_3_ph1 ) <= log_regs_spi(LOG_V_OUT_3_ph1 );     
-            log_regs(LOG_AC_POWER    ) <= log_regs_spi(LOG_AC_POWER    );     
-            log_regs(LOG_I_OUT_3_ph1 ) <= log_regs_spi(LOG_I_OUT_3_ph1 );     
-            log_regs(LOG_I_OUT_3_ph2 ) <= log_regs_spi(LOG_I_OUT_3_ph2 );     
-            log_regs(LOG_I_OUT_3_ph3 ) <= log_regs_spi(LOG_I_OUT_3_ph3 );
+            log_regs(LOG_AC_POWER    ) <= log_regs_spi(LOG_AC_POWER    );
+            log_regs(LOG_VDC_IN      ) <= log_regs_spi(LOG_VDC_IN      );
             
             log_regs(LOG_PSU_STATUS_L) <= psu_status(31 downto 0);
             log_regs(LOG_PSU_STATUS_H) <= psu_status(63 downto 32);
+            
+            -- I_OUT_3_phx is calculated using data from spi and uart
+            if internal_regs_we_spis(SPI_RMS_PH1_I_sns) then
+                log_regs(LOG_I_OUT_3_ph1 ) <= X"0000" & std_logic_vector(signed(internal_regs_spis(SPI_RMS_PH1_I_sns)(15 downto 0)) - signed(internal_regs_rs485(UART_MAIN_I_PH1)(15 downto 0)));     
+            end if;
+            if internal_regs_we_spis(SPI_RMS_PH2_I_sns) then
+                log_regs(LOG_I_OUT_3_ph2 ) <= X"0000" & std_logic_vector(signed(internal_regs_spis(SPI_RMS_PH2_I_sns)(15 downto 0)) - signed(internal_regs_rs485(UART_MAIN_I_PH2)(15 downto 0)));     
+            end if;
+            if internal_regs_we_spis(SPI_RMS_PH3_I_sns) then
+                log_regs(LOG_I_OUT_3_ph3 ) <= X"0000" & std_logic_vector(signed(internal_regs_spis(SPI_RMS_PH3_I_sns)(15 downto 0)) - signed(internal_regs_rs485(UART_MAIN_I_PH3)(15 downto 0)));     
+            end if;
+            
+            log_regs(LOG_FAN1_SPEED) <= X"0000" & rpm1;
+            log_regs(LOG_FAN2_SPEED) <= X"0000" & rpm2;
+            log_regs(LOG_FAN3_SPEED) <= X"0000" & rpm3;
         end if;
     end process;
     
@@ -286,7 +302,10 @@ begin
         registers => registers,
         fans_en   => fans_en,
         fans_ok   => fans_ok,
-        fan_pwm   => fan_pwm
+        fan_pwm   => fan_pwm,
+        rpm1      => rpm1,
+        rpm2      => rpm2,
+        rpm3      => rpm3
     );
     
     -- rs485

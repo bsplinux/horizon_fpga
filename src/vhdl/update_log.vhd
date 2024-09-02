@@ -54,7 +54,7 @@ begin
                 --update_log <= '0';
             else
                 --update_log <= '0';
-                if regs_reading(LOG_MESSAGE_ID) then
+                if regs_reading(LOG_VDC_IN) then
                     regs_locked <= '1';
                 elsif regs_reading(LOG_LAMP_IND) = '1' or
                       (registers(GENERAL_CONTROL)(GENERAL_CONTROL_RLEASE_REGS) = '1' and regs_updating(GENERAL_CONTROL) = '1') then

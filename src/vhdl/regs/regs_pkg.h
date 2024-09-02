@@ -1,6 +1,6 @@
 /*
 ----------------------------------------------------------------------------------------
--- Registers H file created from yaml definition of registers at     11-08-2024 13:29 --
+-- Registers H file created from yaml definition of registers at     02-09-2024 15:49 --
 --   python function: regs2h.py                                                       --
 --   yaml file name: ../yaml/condor_regs.yaml                                         --
 ----------------------------------------------------------------------------------------
@@ -210,16 +210,6 @@ typedef union
     uint32_t raw;
     fields_SN_ETI_t fields;
 }SN_ETI_t;
-
-typedef struct
-{
-}fields_LOG_MESSAGE_ID_t;
-
-typedef union
-{
-    uint32_t raw;
-    fields_LOG_MESSAGE_ID_t fields;
-}LOG_MESSAGE_ID_t;
 
 typedef struct
 {
@@ -553,16 +543,6 @@ typedef union
 
 typedef struct
 {
-}fields_LOG_FAN_SPEED_t;
-
-typedef union
-{
-    uint32_t raw;
-    fields_LOG_FAN_SPEED_t fields;
-}LOG_FAN_SPEED_t;
-
-typedef struct
-{
 }fields_LOG_FAN1_SPEED_t;
 
 typedef union
@@ -590,46 +570,6 @@ typedef union
     uint32_t raw;
     fields_LOG_FAN3_SPEED_t fields;
 }LOG_FAN3_SPEED_t;
-
-typedef struct
-{
-}fields_LOG_VOLUME_SIZE_L_t;
-
-typedef union
-{
-    uint32_t raw;
-    fields_LOG_VOLUME_SIZE_L_t fields;
-}LOG_VOLUME_SIZE_L_t;
-
-typedef struct
-{
-}fields_LOG_VOLUME_SIZE_H_t;
-
-typedef union
-{
-    uint32_t raw;
-    fields_LOG_VOLUME_SIZE_H_t fields;
-}LOG_VOLUME_SIZE_H_t;
-
-typedef struct
-{
-}fields_LOG_LOGFILE_SIZE_L_t;
-
-typedef union
-{
-    uint32_t raw;
-    fields_LOG_LOGFILE_SIZE_L_t fields;
-}LOG_LOGFILE_SIZE_L_t;
-
-typedef struct
-{
-}fields_LOG_LOGFILE_SIZE_H_t;
-
-typedef union
-{
-    uint32_t raw;
-    fields_LOG_LOGFILE_SIZE_H_t fields;
-}LOG_LOGFILE_SIZE_H_t;
 
 typedef struct
 {
@@ -730,46 +670,6 @@ typedef union
     uint32_t raw;
     fields_LOG_ETM_t fields;
 }LOG_ETM_t;
-
-typedef struct
-{
-}fields_LOG_MAJOR_t;
-
-typedef union
-{
-    uint32_t raw;
-    fields_LOG_MAJOR_t fields;
-}LOG_MAJOR_t;
-
-typedef struct
-{
-}fields_LOG_MINOR_t;
-
-typedef union
-{
-    uint32_t raw;
-    fields_LOG_MINOR_t fields;
-}LOG_MINOR_t;
-
-typedef struct
-{
-}fields_LOG_BUILD_t;
-
-typedef union
-{
-    uint32_t raw;
-    fields_LOG_BUILD_t fields;
-}LOG_BUILD_t;
-
-typedef struct
-{
-}fields_LOG_HOTFIX_t;
-
-typedef union
-{
-    uint32_t raw;
-    fields_LOG_HOTFIX_t fields;
-}LOG_HOTFIX_t;
 
 typedef struct
 {
@@ -1462,6 +1362,36 @@ typedef union
 
 typedef struct
 {
+}fields_UART_MAIN_I_PH1_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_MAIN_I_PH1_t fields;
+}UART_MAIN_I_PH1_t;
+
+typedef struct
+{
+}fields_UART_MAIN_I_PH2_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_MAIN_I_PH2_t fields;
+}UART_MAIN_I_PH2_t;
+
+typedef struct
+{
+}fields_UART_MAIN_I_PH3_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_UART_MAIN_I_PH3_t fields;
+}UART_MAIN_I_PH3_t;
+
+typedef struct
+{
     uint32_t EN_RANGE               : 3;
     uint32_t RST                    : 1;
     uint32_t US100_ERR_CLR          : 1;
@@ -1517,6 +1447,20 @@ typedef union
     uint32_t raw;
     fields_SPI_RAW0_DC_t fields;
 }SPI_RAW0_DC_t;
+
+typedef struct
+{
+    uint32_t L_D_RANGE              : 12;
+    uint32_t L_ID_RANGE             : 4;
+    uint32_t H_D_RANGE              : 12;
+    uint32_t H_ID_RANGE             : 4;
+}fields_SPI_RAW0_0E_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_SPI_RAW0_0E_t fields;
+}SPI_RAW0_0E_t;
 
 typedef struct
 {
@@ -1663,6 +1607,20 @@ typedef union
     uint32_t raw;
     fields_SPI_PH3_I_sns_t fields;
 }SPI_PH3_I_sns_t;
+
+typedef struct
+{
+    uint32_t L_D_RANGE              : 12;
+    uint32_t L_ID_RANGE             : 4;
+    uint32_t H_D_RANGE              : 12;
+    uint32_t H_ID_RANGE             : 4;
+}fields_SPI_28V_IN_sns_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_SPI_28V_IN_sns_t fields;
+}SPI_28V_IN_sns_t;
 
 typedef struct
 {
@@ -1838,6 +1796,20 @@ typedef struct
     uint32_t L_ID_RANGE             : 4;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
+}fields_SPI_RMS_28V_IN_sns_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_SPI_RMS_28V_IN_sns_t fields;
+}SPI_RMS_28V_IN_sns_t;
+
+typedef struct
+{
+    uint32_t L_D_RANGE              : 12;
+    uint32_t L_ID_RANGE             : 4;
+    uint32_t H_D_RANGE              : 12;
+    uint32_t H_ID_RANGE             : 4;
 }fields_SPI_RMS_Vsns_PH_A_RLY_t;
 
 typedef union
@@ -1930,8 +1902,8 @@ typedef union
     fields_SPI_RMS_OUT4_sns_t fields;
 }SPI_RMS_OUT4_sns_t;
 
-#define NUM_REGS_PACKED 158
-#define NUM_REGS 158
+#define NUM_REGS_PACKED 154
+#define NUM_REGS 154
 
 typedef struct
 {
@@ -1947,7 +1919,6 @@ typedef struct
     IO_OUT0_t                IO_OUT0             ;
     IO_OUT1_t                IO_OUT1             ;
     SN_ETI_t                 SN_ETI              ;
-    LOG_MESSAGE_ID_t         LOG_MESSAGE_ID      ;
     LOG_VDC_IN_t             LOG_VDC_IN          ;
     LOG_VAC_IN_PH_A_t        LOG_VAC_IN_PH_A     ;
     LOG_VAC_IN_PH_B_t        LOG_VAC_IN_PH_B     ;
@@ -1981,14 +1952,9 @@ typedef struct
     LOG_I_OUT_9_t            LOG_I_OUT_9         ;
     LOG_I_OUT_10_t           LOG_I_OUT_10        ;
     LOG_AC_POWER_t           LOG_AC_POWER        ;
-    LOG_FAN_SPEED_t          LOG_FAN_SPEED       ;
     LOG_FAN1_SPEED_t         LOG_FAN1_SPEED      ;
     LOG_FAN2_SPEED_t         LOG_FAN2_SPEED      ;
     LOG_FAN3_SPEED_t         LOG_FAN3_SPEED      ;
-    LOG_VOLUME_SIZE_L_t      LOG_VOLUME_SIZE_L   ;
-    LOG_VOLUME_SIZE_H_t      LOG_VOLUME_SIZE_H   ;
-    LOG_LOGFILE_SIZE_L_t     LOG_LOGFILE_SIZE_L  ;
-    LOG_LOGFILE_SIZE_H_t     LOG_LOGFILE_SIZE_H  ;
     LOG_T1_t                 LOG_T1              ;
     LOG_T2_t                 LOG_T2              ;
     LOG_T3_t                 LOG_T3              ;
@@ -1999,10 +1965,6 @@ typedef struct
     LOG_T8_t                 LOG_T8              ;
     LOG_T9_t                 LOG_T9              ;
     LOG_ETM_t                LOG_ETM             ;
-    LOG_MAJOR_t              LOG_MAJOR           ;
-    LOG_MINOR_t              LOG_MINOR           ;
-    LOG_BUILD_t              LOG_BUILD           ;
-    LOG_HOTFIX_t             LOG_HOTFIX          ;
     LOG_SN_t                 LOG_SN              ;
     LOG_PSU_STATUS_L_t       LOG_PSU_STATUS_L    ;
     LOG_PSU_STATUS_H_t       LOG_PSU_STATUS_H    ;
@@ -2059,10 +2021,14 @@ typedef struct
     UART_T7_t                UART_T7             ;
     UART_T8_t                UART_T8             ;
     UART_T9_t                UART_T9             ;
+    UART_MAIN_I_PH1_t        UART_MAIN_I_PH1     ;
+    UART_MAIN_I_PH2_t        UART_MAIN_I_PH2     ;
+    UART_MAIN_I_PH3_t        UART_MAIN_I_PH3     ;
     SPIS_CONTROL_t           SPIS_CONTROL        ;
     SPIS_STATUS_t            SPIS_STATUS         ;
     SPI_RAW0_BA_t            SPI_RAW0_BA         ;
     SPI_RAW0_DC_t            SPI_RAW0_DC         ;
+    SPI_RAW0_0E_t            SPI_RAW0_0E         ;
     SPI_RAW1_BA_t            SPI_RAW1_BA         ;
     SPI_RAW1_DC_t            SPI_RAW1_DC         ;
     SPI_RAW2_BA_t            SPI_RAW2_BA         ;
@@ -2074,6 +2040,7 @@ typedef struct
     SPI_PH1_I_sns_t          SPI_PH1_I_sns       ;
     SPI_PH2_I_sns_t          SPI_PH2_I_sns       ;
     SPI_PH3_I_sns_t          SPI_PH3_I_sns       ;
+    SPI_28V_IN_sns_t         SPI_28V_IN_sns      ;
     SPI_Vsns_PH_A_RLY_t      SPI_Vsns_PH_A_RLY   ;
     SPI_Vsns_PH_B_RLY_t      SPI_Vsns_PH_B_RLY   ;
     SPI_Vsns_PH_C_RLY_t      SPI_Vsns_PH_C_RLY   ;
@@ -2086,6 +2053,7 @@ typedef struct
     SPI_RMS_PH1_I_sns_t      SPI_RMS_PH1_I_sns   ;
     SPI_RMS_PH2_I_sns_t      SPI_RMS_PH2_I_sns   ;
     SPI_RMS_PH3_I_sns_t      SPI_RMS_PH3_I_sns   ;
+    SPI_RMS_28V_IN_sns_t     SPI_RMS_28V_IN_sns  ;
     SPI_RMS_Vsns_PH_A_RLY_t  SPI_RMS_Vsns_PH_A_RLY;
     SPI_RMS_Vsns_PH_B_RLY_t  SPI_RMS_Vsns_PH_B_RLY;
     SPI_RMS_Vsns_PH_C_RLY_t  SPI_RMS_Vsns_PH_C_RLY;
@@ -2114,151 +2082,147 @@ typedef struct
 #define IO_OUT0_i             9
 #define IO_OUT1_i            10
 #define SN_ETI_i             11
-#define LOG_MESSAGE_ID_i     12
-#define LOG_VDC_IN_i         13
-#define LOG_VAC_IN_PH_A_i    14
-#define LOG_VAC_IN_PH_B_i    15
-#define LOG_VAC_IN_PH_C_i    16
-#define LOG_I_DC_IN_i        17
-#define LOG_I_AC_IN_PH_A_i   18
-#define LOG_I_AC_IN_PH_B_i   19
-#define LOG_I_AC_IN_PH_C_i   20
-#define LOG_V_OUT_1_i        21
-#define LOG_V_OUT_2_i        22
-#define LOG_V_OUT_3_PH1_i    23
-#define LOG_V_OUT_3_PH2_i    24
-#define LOG_V_OUT_3_PH3_i    25
-#define LOG_V_OUT_4_i        26
-#define LOG_V_OUT_5_i        27
-#define LOG_V_OUT_6_i        28
-#define LOG_V_OUT_7_i        29
-#define LOG_V_OUT_8_i        30
-#define LOG_V_OUT_9_i        31
-#define LOG_V_OUT_10_i       32
-#define LOG_I_OUT_1_i        33
-#define LOG_I_OUT_2_i        34
-#define LOG_I_OUT_3_PH1_i    35
-#define LOG_I_OUT_3_PH2_i    36
-#define LOG_I_OUT_3_PH3_i    37
-#define LOG_I_OUT_4_i        38
-#define LOG_I_OUT_5_i        39
-#define LOG_I_OUT_6_i        40
-#define LOG_I_OUT_7_i        41
-#define LOG_I_OUT_8_i        42
-#define LOG_I_OUT_9_i        43
-#define LOG_I_OUT_10_i       44
-#define LOG_AC_POWER_i       45
-#define LOG_FAN_SPEED_i      46
-#define LOG_FAN1_SPEED_i     47
-#define LOG_FAN2_SPEED_i     48
-#define LOG_FAN3_SPEED_i     49
-#define LOG_VOLUME_SIZE_L_i  50
-#define LOG_VOLUME_SIZE_H_i  51
-#define LOG_LOGFILE_SIZE_L_i  52
-#define LOG_LOGFILE_SIZE_H_i  53
-#define LOG_T1_i             54
-#define LOG_T2_i             55
-#define LOG_T3_i             56
-#define LOG_T4_i             57
-#define LOG_T5_i             58
-#define LOG_T6_i             59
-#define LOG_T7_i             60
-#define LOG_T8_i             61
-#define LOG_T9_i             62
-#define LOG_ETM_i            63
-#define LOG_MAJOR_i          64
-#define LOG_MINOR_i          65
-#define LOG_BUILD_i          66
-#define LOG_HOTFIX_i         67
-#define LOG_SN_i             68
-#define LOG_PSU_STATUS_L_i   69
-#define LOG_PSU_STATUS_H_i   70
-#define LOG_LAMP_IND_i       71
-#define PWM_CTL_i            72
-#define PWM1_LOW_i           73
-#define PWM1_HIGH_i          74
-#define PWM2_LOW_i           75
-#define PWM2_HIGH_i          76
-#define PWM3_LOW_i           77
-#define PWM3_HIGH_i          78
-#define UARTS_CONTROL_i      79
-#define UARTS_STATUS_i       80
-#define UART_RAW0_L_i        81
-#define UART_RAW0_H_i        82
-#define UART_RAW1_L_i        83
-#define UART_RAW1_H_i        84
-#define UART_RAW2_L_i        85
-#define UART_RAW2_H_i        86
-#define UART_RAW3_L_i        87
-#define UART_RAW3_H_i        88
-#define UART_RAW4_L_i        89
-#define UART_RAW4_H_i        90
-#define UART_RAW5_L_i        91
-#define UART_RAW5_H_i        92
-#define UART_RAW6_L_i        93
-#define UART_RAW6_H_i        94
-#define UART_RAW7_L_i        95
-#define UART_RAW7_H_i        96
-#define UART_RAW8_L_i        97
-#define UART_RAW8_H_i        98
-#define UART_V_OUT_1_i       99
-#define UART_V_OUT_2_i      100
-#define UART_V_OUT_5_i      101
-#define UART_V_OUT_6_i      102
-#define UART_V_OUT_7_i      103
-#define UART_V_OUT_8_i      104
-#define UART_V_OUT_9_i      105
-#define UART_V_OUT_10_i     106
-#define UART_I_OUT_1_i      107
-#define UART_I_OUT_2_i      108
-#define UART_I_OUT_5_i      109
-#define UART_I_OUT_6_i      110
-#define UART_I_OUT_7_i      111
-#define UART_I_OUT_8_i      112
-#define UART_I_OUT_9_i      113
-#define UART_I_OUT_10_i     114
-#define UART_T1_i           115
-#define UART_T2_i           116
-#define UART_T3_i           117
-#define UART_T4_i           118
-#define UART_T5_i           119
-#define UART_T6_i           120
-#define UART_T7_i           121
-#define UART_T8_i           122
-#define UART_T9_i           123
-#define SPIS_CONTROL_i      124
-#define SPIS_STATUS_i       125
-#define SPI_RAW0_BA_i       126
-#define SPI_RAW0_DC_i       127
-#define SPI_RAW1_BA_i       128
-#define SPI_RAW1_DC_i       129
-#define SPI_RAW2_BA_i       130
-#define SPI_RAW2_DC_i       131
-#define SPI_RAW2_FE_i       132
-#define SPI_RAW2_HG_i       133
-#define SPI_OUT4_Isns_i     134
-#define SPI_DC_PWR_I_sns_i  135
-#define SPI_PH1_I_sns_i     136
-#define SPI_PH2_I_sns_i     137
-#define SPI_PH3_I_sns_i     138
-#define SPI_Vsns_PH_A_RLY_i 139
-#define SPI_Vsns_PH_B_RLY_i 140
-#define SPI_Vsns_PH_C_RLY_i 141
-#define SPI_Vsns_PH3_i      142
-#define SPI_Vsns_PH2_i      143
-#define SPI_Vsns_PH1_i      144
-#define SPI_OUT4_sns_i      145
-#define SPI_RMS_OUT4_Isns_i 146
-#define SPI_RMS_DC_PWR_I_sns_i 147
-#define SPI_RMS_PH1_I_sns_i 148
-#define SPI_RMS_PH2_I_sns_i 149
-#define SPI_RMS_PH3_I_sns_i 150
-#define SPI_RMS_Vsns_PH_A_RLY_i 151
-#define SPI_RMS_Vsns_PH_B_RLY_i 152
-#define SPI_RMS_Vsns_PH_C_RLY_i 153
-#define SPI_RMS_Vsns_PH3_i  154
-#define SPI_RMS_Vsns_PH2_i  155
-#define SPI_RMS_Vsns_PH1_i  156
-#define SPI_RMS_OUT4_sns_i  157
+#define LOG_VDC_IN_i         12
+#define LOG_VAC_IN_PH_A_i    13
+#define LOG_VAC_IN_PH_B_i    14
+#define LOG_VAC_IN_PH_C_i    15
+#define LOG_I_DC_IN_i        16
+#define LOG_I_AC_IN_PH_A_i   17
+#define LOG_I_AC_IN_PH_B_i   18
+#define LOG_I_AC_IN_PH_C_i   19
+#define LOG_V_OUT_1_i        20
+#define LOG_V_OUT_2_i        21
+#define LOG_V_OUT_3_PH1_i    22
+#define LOG_V_OUT_3_PH2_i    23
+#define LOG_V_OUT_3_PH3_i    24
+#define LOG_V_OUT_4_i        25
+#define LOG_V_OUT_5_i        26
+#define LOG_V_OUT_6_i        27
+#define LOG_V_OUT_7_i        28
+#define LOG_V_OUT_8_i        29
+#define LOG_V_OUT_9_i        30
+#define LOG_V_OUT_10_i       31
+#define LOG_I_OUT_1_i        32
+#define LOG_I_OUT_2_i        33
+#define LOG_I_OUT_3_PH1_i    34
+#define LOG_I_OUT_3_PH2_i    35
+#define LOG_I_OUT_3_PH3_i    36
+#define LOG_I_OUT_4_i        37
+#define LOG_I_OUT_5_i        38
+#define LOG_I_OUT_6_i        39
+#define LOG_I_OUT_7_i        40
+#define LOG_I_OUT_8_i        41
+#define LOG_I_OUT_9_i        42
+#define LOG_I_OUT_10_i       43
+#define LOG_AC_POWER_i       44
+#define LOG_FAN1_SPEED_i     45
+#define LOG_FAN2_SPEED_i     46
+#define LOG_FAN3_SPEED_i     47
+#define LOG_T1_i             48
+#define LOG_T2_i             49
+#define LOG_T3_i             50
+#define LOG_T4_i             51
+#define LOG_T5_i             52
+#define LOG_T6_i             53
+#define LOG_T7_i             54
+#define LOG_T8_i             55
+#define LOG_T9_i             56
+#define LOG_ETM_i            57
+#define LOG_SN_i             58
+#define LOG_PSU_STATUS_L_i   59
+#define LOG_PSU_STATUS_H_i   60
+#define LOG_LAMP_IND_i       61
+#define PWM_CTL_i            62
+#define PWM1_LOW_i           63
+#define PWM1_HIGH_i          64
+#define PWM2_LOW_i           65
+#define PWM2_HIGH_i          66
+#define PWM3_LOW_i           67
+#define PWM3_HIGH_i          68
+#define UARTS_CONTROL_i      69
+#define UARTS_STATUS_i       70
+#define UART_RAW0_L_i        71
+#define UART_RAW0_H_i        72
+#define UART_RAW1_L_i        73
+#define UART_RAW1_H_i        74
+#define UART_RAW2_L_i        75
+#define UART_RAW2_H_i        76
+#define UART_RAW3_L_i        77
+#define UART_RAW3_H_i        78
+#define UART_RAW4_L_i        79
+#define UART_RAW4_H_i        80
+#define UART_RAW5_L_i        81
+#define UART_RAW5_H_i        82
+#define UART_RAW6_L_i        83
+#define UART_RAW6_H_i        84
+#define UART_RAW7_L_i        85
+#define UART_RAW7_H_i        86
+#define UART_RAW8_L_i        87
+#define UART_RAW8_H_i        88
+#define UART_V_OUT_1_i       89
+#define UART_V_OUT_2_i       90
+#define UART_V_OUT_5_i       91
+#define UART_V_OUT_6_i       92
+#define UART_V_OUT_7_i       93
+#define UART_V_OUT_8_i       94
+#define UART_V_OUT_9_i       95
+#define UART_V_OUT_10_i      96
+#define UART_I_OUT_1_i       97
+#define UART_I_OUT_2_i       98
+#define UART_I_OUT_5_i       99
+#define UART_I_OUT_6_i      100
+#define UART_I_OUT_7_i      101
+#define UART_I_OUT_8_i      102
+#define UART_I_OUT_9_i      103
+#define UART_I_OUT_10_i     104
+#define UART_T1_i           105
+#define UART_T2_i           106
+#define UART_T3_i           107
+#define UART_T4_i           108
+#define UART_T5_i           109
+#define UART_T6_i           110
+#define UART_T7_i           111
+#define UART_T8_i           112
+#define UART_T9_i           113
+#define UART_MAIN_I_PH1_i   114
+#define UART_MAIN_I_PH2_i   115
+#define UART_MAIN_I_PH3_i   116
+#define SPIS_CONTROL_i      117
+#define SPIS_STATUS_i       118
+#define SPI_RAW0_BA_i       119
+#define SPI_RAW0_DC_i       120
+#define SPI_RAW0_0E_i       121
+#define SPI_RAW1_BA_i       122
+#define SPI_RAW1_DC_i       123
+#define SPI_RAW2_BA_i       124
+#define SPI_RAW2_DC_i       125
+#define SPI_RAW2_FE_i       126
+#define SPI_RAW2_HG_i       127
+#define SPI_OUT4_Isns_i     128
+#define SPI_DC_PWR_I_sns_i  129
+#define SPI_PH1_I_sns_i     130
+#define SPI_PH2_I_sns_i     131
+#define SPI_PH3_I_sns_i     132
+#define SPI_28V_IN_sns_i    133
+#define SPI_Vsns_PH_A_RLY_i 134
+#define SPI_Vsns_PH_B_RLY_i 135
+#define SPI_Vsns_PH_C_RLY_i 136
+#define SPI_Vsns_PH3_i      137
+#define SPI_Vsns_PH2_i      138
+#define SPI_Vsns_PH1_i      139
+#define SPI_OUT4_sns_i      140
+#define SPI_RMS_OUT4_Isns_i 141
+#define SPI_RMS_DC_PWR_I_sns_i 142
+#define SPI_RMS_PH1_I_sns_i 143
+#define SPI_RMS_PH2_I_sns_i 144
+#define SPI_RMS_PH3_I_sns_i 145
+#define SPI_RMS_28V_IN_sns_i 146
+#define SPI_RMS_Vsns_PH_A_RLY_i 147
+#define SPI_RMS_Vsns_PH_B_RLY_i 148
+#define SPI_RMS_Vsns_PH_C_RLY_i 149
+#define SPI_RMS_Vsns_PH3_i  150
+#define SPI_RMS_Vsns_PH2_i  151
+#define SPI_RMS_Vsns_PH1_i  152
+#define SPI_RMS_OUT4_sns_i  153
 
 #endif //__REGS_PKG_H__
