@@ -1,6 +1,6 @@
 /*
 ----------------------------------------------------------------------------------------
--- Registers H file created from yaml definition of registers at     02-09-2024 15:49 --
+-- Registers H file created from yaml definition of registers at     03-09-2024 11:34 --
 --   python function: regs2h.py                                                       --
 --   yaml file name: ../yaml/condor_regs.yaml                                         --
 ----------------------------------------------------------------------------------------
@@ -73,6 +73,7 @@ typedef struct
     uint32_t UVP_EN_PH2             : 1;
     uint32_t UVP_EN_PH3             : 1;
     uint32_t UVP_EN_DC              : 1;
+    uint32_t FAN_CHECK              : 1;
 }fields_GENERAL_CONTROL_t;
 
 typedef union

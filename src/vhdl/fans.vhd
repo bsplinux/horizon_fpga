@@ -32,13 +32,32 @@ architecture RTL of fans is
     
     constant CONST_LOW  : std_logic_vector(31 downto 0) := X"0000D904"; -- 900 Hz @ 100MHz clock, half a period [10^8/900/2 = 55,556]
     constant CONST_HIGH : std_logic_vector(31 downto 0) := CONST_LOW;
+    
+    constant FAN_RATING   : std_logic_vector(15 downto 0) := X"55F0"; -- 22,000 
+    constant FAN_SET_POINT: std_logic_vector(15 downto 0) := X"44C0"; -- 80% - 17600
+    constant HIGH_LIMIT   : std_logic_vector(15 downto 0) := X"490C"; -- 85% - 18700
+    constant LOW_LIMIT    : std_logic_vector(15 downto 0) := X"4074"; -- 75% - 16500
+    
 begin
-    fans_ok <= fans_en;
     fans_in(1) <= registers(IO_IN)(IO_IN_FAN_HALL1_FPGA);
     fans_in(2) <= registers(IO_IN)(IO_IN_FAN_HALL2_FPGA);
     fans_in(3) <= registers(IO_IN)(IO_IN_FAN_HALL3_FPGA);
     
-
+    limit_pr: process(clk)
+    begin
+        if rising_edge(clk) then
+            fans_ok <= '0';
+            if rpm1 > LOW_LIMIT  and rpm1 < HIGH_LIMIT and 
+               rpm2 > LOW_LIMIT  and rpm2 < HIGH_LIMIT and  
+               rpm3 > LOW_LIMIT  and rpm3 < HIGH_LIMIT then
+               fans_ok <= '1';
+           end if;
+           if registers(GENERAL_CONTROL)(GENERAL_CONTROL_FAN_CHECK) = '0' then
+               fans_ok <= fans_en;
+            end if;
+        end if;
+    end process;
+        
     process(clk)
     begin
         if rising_edge(clk) then

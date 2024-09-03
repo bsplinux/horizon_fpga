@@ -33,6 +33,7 @@ reg_general_control: &reg_general_control
     UVP_EN_PH2   : 9
     UVP_EN_PH3   : 10
     UVP_EN_DC    : 11
+    FAN_CHECK    : 12
   used_bits: "11:0"
 
 reg_general_status: &reg_general_status 

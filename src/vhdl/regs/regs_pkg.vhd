@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------------------------
--- Registers VHDL package created from yaml definition of registers at 02-09-2024 15:49 --
+-- Registers VHDL package created from yaml definition of registers at 03-09-2024 11:34 --
 --   python function: regs2vhdl.py                                                      --
 --   yaml file name: ../yaml/condor_regs.yaml                                           --
 ------------------------------------------------------------------------------------------
@@ -363,6 +363,7 @@ package regs_pkg is
   constant GENERAL_CONTROL_UVP_EN_PH2     : integer :=  9;
   constant GENERAL_CONTROL_UVP_EN_PH3     : integer := 10;
   constant GENERAL_CONTROL_UVP_EN_DC      : integer := 11;
+  constant GENERAL_CONTROL_FAN_CHECK      : integer := 12;
   -- fields for GENERAL_STATUS
   constant GENERAL_STATUS_REGS_LOCKED     : integer :=  0;
   constant GENERAL_STATUS_STOP_LOG        : integer :=  1;
