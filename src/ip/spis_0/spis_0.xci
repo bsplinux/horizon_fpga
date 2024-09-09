@@ -2,8 +2,8 @@
   "schema": "xilinx.com:schema:json_instance:1.0",
   "ip_inst": {
     "xci_name": "spis_0",
-    "component_reference": "Growings:hls:spis:1.1",
-    "ip_revision": "2113658092",
+    "component_reference": "Growings:hls:spis:1.2",
+    "ip_revision": "2113727321",
     "gen_directory": ".",
     "parameters": {
       "component_parameters": {
@@ -54,7 +54,7 @@
       },
       "runtime_parameters": {
         "IPCONTEXT": [ { "value": "IP_Flow" } ],
-        "IPREVISION": [ { "value": "2113658092" } ],
+        "IPREVISION": [ { "value": "2113727321" } ],
         "MANAGED": [ { "value": "TRUE" } ],
         "OUTPUTDIR": [ { "value": "." } ],
         "SELECTEDSIMMODEL": [ { "value": "" } ],
