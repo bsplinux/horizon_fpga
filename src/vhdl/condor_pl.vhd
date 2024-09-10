@@ -64,7 +64,6 @@ entity condor_pl is
     	HV_ADC_SCLK_FPGA     	: out std_logic;
     	HV_ADC_CS_FPGA       	: out std_logic;
     	HV_ADC_SDO_FPGA      	: in  std_logic;
-    	RELAY_1PH_FPGA       	: out std_logic;
     	RELAY_3PH_FPGA       	: out std_logic;
     	FAN_PG3_FPGA         	: in  std_logic;
     	FAN_HALL3_FPGA       	: in  std_logic;
@@ -508,7 +507,6 @@ begin
     RESET_OUT_FPGA     <= app_2_ios.RESET_OUT_FPGA    ;
     SPARE_OUT_FPGA     <= app_2_ios.SPARE_OUT_FPGA    ;
     ESHUTDOWN_OUT_FPGA <= app_2_ios.ESHUTDOWN_OUT_FPGA;
-    RELAY_1PH_FPGA     <= app_2_ios.RELAY_1PH_FPGA    ;
     RELAY_3PH_FPGA     <= app_2_ios.RELAY_3PH_FPGA    ;
     FAN_EN3_FPGA       <= app_2_ios.FAN_EN3_FPGA      ;
     FAN_CTRL3_FPGA     <= app_2_ios.FAN_CTRL3_FPGA    ;

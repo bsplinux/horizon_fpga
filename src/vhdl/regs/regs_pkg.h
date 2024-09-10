@@ -1,6 +1,6 @@
 /*
 ----------------------------------------------------------------------------------------
--- Registers H file created from yaml definition of registers at     03-09-2024 11:34 --
+-- Registers H file created from yaml definition of registers at     10-09-2024 17:51 --
 --   python function: regs2h.py                                                       --
 --   yaml file name: ../yaml/condor_regs.yaml                                         --
 ----------------------------------------------------------------------------------------
@@ -74,6 +74,7 @@ typedef struct
     uint32_t UVP_EN_PH3             : 1;
     uint32_t UVP_EN_DC              : 1;
     uint32_t FAN_CHECK              : 1;
+    uint32_t RELAY_CHECK            : 1;
 }fields_GENERAL_CONTROL_t;
 
 typedef union
@@ -157,7 +158,7 @@ typedef struct
     uint32_t RESET_OUT_FPGA         : 1;
     uint32_t SPARE_OUT_FPGA         : 1;
     uint32_t ESHUTDOWN_OUT_FPGA     : 1;
-    uint32_t RELAY_1PH_FPGA         : 1;
+    uint32_t pad11                  : 1;
     uint32_t RELAY_3PH_FPGA         : 1;
     uint32_t FAN_EN3_FPGA           : 1;
     uint32_t FAN_CTRL3_FPGA         : 1;

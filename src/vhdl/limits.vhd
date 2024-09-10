@@ -11,13 +11,15 @@ entity limits is
         clk              : in  std_logic;
         sync_rst         : in  std_logic;
         registers        : in  reg_array_t;
-        regs_updating    : in  reg_slv_array_t;
-        regs_reading     : in  reg_slv_array_t;
-        internal_regs    : out reg_array_t;
-        internal_regs_we : out reg_slv_array_t;
+--        regs_updating    : in  reg_slv_array_t;
+--        regs_reading     : in  reg_slv_array_t;
+--        internal_regs    : out reg_array_t;
+--        internal_regs_we : out reg_slv_array_t;
         PSU_Status       : out std_logic_vector(PSU_Status_range);
         PSU_Status_mask  : out std_logic_vector(PSU_Status_range);
-        limits_stat      : out std_logic_vector(limits_range)
+        limits_stat      : out std_logic_vector(limits_range);
+        lamp_stat        : out std_logic
+--        power_2_ios      : in  power_2_ios_t
     );
 end entity limits;
 
@@ -40,6 +42,10 @@ architecture RTL of limits is
     signal stat_dc8_out : std_logic;
     signal stat_dc9_out : std_logic;
     signal stat_dc10_out : std_logic;
+    signal relays_ok : std_logic;
+    signal relay1_ok : std_logic;
+    signal relay2_ok : std_logic;
+    signal relay3_ok : std_logic;
 
 begin
     -- over voltage
@@ -78,8 +84,8 @@ begin
         PSU_Status_mask => PSU_Status_mask_uvp
     );
     
-    PSU_status <=  (PSU_status_uvp and PSU_status_mask_uvp) or
-                   (PSU_status_logic and PSU_status_mask_logic);
+    PSU_status <=  (PSU_status_uvp and PSU_status_mask_uvp) or (PSU_status_logic and PSU_status_mask_logic);
+    PSU_status_mask <= PSU_status_mask_uvp and PSU_status_mask_logic;
     
     limits_stat(limit_uvp)             <= uvp_error;
     limits_stat(limit_uvp_ph1)         <= PSU_Status_uvp(psu_status_AC_IN_PH1_UV);
@@ -99,6 +105,29 @@ begin
     limits_stat(limit_stat_dc8_out   ) <= stat_dc8_out   ;
     limits_stat(limit_stat_dc9_out   ) <= stat_dc9_out   ;
     limits_stat(limit_stat_dc10_out  ) <= stat_dc10_out  ;
+    limits_stat(limit_relay_3p       ) <= relays_ok      ;   
+    limits_stat(limit_relay_3p_a     ) <= relay1_ok      ;   
+    limits_stat(limit_relay_3p_b     ) <= relay2_ok      ;   
+    limits_stat(limit_relay_3p_c     ) <= relay3_ok      ;   
+    
+    lamp_i: entity work.lamp
+    port map(
+        clk       => clk,
+        sync_rst  => sync_rst,
+        registers => registers,
+        lamp_stat => lamp_stat
+    );
+    
+    relay_limits_i: entity work.relay_limits
+    port map(
+        clk       => clk,
+        sync_rst  => sync_rst,
+        registers => registers,
+        relays_ok  => relays_ok,
+        relay1_ok  => relay1_ok,
+        relay2_ok  => relay2_ok,
+        relay3_ok  => relay3_ok
+    );
     
     
 end architecture RTL;

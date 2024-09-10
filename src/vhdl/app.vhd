@@ -60,14 +60,15 @@ architecture RTL of app is
     signal uvp_error                   : std_logic;
     signal lamp_stat                   : std_logic;
     signal PSU_status                  : std_logic_vector(PSU_Status_range);
-    signal PSU_status_uvp              : std_logic_vector(PSU_Status_range);
-    signal PSU_status_uvp_mask         : std_logic_vector(PSU_Status_range);
+    signal PSU_status_limits           : std_logic_vector(PSU_Status_range);
+    signal PSU_status_limits_mask      : std_logic_vector(PSU_Status_range);
     signal PSU_status_pwr_on           : std_logic_vector(PSU_Status_range);
     signal PSU_status_pwr_on_mask      : std_logic_vector(PSU_Status_range);
-    signal lamp_temp                   : std_logic;
     signal rpm1                        : std_logic_vector(15 downto 0);
     signal rpm2                        : std_logic_vector(15 downto 0);
     signal rpm3                        : std_logic_vector(15 downto 0);
+    signal limits_stat                 : std_logic_vector(limits_range);
+    
 begin
     one_ms_tick <= free_running_1ms;
     
@@ -109,7 +110,6 @@ begin
                     internal_regs(IO_OUT0)(IO_OUT0_RESET_OUT_FPGA    ) <= app_2_IOs.RESET_OUT_FPGA    ; 
                     internal_regs(IO_OUT0)(IO_OUT0_SPARE_OUT_FPGA    ) <= app_2_IOs.SPARE_OUT_FPGA    ; 
                     internal_regs(IO_OUT0)(IO_OUT0_ESHUTDOWN_OUT_FPGA) <= app_2_IOs.ESHUTDOWN_OUT_FPGA; 
-                    internal_regs(IO_OUT0)(IO_OUT0_RELAY_1PH_FPGA    ) <= app_2_IOs.RELAY_1PH_FPGA    ; 
                     internal_regs(IO_OUT0)(IO_OUT0_RELAY_3PH_FPGA    ) <= app_2_IOs.RELAY_3PH_FPGA    ; 
                     internal_regs(IO_OUT0)(IO_OUT0_FAN_EN3_FPGA      ) <= app_2_IOs.FAN_EN3_FPGA      ; 
                     internal_regs(IO_OUT0)(IO_OUT0_FAN_CTRL3_FPGA    ) <= app_2_IOs.FAN_CTRL3_FPGA    ; 
@@ -154,8 +154,9 @@ begin
         end if;
     end process;
 
-    PSU_status <=  (PSU_status_uvp and PSU_status_uvp_mask) or
-                   (PSU_status_pwr_on and PSU_status_pwr_on_mask);   
+    -- TODO check this
+    PSU_status <=  (PSU_status_limits and PSU_status_limits_mask) or
+                 (PSU_status_pwr_on and PSU_status_pwr_on_mask);   
     
     timer_pr : process(clk)
     begin
@@ -356,7 +357,7 @@ begin
         power_2_ios      => power_2_ios,
         fan_pwm          => fan_pwm,
         de               => de,
-        lamp_stat        => lamp_temp--lamp_stat
+        lamp_stat        => lamp_stat
     );
     
     power_i: entity work.power_on_off
@@ -374,28 +375,22 @@ begin
         fans_ok          => fans_ok,
         zero_cross       => zero_cross,
         uvp_error        => uvp_error,
-        PSU_Status      => PSU_Status_pwr_on,
-        PSU_Status_mask => PSU_Status_pwr_on_mask,
-        lamp_temp       => lamp_temp
+        PSU_Status       => PSU_Status_pwr_on,
+        PSU_Status_mask  => PSU_Status_pwr_on_mask,
+        limits_stat      => limits_stat
     );
     
-    uvp_i: entity work.uvp
+    limits_i: entity work.limits
     port map(
         clk             => clk,
         sync_rst        => sync_rst,
         registers       => registers,
-        uvp_error       => uvp_error,
-        PSU_Status      => PSU_Status_uvp,
-        PSU_Status_mask => PSU_Status_uvp_mask
+        PSU_Status      => PSU_Status_limits,
+        PSU_Status_mask => PSU_Status_limits_mask,
+        limits_stat     => limits_stat,
+        lamp_stat       => lamp_stat
     );
     
-    lamp_i: entity work.lamp
-    port map(
-        clk       => clk,
-        sync_rst  => sync_rst,
-        registers => registers,
-        lamp_stat => lamp_stat
-    );
     
     
 end architecture RTL;

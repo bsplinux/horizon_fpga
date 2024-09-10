@@ -54,7 +54,6 @@ begin
                 app_2_IOs.RESET_OUT_FPGA     <= '1'; -- normally high
                 app_2_IOs.SPARE_OUT_FPGA     <= '0';
                 app_2_IOs.ESHUTDOWN_OUT_FPGA <= '1'; -- normally high
-                app_2_IOs.RELAY_1PH_FPGA     <= '0';
                 app_2_IOs.RELAY_3PH_FPGA     <= '0';
                 app_2_IOs.FAN_EN3_FPGA       <= '0';
                 app_2_IOs.FAN_CTRL3_FPGA     <= '0';
@@ -91,7 +90,6 @@ begin
                     app_2_IOs.RESET_OUT_FPGA     <= registers(IO_OUT0)(IO_OUT0_RESET_OUT_FPGA    );
                     app_2_IOs.SPARE_OUT_FPGA     <= registers(IO_OUT0)(IO_OUT0_SPARE_OUT_FPGA    );
                     app_2_IOs.ESHUTDOWN_OUT_FPGA <= registers(IO_OUT0)(IO_OUT0_ESHUTDOWN_OUT_FPGA);
-                    app_2_IOs.RELAY_1PH_FPGA     <= registers(IO_OUT0)(IO_OUT0_RELAY_1PH_FPGA    );
                     app_2_IOs.RELAY_3PH_FPGA     <= registers(IO_OUT0)(IO_OUT0_RELAY_3PH_FPGA    );
                     app_2_IOs.FAN_EN3_FPGA       <= registers(IO_OUT0)(IO_OUT0_FAN_EN3_FPGA      );
                     app_2_IOs.FAN_CTRL3_FPGA     <= registers(IO_OUT0)(IO_OUT0_FAN_CTRL3_FPGA    ) when registers(PWM_CTL)(PWM_CTL_PWM3_ACTIVE) = '0' else fan_pwm(3);
@@ -127,7 +125,6 @@ begin
                     app_2_IOs.RESET_OUT_FPGA     <= power_2_ios.RESET_OUT_FPGA    ;
                     app_2_IOs.SPARE_OUT_FPGA     <= power_2_ios.SPARE_OUT_FPGA    ;
                     app_2_IOs.ESHUTDOWN_OUT_FPGA <= power_2_ios.ESHUTDOWN_OUT_FPGA;
-                    app_2_IOs.RELAY_1PH_FPGA     <= power_2_ios.RELAY_1PH_FPGA    ;
                     app_2_IOs.RELAY_3PH_FPGA     <= power_2_ios.RELAY_3PH_FPGA    ;
                     app_2_IOs.FAN_EN3_FPGA       <= power_2_ios.FAN_EN3_FPGA      ;
                     app_2_IOs.FAN_CTRL3_FPGA     <= fan_pwm(3);    

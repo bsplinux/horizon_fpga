@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------------------------
--- Registers VHDL package created from yaml definition of registers at 03-09-2024 11:34 --
+-- Registers VHDL package created from yaml definition of registers at 10-09-2024 17:51 --
 --   python function: regs2vhdl.py                                                      --
 --   yaml file name: ../yaml/condor_regs.yaml                                           --
 ------------------------------------------------------------------------------------------
@@ -364,6 +364,7 @@ package regs_pkg is
   constant GENERAL_CONTROL_UVP_EN_PH3     : integer := 10;
   constant GENERAL_CONTROL_UVP_EN_DC      : integer := 11;
   constant GENERAL_CONTROL_FAN_CHECK      : integer := 12;
+  constant GENERAL_CONTROL_RELAY_CHECK    : integer := 13;
   -- fields for GENERAL_STATUS
   constant GENERAL_STATUS_REGS_LOCKED     : integer :=  0;
   constant GENERAL_STATUS_STOP_LOG        : integer :=  1;
@@ -400,7 +401,6 @@ package regs_pkg is
   constant IO_OUT0_RESET_OUT_FPGA         : integer :=  8;
   constant IO_OUT0_SPARE_OUT_FPGA         : integer :=  9;
   constant IO_OUT0_ESHUTDOWN_OUT_FPGA     : integer := 10;
-  constant IO_OUT0_RELAY_1PH_FPGA         : integer := 11;
   constant IO_OUT0_RELAY_3PH_FPGA         : integer := 12;
   constant IO_OUT0_FAN_EN3_FPGA           : integer := 13;
   constant IO_OUT0_FAN_CTRL3_FPGA         : integer := 14;
@@ -769,12 +769,12 @@ package regs_pkg is
   ----------------------------------------------------------------------------------
   constant WRITEABLE_REGS : reg_array_t := (
     BITSTREAM_TIME       => X"FFFFFFFF",
-    GENERAL_CONTROL      => X"00000FFF",
+    GENERAL_CONTROL      => X"00003FFF",
     GENERAL_STATUS       => X"00000003",
     TIMESTAMP_L          => X"FFFFFFFF",
     TIMESTAMP_H          => X"FFFFFFFF",
     IO_IN                => X"000FFFFF",
-    IO_OUT0              => X"03FFFFFF",
+    IO_OUT0              => X"03FFF7FF",
     IO_OUT1              => X"000001FF",
     SN_ETI               => X"000003FF",
     LOG_VDC_IN           => X"FFFFFFFF",

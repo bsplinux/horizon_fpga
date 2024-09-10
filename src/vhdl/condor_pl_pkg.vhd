@@ -104,7 +104,6 @@ package condor_pl_pkg is
         RESET_OUT_FPGA    : std_logic; 
         SPARE_OUT_FPGA    : std_logic; 
         ESHUTDOWN_OUT_FPGA: std_logic; 
-        RELAY_1PH_FPGA    : std_logic; 
         RELAY_3PH_FPGA    : std_logic; 
         EN_PFC_FB         : std_logic; 
         EN_PSU_1_FB       : std_logic; 
@@ -202,7 +201,11 @@ package condor_pl_pkg is
     constant limit_stat_dc8_out                     : integer := 5;
     constant limit_stat_dc9_out                     : integer := 5;
     constant limit_stat_dc10_out                    : integer := 5;
-    constant limit_dummy                            : integer := 6;
+    constant limit_relay_3p                         : integer := 77;
+    constant limit_relay_3p_a                       : integer := 78;
+    constant limit_relay_3p_b                       : integer := 79;
+    constant limit_relay_3p_c                       : integer := 80;
+    constant limit_dummy                            : integer := 100;
     subtype limits_range is integer range limit_dummy - 1 downto 0;
 
     -- ps interrupts index

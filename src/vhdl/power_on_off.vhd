@@ -24,7 +24,8 @@ entity power_on_off is
         uvp_error        : in  std_logic;
         PSU_Status       : out std_logic_vector(PSU_Status_range);
         PSU_Status_mask  : out std_logic_vector(PSU_Status_range);
-        lamp_temp        : out std_logic
+        limits_stat      : in  std_logic_vector(limits_range)
+        
     );
 end entity power_on_off;
 
@@ -47,8 +48,6 @@ architecture RTL of power_on_off is
     signal debug_state : main_sm_t;
     signal power_on_debaunced : std_logic;
     signal poweron_after26secs : std_logic;
-    signal relay_1p_on_request : std_logic;
-    signal relay_1p_pg : std_logic;
     signal relay_3p_pg : std_logic;
     signal input_ovp : std_logic;
     signal output_ovp : std_logic;
@@ -86,7 +85,6 @@ begin
                 power_2_ios.EN_PSU_10_FB       <= '0';
                 power_2_ios.RESET_OUT_FPGA     <= '1';
                 power_2_ios.SHUTDOWN_OUT_FPGA  <= '1';
-                relay_1p_on_request            <= '0';
                 power_2_ios.RELAY_3PH_FPGA     <= '0';
                 power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                 cnt := 0;
@@ -97,7 +95,6 @@ begin
                 keep_fans_on_10min <= '0';
                 power_on_ok <= '0';
                 during_power_down <= '0';
-                lamp_temp <= '0';
                 power_2_ios.P_OUT_STATUS_FPGA <= '0';
             else
                 -- next state logic
@@ -194,7 +191,6 @@ begin
                 keep_fans_on_10min <= '0';
                 power_on_ok <= '0';
                 during_power_down <= '0';
-                lamp_temp <= '0';
                 power_2_ios.P_OUT_STATUS_FPGA <= '0';
                 case state is 
                     when idle =>
@@ -208,7 +204,6 @@ begin
                         power_2_ios.EN_PSU_8_FB    <= '0';
                         power_2_ios.EN_PSU_9_FB    <= '0';
                         power_2_ios.EN_PSU_10_FB   <= '0';
-                        relay_1p_on_request        <= '0';
                         power_2_ios.RELAY_3PH_FPGA <= '0';
                         fans_on <= '0';
                         turn_off_tcu <= '1';
@@ -221,7 +216,6 @@ begin
                             cnt := cnt + 1;
                         end if;
                     when pwron_psus =>
-                        lamp_temp <= '1';
                         power_2_ios.P_OUT_STATUS_FPGA <= '1';
                         
                         power_2_ios.EN_PSU_1_FB    <= '1';
@@ -232,13 +226,11 @@ begin
                         power_2_ios.EN_PSU_8_FB    <= '1';
                         power_2_ios.EN_PSU_9_FB    <= '1';
                         power_2_ios.EN_PSU_10_FB   <= '1';
-                        relay_1p_on_request        <= '1';
                         power_2_ios.RELAY_3PH_FPGA <= '1';
                         if free_running_1ms then
                             cnt := cnt + 1;
                         end if;
                     when wt4_all_on =>
-                        lamp_temp <= '1';
                         power_2_ios.P_OUT_STATUS_FPGA <= '1';
                         if free_running_1ms then
                             cnt := cnt + 1;
@@ -247,7 +239,6 @@ begin
                         power_2_ios.ESHUTDOWN_OUT_FPGA <= '0';
                         power_2_ios.EN_PSU_1_FB <= '0';
                         power_2_ios.EN_PSU_9_FB <= '0';
-                        relay_1p_on_request        <= '0';
                         power_2_ios.RELAY_3PH_FPGA <= '0';
                         cnt := 0;
                         all_in_range_s := all_in_range;
@@ -282,13 +273,11 @@ begin
                             cnt := cnt + 1;
                         end if;
                     when power_on =>
-                        lamp_temp <= '1';
                         power_2_ios.P_OUT_STATUS_FPGA <= '1';
                         power_on_ok <= '1';
                         cnt := 0;
                         turn_on_tcu <= '1';
                     when poweron_low =>
-                        lamp_temp <= '1';
                         power_2_ios.P_OUT_STATUS_FPGA <= '1';
                         if free_running_1ms then
                             cnt := cnt + 1;
@@ -314,7 +303,6 @@ begin
                             power_2_ios.EN_PSU_8_FB    <= '0';
                             power_2_ios.EN_PSU_9_FB    <= '0';
                             power_2_ios.EN_PSU_10_FB   <= '0';
-                            relay_1p_on_request        <= '0';
                             power_2_ios.RELAY_3PH_FPGA <= '0';
                             turn_off_tcu <= '1';
                         end if;
@@ -383,35 +371,13 @@ begin
     end process;
     
     -- TODO
-    --process to take care of
-    --power_2_ios.RELAY_1PH_FPGA
-    --based on relay_1p_on_request
-    --end process;
     -- for now naive implementation
     temperature_ok <= '1';
     input_ovp <= '0';--registers(IO_IN)(IO_IN_FAN_HALL1_FPGA);-- SIMULATING out of range
     output_ovp <= '0';
-    relay_1p_pg <= '1';
-    relay_3p_pg <= '1';
-        
-    zero_cross_pr: process(clk)
-        
-    begin
-        if rising_edge(clk) then
-            if sync_rst then
-                power_2_ios.RELAY_1PH_FPGA <= '0';
-            else
-                if relay_1p_on_request = '0' then
-                    power_2_ios.RELAY_1PH_FPGA <= '0';
-                else
-                    if zero_cross then
-                        power_2_ios.RELAY_1PH_FPGA <= '1';
-                    end if;
-                end if;
-            end if;
-        end if;
-    end process;
     
+    relay_3p_pg <= limits_stat(limit_relay_3p);
+        
     all_in_ragne_pr: process(clk)
     begin
         if rising_edge(clk) then
@@ -487,7 +453,7 @@ begin
                                registers(IO_IN)(IO_IN_PG_PSU_8_FB ) and
                                registers(IO_IN)(IO_IN_PG_PSU_9_FB ) and
                                registers(IO_IN)(IO_IN_PG_PSU_10_FB) and
-                               relay_1p_pg and relay_3p_pg then
+                               relay_3p_pg then
                     all_inputs_good <= '1';
                 end if;                   
             end if;

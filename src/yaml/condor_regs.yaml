@@ -34,7 +34,8 @@ reg_general_control: &reg_general_control
     UVP_EN_PH3   : 10
     UVP_EN_DC    : 11
     FAN_CHECK    : 12
-  used_bits: "11:0"
+    RELAY_CHECK  : 13
+  used_bits: "13:0"
 
 reg_general_status: &reg_general_status 
   fpga_access: true
@@ -104,7 +105,7 @@ reg_io_out0: &reg_io_out0
     RESET_OUT_FPGA     :  8
     SPARE_OUT_FPGA     :  9
     ESHUTDOWN_OUT_FPGA : 10
-    RELAY_1PH_FPGA     : 11
+    #RELAY_1PH_FPGA     : 11
     RELAY_3PH_FPGA     : 12
     FAN_EN3_FPGA       : 13
     FAN_CTRL3_FPGA     : 14
@@ -120,7 +121,7 @@ reg_io_out0: &reg_io_out0
     EN_PSU_9_FB        : 24
     EN_PSU_10_FB       : 25 
     #range              : "25:0"
-  used_bits: "25:0"
+  used_bits: "25:12,10:0"
   
 reg_io_out1: &reg_io_out1
   fpga_access: true

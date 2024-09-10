@@ -24,7 +24,6 @@ set_property -dict {PACKAGE_PIN L15 IOSTANDARD LVCMOS33} [get_ports HV_ADC_SDI_F
 set_property -dict {PACKAGE_PIN L14 IOSTANDARD LVCMOS33} [get_ports HV_ADC_SCLK_FPGA]
 set_property -dict {PACKAGE_PIN M15 IOSTANDARD LVCMOS33} [get_ports HV_ADC_CS_FPGA]
 set_property -dict {PACKAGE_PIN M14 IOSTANDARD LVCMOS33} [get_ports HV_ADC_SDO_FPGA]
-set_property -dict {PACKAGE_PIN J16 IOSTANDARD LVCMOS33} [get_ports RELAY_1PH_FPGA]
 set_property -dict {PACKAGE_PIN K16 IOSTANDARD LVCMOS33} [get_ports RELAY_3PH_FPGA]
 set_property -dict {PACKAGE_PIN A20 IOSTANDARD LVCMOS33} [get_ports FAN_PG3_FPGA]
 set_property -dict {PACKAGE_PIN B19 IOSTANDARD LVCMOS33} [get_ports FAN_HALL3_FPGA]

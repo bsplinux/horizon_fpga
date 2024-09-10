@@ -65,6 +65,8 @@ architecture RTL of condor_pl_tb is
     signal PH_C_ON_fpga : std_logic := '0';
     
     signal pg_off : std_logic;
+    signal VP_0 : std_logic;
+    signal VN_0 : std_logic;
 begin
     PG_BUCK_FB   <= EN_PFC_FB    after 10 ms;
     PG_PSU_1_FB  <= pg_off and EN_PSU_1_FB  ;--after 10 ms;
@@ -233,7 +235,9 @@ begin
         lamp_status_fpga      => lamp_status_fpga,
         PH_A_ON_fpga          => PH_A_ON_fpga,
         PH_B_ON_fpga          => PH_B_ON_fpga,
-        PH_C_ON_fpga          => PH_C_ON_fpga
+        PH_C_ON_fpga          => PH_C_ON_fpga,
+        VP_0 => VP_0,
+        VN_0 => VN_0
     );
     
 end architecture RTL;
