@@ -68,6 +68,8 @@ architecture RTL of app is
     signal rpm2                        : std_logic_vector(15 downto 0);
     signal rpm3                        : std_logic_vector(15 downto 0);
     signal limits_stat                 : std_logic_vector(limits_range);
+    signal P_IN_STATUS_FPGA : std_logic;
+    signal P_OUT_STATUS_FPGA : std_logic;
     
 begin
     one_ms_tick <= free_running_1ms;
@@ -357,7 +359,9 @@ begin
         power_2_ios      => power_2_ios,
         fan_pwm          => fan_pwm,
         de               => de,
-        lamp_stat        => lamp_stat
+        lamp_stat        => lamp_stat,
+        P_IN_STATUS_FPGA  => P_IN_STATUS_FPGA,
+        P_OUT_STATUS_FPGA => P_OUT_STATUS_FPGA
     );
     
     power_i: entity work.power_on_off
@@ -382,15 +386,15 @@ begin
     
     limits_i: entity work.limits
     port map(
-        clk             => clk,
-        sync_rst        => sync_rst,
-        registers       => registers,
-        PSU_Status      => PSU_Status_limits,
-        PSU_Status_mask => PSU_Status_limits_mask,
-        limits_stat     => limits_stat,
-        lamp_stat       => lamp_stat
+        clk               => clk,
+        sync_rst          => sync_rst,
+        registers         => registers,
+        PSU_Status        => PSU_Status_limits,
+        PSU_Status_mask   => PSU_Status_limits_mask,
+        limits_stat       => limits_stat,
+        lamp_stat         => lamp_stat,
+        P_IN_STATUS_FPGA  => P_IN_STATUS_FPGA,
+        P_OUT_STATUS_FPGA => P_OUT_STATUS_FPGA
     );
-    
-    
-    
+
 end architecture RTL;

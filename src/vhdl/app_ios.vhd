@@ -8,19 +8,21 @@ use work.regs_pkg.all;
 
 entity app_ios is
     port(
-        clk              : in  std_logic;
-        sync_rst         : in  std_logic;
-        registers        : in  reg_array_t;
-        regs_updating    : in  reg_slv_array_t;
-        regs_reading     : in  reg_slv_array_t;
-        internal_regs    : out reg_array_t;
-        internal_regs_we : out reg_slv_array_t;
-        ios_2_app        : in  ios_2_app_t;
-        app_2_ios        : out app_2_ios_t;
-        power_2_ios      : in  power_2_ios_t;
-        fan_pwm          : in  std_logic_vector(1 to 3);
-        de               : in  std_logic_vector(8 downto 0);
-        lamp_stat        : in  std_logic
+        clk               : in  std_logic;
+        sync_rst          : in  std_logic;
+        registers         : in  reg_array_t;
+        regs_updating     : in  reg_slv_array_t;
+        regs_reading      : in  reg_slv_array_t;
+        internal_regs     : out reg_array_t;
+        internal_regs_we  : out reg_slv_array_t;
+        ios_2_app         : in  ios_2_app_t;
+        app_2_ios         : out app_2_ios_t;
+        power_2_ios       : in  power_2_ios_t;
+        fan_pwm           : in  std_logic_vector(1 to 3);
+        de                : in  std_logic_vector(8 downto 0);
+        lamp_stat         : in  std_logic;
+        P_IN_STATUS_FPGA  : in  std_logic;
+        P_OUT_STATUS_FPGA : in  std_logic
     );
 end entity app_ios;
 
@@ -116,10 +118,10 @@ begin
                 else  -- here we need to add application assignment to the pins
                     app_2_IOs.FAN_EN1_FPGA       <= power_2_ios.FAN_EN1_FPGA      ;
                     app_2_IOs.FAN_CTRL1_FPGA     <= fan_pwm(1);   
-                    app_2_IOs.P_IN_STATUS_FPGA   <= power_2_ios.P_IN_STATUS_FPGA  ;
+                    app_2_IOs.P_IN_STATUS_FPGA   <= P_IN_STATUS_FPGA  ;
                     app_2_IOs.POD_STATUS_FPGA    <= lamp_stat;
                     app_2_IOs.ECTCU_INH_FPGA     <= power_2_ios.ECTCU_INH_FPGA    ;
-                    app_2_IOs.P_OUT_STATUS_FPGA  <= power_2_ios.P_OUT_STATUS_FPGA ;
+                    app_2_IOs.P_OUT_STATUS_FPGA  <= P_OUT_STATUS_FPGA ;
                     app_2_IOs.CCTCU_INH_FPGA     <= power_2_ios.CCTCU_INH_FPGA    ;
                     app_2_IOs.SHUTDOWN_OUT_FPGA  <= power_2_ios.SHUTDOWN_OUT_FPGA ;
                     app_2_IOs.RESET_OUT_FPGA     <= power_2_ios.RESET_OUT_FPGA    ;

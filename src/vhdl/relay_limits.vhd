@@ -24,14 +24,14 @@ end entity relay_limits;
 
 architecture RTL of relay_limits is
     constant RELAY_TH : integer := 200; -- resulution is 100mv and thershold is 20 V => 20 [V]/0.1[V/UNIT] = 200 [UNITS]
-    signal v1, v2, v3, v1_relay, v2_relay, v3_relay: unsigned(15 downto 0);
+    signal v1, v2, v3, v1_relay, v2_relay, v3_relay: signed(15 downto 0);
 begin
-    v1 <= unsigned(registers(SPI_RMS_Vsns_PH1)(15 downto 0));
-    v2 <= unsigned(registers(SPI_RMS_Vsns_PH2)(15 downto 0));
-    v3 <= unsigned(registers(SPI_RMS_Vsns_PH3)(15 downto 0));
-    v1_relay <= unsigned(registers(SPI_RMS_Vsns_PH_A_RLY)(15 downto 0));
-    v2_relay <= unsigned(registers(SPI_RMS_Vsns_PH_B_RLY)(15 downto 0));
-    v3_relay <= unsigned(registers(SPI_RMS_Vsns_PH_C_RLY)(15 downto 0));
+    v1 <= signed(registers(SPI_RMS_Vsns_PH1)(15 downto 0));
+    v2 <= signed(registers(SPI_RMS_Vsns_PH2)(15 downto 0));
+    v3 <= signed(registers(SPI_RMS_Vsns_PH3)(15 downto 0));
+    v1_relay <= signed(registers(SPI_RMS_Vsns_PH_A_RLY)(15 downto 0));
+    v2_relay <= signed(registers(SPI_RMS_Vsns_PH_B_RLY)(15 downto 0));
+    v3_relay <= signed(registers(SPI_RMS_Vsns_PH_C_RLY)(15 downto 0));
 
     process(clk)
         

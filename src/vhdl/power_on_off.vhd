@@ -63,8 +63,6 @@ begin
     internal_regs <= (others => X"00000000");
     internal_regs_we <= (others => '0');
         
-    power_2_ios.P_IN_STATUS_FPGA <= '1';
-        
     main_sm_pr: process(clk)
        variable state : main_sm_t := idle;
        variable cnt : integer range 0 to SEC_20 := 0;
@@ -95,7 +93,6 @@ begin
                 keep_fans_on_10min <= '0';
                 power_on_ok <= '0';
                 during_power_down <= '0';
-                power_2_ios.P_OUT_STATUS_FPGA <= '0';
             else
                 -- next state logic
                 case state is 
@@ -191,7 +188,6 @@ begin
                 keep_fans_on_10min <= '0';
                 power_on_ok <= '0';
                 during_power_down <= '0';
-                power_2_ios.P_OUT_STATUS_FPGA <= '0';
                 case state is 
                     when idle =>
                         cnt := 0;
@@ -216,7 +212,6 @@ begin
                             cnt := cnt + 1;
                         end if;
                     when pwron_psus =>
-                        power_2_ios.P_OUT_STATUS_FPGA <= '1';
                         
                         power_2_ios.EN_PSU_1_FB    <= '1';
                         power_2_ios.EN_PSU_2_FB    <= '1';
@@ -231,7 +226,6 @@ begin
                             cnt := cnt + 1;
                         end if;
                     when wt4_all_on =>
-                        power_2_ios.P_OUT_STATUS_FPGA <= '1';
                         if free_running_1ms then
                             cnt := cnt + 1;
                         end if;
@@ -273,12 +267,10 @@ begin
                             cnt := cnt + 1;
                         end if;
                     when power_on =>
-                        power_2_ios.P_OUT_STATUS_FPGA <= '1';
                         power_on_ok <= '1';
                         cnt := 0;
                         turn_on_tcu <= '1';
                     when poweron_low =>
-                        power_2_ios.P_OUT_STATUS_FPGA <= '1';
                         if free_running_1ms then
                             cnt := cnt + 1;
                         end if;
