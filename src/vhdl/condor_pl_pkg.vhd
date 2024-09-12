@@ -4,10 +4,11 @@ use ieee.std_logic_1164.all;
 use work.regs_pkg.all;
 
 package condor_pl_pkg is
-    constant FPGA_VERSION_CONST : std_logic_vector(full_reg_range) := X"00020000"; -- version (major,minor)
+    constant FPGA_VERSION_CONST : std_logic_vector(full_reg_range) := X"00020001"; -- version (major,minor)
     -- 1.7 integration of SW at Elbit (end of august 2024)
     -- 1.8 is for integration of old board after integration @ elop
     -- 2.0 is for new version of the board
+    -- 2.1 changes in spec (uart pinouts and constants and more) 12-9-24
     constant UART_A_SIZE        : integer := 12;
     constant AXI_A_SIZE         : integer := 12;
     constant NUM_UARTS          : integer := 9;
@@ -21,10 +22,10 @@ package condor_pl_pkg is
     
     type real_vec_t is array(natural range <>) of real;
     -- constant for parameters based on spec 2.2.13
-    constant PARAM_A_VOLTAGE: real := 1.197772;
-    constant PARAM_B_VOLTAGE: real := 1863.0;   
-    constant PARAM_A_current_vec : real_vec_t(4 downto 0) := (0.161172, 0.161172, 0.161172, 0.32234, 0.015263); -- based on table on 2.2.1.3
-    constant PARAM_B_current_vec : real_vec_t(4 downto 0) := (  2047.0,   2047.0,   2047.0,  2047.0,   2047.0); -- based on table on 2.2.1.3
+    constant PARAM_A_VOLTAGE: real := 1.0889;
+    constant PARAM_B_VOLTAGE: real := 2047.0;   
+    constant PARAM_A_current_vec : real_vec_t(4 downto 0) := (0.14652, 0.14652, 0.14652,   0.32,  0.092); -- based on table on 2.2.1.3
+    constant PARAM_B_current_vec : real_vec_t(4 downto 0) := ( 2252.0,  2252.0,  2252.0, 2047.0, 3412.0); -- based on table on 2.2.1.3
     constant PARAM_A_VDC: real := 0.219194;
     constant PARAM_B_VDC: real := 1343.0;   
     
@@ -83,8 +84,8 @@ package condor_pl_pkg is
         RS485_DE_9        : std_logic; 
         RS485_DE_1        : std_logic; 
         RS485_DE_2        : std_logic; 
-        RS485_DE_3        : std_logic; 
-        RS485_DE_4        : std_logic; 
+        RS485_DE_10       : std_logic; 
+        RS485_DE_Buck     : std_logic; 
         RS485_DE_5        : std_logic; 
         RS485_DE_6        : std_logic;
     end record app_2_ios_t;

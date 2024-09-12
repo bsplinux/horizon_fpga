@@ -132,8 +132,8 @@ reg_io_out1: &reg_io_out1
     RS485_DE_9 : 2
     RS485_DE_1 : 3
     RS485_DE_2 : 4
-    RS485_DE_3 : 5
-    RS485_DE_4 : 6
+    RS485_DE_10 : 5
+    RS485_DE_Buck : 6
     RS485_DE_5 : 7
     RS485_DE_6 : 8
     #range      : "8:0"
@@ -428,11 +428,9 @@ regs:
   - SPI_Vsns_PH1      : *reg_spi_raw
   - SPI_OUT4_sns      : *reg_spi_raw
   - SPI_RMS_OUT4_Isns     : *reg_spi_raw
-  - SPI_RMS_DC_PWR_I_sns  : *reg_spi_raw
   - SPI_RMS_PH1_I_sns     : *reg_spi_raw
   - SPI_RMS_PH2_I_sns     : *reg_spi_raw
   - SPI_RMS_PH3_I_sns     : *reg_spi_raw
-  - SPI_RMS_28V_IN_sns    : *reg_spi_raw
   - SPI_RMS_Vsns_PH_A_RLY : *reg_spi_raw
   - SPI_RMS_Vsns_PH_B_RLY : *reg_spi_raw
   - SPI_RMS_Vsns_PH_C_RLY : *reg_spi_raw

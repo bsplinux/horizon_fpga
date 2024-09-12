@@ -10,7 +10,7 @@ hls_projects:
     rms: solution1
 vivado_project: condor_pl
 steps: 
-    build_hls: true
+    build_hls: false
     reset_runs : true
     build: true
     close: false

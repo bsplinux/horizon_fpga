@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------------------------
--- Registers VHDL package created from yaml definition of registers at 10-09-2024 17:51 --
+-- Registers VHDL package created from yaml definition of registers at 12-09-2024 17:38 --
 --   python function: regs2vhdl.py                                                      --
 --   yaml file name: ../yaml/condor_regs.yaml                                           --
 ------------------------------------------------------------------------------------------
@@ -155,11 +155,9 @@ package regs_pkg is
       SPI_Vsns_PH1        ,
       SPI_OUT4_sns        ,
       SPI_RMS_OUT4_Isns   ,
-      SPI_RMS_DC_PWR_I_sns,
       SPI_RMS_PH1_I_sns   ,
       SPI_RMS_PH2_I_sns   ,
       SPI_RMS_PH3_I_sns   ,
-      SPI_RMS_28V_IN_sns  ,
       SPI_RMS_Vsns_PH_A_RLY,
       SPI_RMS_Vsns_PH_B_RLY,
       SPI_RMS_Vsns_PH_C_RLY,
@@ -169,8 +167,8 @@ package regs_pkg is
       SPI_RMS_OUT4_sns    ,
       NO_REG
   );
-  constant NUM_REGS:  natural := 155;
-  constant REGS_SPACE_SIZE : natural := 154;
+  constant NUM_REGS:  natural := 153;
+  constant REGS_SPACE_SIZE : natural := 152;
 
   type regs_a_t is array(REGS_SPACE_SIZE - 1 downto 0) of regs_names_t;
   constant regs_a: regs_a_t := (
@@ -316,18 +314,16 @@ package regs_pkg is
       139 => SPI_Vsns_PH1        ,
       140 => SPI_OUT4_sns        ,
       141 => SPI_RMS_OUT4_Isns   ,
-      142 => SPI_RMS_DC_PWR_I_sns,
-      143 => SPI_RMS_PH1_I_sns   ,
-      144 => SPI_RMS_PH2_I_sns   ,
-      145 => SPI_RMS_PH3_I_sns   ,
-      146 => SPI_RMS_28V_IN_sns  ,
-      147 => SPI_RMS_Vsns_PH_A_RLY,
-      148 => SPI_RMS_Vsns_PH_B_RLY,
-      149 => SPI_RMS_Vsns_PH_C_RLY,
-      150 => SPI_RMS_Vsns_PH3    ,
-      151 => SPI_RMS_Vsns_PH2    ,
-      152 => SPI_RMS_Vsns_PH1    ,
-      153 => SPI_RMS_OUT4_sns    ,
+      142 => SPI_RMS_PH1_I_sns   ,
+      143 => SPI_RMS_PH2_I_sns   ,
+      144 => SPI_RMS_PH3_I_sns   ,
+      145 => SPI_RMS_Vsns_PH_A_RLY,
+      146 => SPI_RMS_Vsns_PH_B_RLY,
+      147 => SPI_RMS_Vsns_PH_C_RLY,
+      148 => SPI_RMS_Vsns_PH3    ,
+      149 => SPI_RMS_Vsns_PH2    ,
+      150 => SPI_RMS_Vsns_PH1    ,
+      151 => SPI_RMS_OUT4_sns    ,
       others => NO_REG
   );
 
@@ -421,8 +417,8 @@ package regs_pkg is
   constant IO_OUT1_RS485_DE_9             : integer :=  2;
   constant IO_OUT1_RS485_DE_1             : integer :=  3;
   constant IO_OUT1_RS485_DE_2             : integer :=  4;
-  constant IO_OUT1_RS485_DE_3             : integer :=  5;
-  constant IO_OUT1_RS485_DE_4             : integer :=  6;
+  constant IO_OUT1_RS485_DE_10            : integer :=  5;
+  constant IO_OUT1_RS485_DE_Buck          : integer :=  6;
   constant IO_OUT1_RS485_DE_5             : integer :=  7;
   constant IO_OUT1_RS485_DE_6             : integer :=  8;
   -- fields for SN_ETI
@@ -686,11 +682,6 @@ package regs_pkg is
   subtype  SPI_RMS_OUT4_Isns_L_ID_RANGE   is integer range 15 downto 12;
   subtype  SPI_RMS_OUT4_Isns_H_D_RANGE    is integer range 27 downto 16;
   subtype  SPI_RMS_OUT4_Isns_H_ID_RANGE   is integer range 31 downto 28;
-  -- fields for SPI_RMS_DC_PWR_I_sns
-  subtype  SPI_RMS_DC_PWR_I_sns_L_D_RANGE is integer range 11 downto  0;
-  subtype  SPI_RMS_DC_PWR_I_sns_L_ID_RANGE is integer range 15 downto 12;
-  subtype  SPI_RMS_DC_PWR_I_sns_H_D_RANGE is integer range 27 downto 16;
-  subtype  SPI_RMS_DC_PWR_I_sns_H_ID_RANGE is integer range 31 downto 28;
   -- fields for SPI_RMS_PH1_I_sns
   subtype  SPI_RMS_PH1_I_sns_L_D_RANGE    is integer range 11 downto  0;
   subtype  SPI_RMS_PH1_I_sns_L_ID_RANGE   is integer range 15 downto 12;
@@ -706,11 +697,6 @@ package regs_pkg is
   subtype  SPI_RMS_PH3_I_sns_L_ID_RANGE   is integer range 15 downto 12;
   subtype  SPI_RMS_PH3_I_sns_H_D_RANGE    is integer range 27 downto 16;
   subtype  SPI_RMS_PH3_I_sns_H_ID_RANGE   is integer range 31 downto 28;
-  -- fields for SPI_RMS_28V_IN_sns
-  subtype  SPI_RMS_28V_IN_sns_L_D_RANGE   is integer range 11 downto  0;
-  subtype  SPI_RMS_28V_IN_sns_L_ID_RANGE  is integer range 15 downto 12;
-  subtype  SPI_RMS_28V_IN_sns_H_D_RANGE   is integer range 27 downto 16;
-  subtype  SPI_RMS_28V_IN_sns_H_ID_RANGE  is integer range 31 downto 28;
   -- fields for SPI_RMS_Vsns_PH_A_RLY
   subtype  SPI_RMS_Vsns_PH_A_RLY_L_D_RANGE is integer range 11 downto  0;
   subtype  SPI_RMS_Vsns_PH_A_RLY_L_ID_RANGE is integer range 15 downto 12;
@@ -905,11 +891,9 @@ package regs_pkg is
     SPI_Vsns_PH1         => X"FFFFFFFF",
     SPI_OUT4_sns         => X"FFFFFFFF",
     SPI_RMS_OUT4_Isns    => X"FFFFFFFF",
-    SPI_RMS_DC_PWR_I_sns => X"FFFFFFFF",
     SPI_RMS_PH1_I_sns    => X"FFFFFFFF",
     SPI_RMS_PH2_I_sns    => X"FFFFFFFF",
     SPI_RMS_PH3_I_sns    => X"FFFFFFFF",
-    SPI_RMS_28V_IN_sns   => X"FFFFFFFF",
     SPI_RMS_Vsns_PH_A_RLY => X"FFFFFFFF",
     SPI_RMS_Vsns_PH_B_RLY => X"FFFFFFFF",
     SPI_RMS_Vsns_PH_C_RLY => X"FFFFFFFF",
@@ -1050,11 +1034,9 @@ package regs_pkg is
     SPI_Vsns_PH1         => '1',
     SPI_OUT4_sns         => '1',
     SPI_RMS_OUT4_Isns    => '1',
-    SPI_RMS_DC_PWR_I_sns => '1',
     SPI_RMS_PH1_I_sns    => '1',
     SPI_RMS_PH2_I_sns    => '1',
     SPI_RMS_PH3_I_sns    => '1',
-    SPI_RMS_28V_IN_sns   => '1',
     SPI_RMS_Vsns_PH_A_RLY => '1',
     SPI_RMS_Vsns_PH_B_RLY => '1',
     SPI_RMS_Vsns_PH_C_RLY => '1',

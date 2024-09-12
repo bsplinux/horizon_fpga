@@ -57,7 +57,7 @@ begin
     v115_in_a  <= signed(registers(SPI_RMS_Vsns_PH1     )(15 downto 0));
     v115_in_b  <= signed(registers(SPI_RMS_Vsns_PH2     )(15 downto 0));
     v115_in_c  <= signed(registers(SPI_RMS_Vsns_PH3     )(15 downto 0));
-    v28_in     <= signed(registers(SPI_RMS_28V_IN_sns   )(15 downto 0));
+    v28_in     <= signed(registers(SPI_28V_IN_sns       )(15 downto 0));
     v115_out_a <= signed(registers(SPI_RMS_Vsns_PH_A_RLY)(15 downto 0));
     v115_out_b <= signed(registers(SPI_RMS_Vsns_PH_A_RLY)(15 downto 0));
     v115_out_c <= signed(registers(SPI_RMS_Vsns_PH_A_RLY)(15 downto 0));

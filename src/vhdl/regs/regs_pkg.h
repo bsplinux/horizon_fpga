@@ -1,6 +1,6 @@
 /*
 ----------------------------------------------------------------------------------------
--- Registers H file created from yaml definition of registers at     10-09-2024 17:51 --
+-- Registers H file created from yaml definition of registers at     12-09-2024 17:38 --
 --   python function: regs2h.py                                                       --
 --   yaml file name: ../yaml/condor_regs.yaml                                         --
 ----------------------------------------------------------------------------------------
@@ -188,8 +188,8 @@ typedef struct
     uint32_t RS485_DE_9             : 1;
     uint32_t RS485_DE_1             : 1;
     uint32_t RS485_DE_2             : 1;
-    uint32_t RS485_DE_3             : 1;
-    uint32_t RS485_DE_4             : 1;
+    uint32_t RS485_DE_10            : 1;
+    uint32_t RS485_DE_Buck          : 1;
     uint32_t RS485_DE_5             : 1;
     uint32_t RS485_DE_6             : 1;
 }fields_IO_OUT1_t;
@@ -1742,20 +1742,6 @@ typedef struct
     uint32_t L_ID_RANGE             : 4;
     uint32_t H_D_RANGE              : 12;
     uint32_t H_ID_RANGE             : 4;
-}fields_SPI_RMS_DC_PWR_I_sns_t;
-
-typedef union
-{
-    uint32_t raw;
-    fields_SPI_RMS_DC_PWR_I_sns_t fields;
-}SPI_RMS_DC_PWR_I_sns_t;
-
-typedef struct
-{
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
 }fields_SPI_RMS_PH1_I_sns_t;
 
 typedef union
@@ -1791,20 +1777,6 @@ typedef union
     uint32_t raw;
     fields_SPI_RMS_PH3_I_sns_t fields;
 }SPI_RMS_PH3_I_sns_t;
-
-typedef struct
-{
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
-}fields_SPI_RMS_28V_IN_sns_t;
-
-typedef union
-{
-    uint32_t raw;
-    fields_SPI_RMS_28V_IN_sns_t fields;
-}SPI_RMS_28V_IN_sns_t;
 
 typedef struct
 {
@@ -1904,8 +1876,8 @@ typedef union
     fields_SPI_RMS_OUT4_sns_t fields;
 }SPI_RMS_OUT4_sns_t;
 
-#define NUM_REGS_PACKED 154
-#define NUM_REGS 154
+#define NUM_REGS_PACKED 152
+#define NUM_REGS 152
 
 typedef struct
 {
@@ -2051,11 +2023,9 @@ typedef struct
     SPI_Vsns_PH1_t           SPI_Vsns_PH1        ;
     SPI_OUT4_sns_t           SPI_OUT4_sns        ;
     SPI_RMS_OUT4_Isns_t      SPI_RMS_OUT4_Isns   ;
-    SPI_RMS_DC_PWR_I_sns_t   SPI_RMS_DC_PWR_I_sns;
     SPI_RMS_PH1_I_sns_t      SPI_RMS_PH1_I_sns   ;
     SPI_RMS_PH2_I_sns_t      SPI_RMS_PH2_I_sns   ;
     SPI_RMS_PH3_I_sns_t      SPI_RMS_PH3_I_sns   ;
-    SPI_RMS_28V_IN_sns_t     SPI_RMS_28V_IN_sns  ;
     SPI_RMS_Vsns_PH_A_RLY_t  SPI_RMS_Vsns_PH_A_RLY;
     SPI_RMS_Vsns_PH_B_RLY_t  SPI_RMS_Vsns_PH_B_RLY;
     SPI_RMS_Vsns_PH_C_RLY_t  SPI_RMS_Vsns_PH_C_RLY;
@@ -2214,17 +2184,15 @@ typedef struct
 #define SPI_Vsns_PH1_i      139
 #define SPI_OUT4_sns_i      140
 #define SPI_RMS_OUT4_Isns_i 141
-#define SPI_RMS_DC_PWR_I_sns_i 142
-#define SPI_RMS_PH1_I_sns_i 143
-#define SPI_RMS_PH2_I_sns_i 144
-#define SPI_RMS_PH3_I_sns_i 145
-#define SPI_RMS_28V_IN_sns_i 146
-#define SPI_RMS_Vsns_PH_A_RLY_i 147
-#define SPI_RMS_Vsns_PH_B_RLY_i 148
-#define SPI_RMS_Vsns_PH_C_RLY_i 149
-#define SPI_RMS_Vsns_PH3_i  150
-#define SPI_RMS_Vsns_PH2_i  151
-#define SPI_RMS_Vsns_PH1_i  152
-#define SPI_RMS_OUT4_sns_i  153
+#define SPI_RMS_PH1_I_sns_i 142
+#define SPI_RMS_PH2_I_sns_i 143
+#define SPI_RMS_PH3_I_sns_i 144
+#define SPI_RMS_Vsns_PH_A_RLY_i 145
+#define SPI_RMS_Vsns_PH_B_RLY_i 146
+#define SPI_RMS_Vsns_PH_C_RLY_i 147
+#define SPI_RMS_Vsns_PH3_i  148
+#define SPI_RMS_Vsns_PH2_i  149
+#define SPI_RMS_Vsns_PH1_i  150
+#define SPI_RMS_OUT4_sns_i  151
 
 #endif //__REGS_PKG_H__

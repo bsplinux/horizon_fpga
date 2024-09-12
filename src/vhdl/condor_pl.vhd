@@ -75,52 +75,52 @@ entity condor_pl is
     	FAN_CTRL2_FPGA       	: out std_logic;
     	UART_RXD_PL	            : in  std_logic;
     	UART_TXD_PL	            : out std_logic;
-    	RS485_RXD_1          	: in  std_logic;
-    	RS485_DE_7           	: out std_logic;
-    	RS485_TXD_7          	: out std_logic;
-    	RS485_TXD_8          	: out std_logic;
-    	RS485_RXD_8          	: in  std_logic;
-    	RS485_RXD_9          	: in  std_logic;
-    	RS485_DE_8           	: out std_logic;
-    	RS485_DE_9           	: out std_logic;
-    	RS485_TXD_9          	: out std_logic;
-    	EN_PFC_FB            	: out std_logic;
-    	PG_BUCK_FB           	: in  std_logic;
-    	EN_PSU_1_FB          	: out std_logic;
-    	PG_PSU_1_FB          	: in  std_logic;
-    	EN_PSU_2_FB          	: out std_logic;
-    	PG_PSU_2_FB          	: in  std_logic;
-    	EN_PSU_5_FB          	: out std_logic;
-    	PG_PSU_5_FB          	: in  std_logic;
-    	RS485_DE_1           	: out std_logic;
-    	RS485_TXD_1          	: out std_logic;
-    	EN_PSU_6_FB          	: out std_logic;
-    	PG_PSU_6_FB          	: in  std_logic;
-    	EN_PSU_7_FB          	: out std_logic;
-    	PG_PSU_7_FB          	: in  std_logic;
-    	EN_PSU_8_FB          	: out std_logic;
-    	PG_PSU_8_FB          	: in  std_logic;
-    	EN_PSU_9_FB          	: out std_logic;
-    	PG_PSU_9_FB          	: in  std_logic;
-    	EN_PSU_10_FB         	: out std_logic;
-    	PG_PSU_10_FB         	: in  std_logic;
-    	RS485_TXD_2          	: out std_logic;
-    	RS485_RXD_2          	: in  std_logic;
-    	RS485_RXD_3          	: in  std_logic;
-    	RS485_DE_2           	: out std_logic;
-    	RS485_DE_3           	: out std_logic;
-    	RS485_TXD_3          	: out std_logic;
-    	RS485_TXD_4          	: out std_logic;
-    	RS485_RXD_4          	: in  std_logic;
-    	RS485_RXD_5          	: in  std_logic;
-    	RS485_DE_4           	: out std_logic;
-    	RS485_DE_5           	: out std_logic;
-    	RS485_TXD_5          	: out std_logic;
-    	RS485_TXD_6          	: out std_logic;
-    	RS485_RXD_6          	: in  std_logic;
-    	RS485_RXD_7          	: in  std_logic;
-    	RS485_DE_6           	: out std_logic;
     	lamp_status_fpga	    : in  std_logic;
+        RS485_RxD_1             : IN  std_logic;
+        RS485_TxD_1             : OUT std_logic;
+        RS485_DE_1              : OUT std_logic;
+        EN_PSU_1_FB             : OUT std_logic;
+        PG_PSU_1_FB             : IN  std_logic;
+        RS485_RxD_2             : IN  std_logic;
+        RS485_TxD_2             : OUT std_logic;
+        RS485_DE_2              : OUT std_logic;
+        EN_PSU_2_FB             : OUT std_logic;
+        PG_PSU_2_FB             : IN  std_logic;
+        RS485_RxD_5             : IN  std_logic;
+        RS485_TxD_5             : OUT std_logic;
+        RS485_DE_5              : OUT std_logic;
+        EN_PSU_5_FB             : OUT std_logic;
+        PG_PSU_5_FB             : IN  std_logic;
+        RS485_RxD_6             : IN  std_logic;
+        RS485_TxD_6             : OUT std_logic;
+        RS485_DE_6              : OUT std_logic;
+        EN_PSU_6_FB             : OUT std_logic;
+        PG_PSU_6_FB             : IN  std_logic;
+        RS485_RxD_7             : IN  std_logic;
+        RS485_TxD_7             : OUT std_logic;
+        RS485_DE_7              : OUT std_logic;
+        EN_PSU_7_FB             : OUT std_logic;
+        PG_PSU_7_FB             : IN  std_logic;
+        RS485_RxD_8             : IN  std_logic;
+        RS485_TxD_8             : OUT std_logic;
+        RS485_DE_8              : OUT std_logic;
+        EN_PSU_8_FB             : OUT std_logic;
+        PG_PSU_8_FB             : IN  std_logic;
+        RS485_RxD_9             : IN  std_logic;
+        RS485_TxD_9             : OUT std_logic;
+        RS485_DE_9              : OUT std_logic;
+        EN_PSU_9_FB             : OUT std_logic;
+        PG_PSU_9_FB             : IN  std_logic;
+        RS485_RxD_10            : IN  std_logic;
+        RS485_TxD_10            : OUT std_logic;
+        RS485_DE_10             : OUT std_logic;
+        EN_PSU_10_FB            : OUT std_logic;
+        PG_PSU_10_FB            : IN  std_logic;
+        RS485_RxD_Buck          : IN  std_logic;
+        RS485_TxD_Buck          : OUT std_logic;
+        RS485_DE_Buck           : OUT std_logic;
+        EN_PFC_FB               : OUT std_logic;
+        PG_BUCK_FB              : IN  std_logic;
     	PH_A_ON_fpga	        : in  std_logic;
     	PH_B_ON_fpga	        : in  std_logic;
     	PH_C_ON_fpga	        : in  std_logic;
@@ -428,24 +428,24 @@ begin
           SPIS_AXI_wready  => BD_to_HLS(1).wready ,                                   --: out STD_LOGIC;
           SPIS_AXI_wstrb   => HLS_to_BD(1).wstrb  ,                                   --: in STD_LOGIC_VECTOR ( 3 downto 0 );
           SPIS_AXI_wvalid  => HLS_to_BD(1).wvalid ,                                   --: in STD_LOGIC;
-          UART_0_rxd => RS485_RXD_1, -- this order of uarts is taken from spec
-          UART_0_txd => RS485_TXD_1, -- |
-          UART_1_rxd => RS485_RXD_9, -- |
-          UART_1_txd => RS485_TXD_9, -- |
-          UART_2_rxd => RS485_RXD_2, -- |
-          UART_2_txd => RS485_TXD_2, -- |
-          UART_3_rxd => RS485_RXD_3, -- |
-          UART_3_txd => RS485_TXD_3, -- |
-          UART_4_rxd => RS485_RXD_4, -- |
-          UART_4_txd => RS485_TXD_4, -- |
-          UART_5_rxd => RS485_RXD_5, -- |
-          UART_5_txd => RS485_TXD_5, -- |
-          UART_6_rxd => RS485_RXD_6, -- |
-          UART_6_txd => RS485_TXD_6, -- |
-          UART_7_rxd => RS485_RXD_7, -- |
-          UART_7_txd => RS485_TXD_7, -- |
-          UART_8_rxd => RS485_RXD_8, -- |
-          UART_8_txd => RS485_TXD_8, -- \/
+          UART_0_rxd => RS485_RXD_1,    -- this order of uarts is taken from spec
+          UART_0_txd => RS485_TXD_1,    -- |
+          UART_1_rxd => RS485_RXD_2,    -- |
+          UART_1_txd => RS485_TXD_2,    -- |
+          UART_2_rxd => RS485_RXD_5,    -- |
+          UART_2_txd => RS485_TXD_5,    -- |
+          UART_3_rxd => RS485_RXD_6,    -- |                              
+          UART_3_txd => RS485_TXD_6,    -- |
+          UART_4_rxd => RS485_RXD_7,    -- |
+          UART_4_txd => RS485_TXD_7,    -- |
+          UART_5_rxd => RS485_RXD_8,    -- |
+          UART_5_txd => RS485_TXD_8,    -- |
+          UART_6_rxd => RS485_RXD_9,    -- |
+          UART_6_txd => RS485_TXD_9,    -- |
+          UART_7_rxd => RS485_RXD_10,   -- |
+          UART_7_txd => RS485_TXD_10,   -- |
+          UART_8_rxd => RS485_RXD_Buck, -- |
+          UART_8_txd => RS485_TXD_Buck, -- \/
           ps_clk100 => ps_clk100,
           ps_clk100_rst(0) => ps_clk100_rst,
           ps_clk100_rstn(0) => ps_clk100_rstn,
@@ -521,15 +521,15 @@ begin
     EN_PSU_8_FB        <= app_2_ios.EN_PSU_8_FB       ;
     EN_PSU_9_FB        <= app_2_ios.EN_PSU_9_FB       ;
     EN_PSU_10_FB       <= app_2_ios.EN_PSU_10_FB      ;
-    RS485_DE_1         <= app_2_ios.RS485_DE_1        ;  -- | this is the order in the spec
-    RS485_DE_9         <= app_2_ios.RS485_DE_2        ;  -- |  
-    RS485_DE_2         <= app_2_ios.RS485_DE_3        ;  -- |  
-    RS485_DE_3         <= app_2_ios.RS485_DE_4        ;  -- |  
-    RS485_DE_4         <= app_2_ios.RS485_DE_5        ;  -- |  
-    RS485_DE_5         <= app_2_ios.RS485_DE_6        ;  -- |  
-    RS485_DE_6         <= app_2_ios.RS485_DE_7        ;  -- |  
-    RS485_DE_7         <= app_2_ios.RS485_DE_8        ;  -- |  
-    RS485_DE_8         <= app_2_ios.RS485_DE_9        ;  -- \/  
+    RS485_DE_1         <= app_2_ios.RS485_DE_1        ;  
+    RS485_DE_9         <= app_2_ios.RS485_DE_9        ;  
+    RS485_DE_2         <= app_2_ios.RS485_DE_2        ;  
+    RS485_DE_10        <= app_2_ios.RS485_DE_10       ;  
+    RS485_DE_Buck      <= app_2_ios.RS485_DE_Buck     ;  
+    RS485_DE_5         <= app_2_ios.RS485_DE_5        ;  
+    RS485_DE_6         <= app_2_ios.RS485_DE_6        ;  
+    RS485_DE_7         <= app_2_ios.RS485_DE_7        ;  
+    RS485_DE_8         <= app_2_ios.RS485_DE_8        ;  
 
     REGS_WE <= REGS_BE(3) or REGS_BE(2) or REGS_BE(1) or REGS_BE(0);
     process(ps_clk100)
@@ -601,4 +601,3 @@ begin
     );
 
 end Behavioral;
---check why ios are disapiring (not connected) after synthesis while they exist in the rtl design

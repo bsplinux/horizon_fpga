@@ -75,8 +75,8 @@ begin
                 app_2_IOs.RS485_DE_9         <= '0';
                 app_2_IOs.RS485_DE_1         <= '0';
                 app_2_IOs.RS485_DE_2         <= '0';
-                app_2_IOs.RS485_DE_3         <= '0';
-                app_2_IOs.RS485_DE_4         <= '0';
+                app_2_IOs.RS485_DE_10        <= '0';
+                app_2_IOs.RS485_DE_Buck      <= '0';
                 app_2_IOs.RS485_DE_5         <= '0';
                 app_2_IOs.RS485_DE_6         <= '0';             
             else
@@ -111,8 +111,8 @@ begin
                     app_2_IOs.RS485_DE_9         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_9        );
                     app_2_IOs.RS485_DE_1         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_1        );
                     app_2_IOs.RS485_DE_2         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_2        );
-                    app_2_IOs.RS485_DE_3         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_3        );
-                    app_2_IOs.RS485_DE_4         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_4        );
+                    app_2_IOs.RS485_DE_10        <= registers(IO_OUT1)(IO_OUT1_RS485_DE_10       );
+                    app_2_IOs.RS485_DE_Buck      <= registers(IO_OUT1)(IO_OUT1_RS485_DE_Buck     );
                     app_2_IOs.RS485_DE_5         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_5        );
                     app_2_IOs.RS485_DE_6         <= registers(IO_OUT1)(IO_OUT1_RS485_DE_6        );             
                 else  -- here we need to add application assignment to the pins
@@ -143,13 +143,13 @@ begin
                     app_2_IOs.EN_PSU_10_FB       <= power_2_ios.EN_PSU_10_FB      ;
                     app_2_IOs.RS485_DE_1         <= de(0); 
                     app_2_IOs.RS485_DE_2         <= de(1); 
-                    app_2_IOs.RS485_DE_3         <= de(2); 
-                    app_2_IOs.RS485_DE_4         <= de(3); 
-                    app_2_IOs.RS485_DE_5         <= de(4); 
-                    app_2_IOs.RS485_DE_6         <= de(5);             
-                    app_2_IOs.RS485_DE_7         <= de(6); 
-                    app_2_IOs.RS485_DE_8         <= de(7); 
-                    app_2_IOs.RS485_DE_9         <= de(8); 
+                    app_2_IOs.RS485_DE_5         <= de(2); 
+                    app_2_IOs.RS485_DE_6         <= de(3); 
+                    app_2_IOs.RS485_DE_7         <= de(4); 
+                    app_2_IOs.RS485_DE_8         <= de(5);             
+                    app_2_IOs.RS485_DE_9         <= de(6); 
+                    app_2_IOs.RS485_DE_10        <= de(7); 
+                    app_2_IOs.RS485_DE_Buck      <= de(8); 
                 end if;
             end if;
         end if;

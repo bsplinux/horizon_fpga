@@ -131,8 +131,8 @@ begin
                     internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_9        ) <= app_2_IOs.RS485_DE_9        ; 
                     internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_1        ) <= app_2_IOs.RS485_DE_1        ; 
                     internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_2        ) <= app_2_IOs.RS485_DE_2        ; 
-                    internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_3        ) <= app_2_IOs.RS485_DE_3        ; 
-                    internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_4        ) <= app_2_IOs.RS485_DE_4        ; 
+                    internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_10       ) <= app_2_IOs.RS485_DE_10       ; 
+                    internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_Buck     ) <= app_2_IOs.RS485_DE_Buck     ; 
                     internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_5        ) <= app_2_IOs.RS485_DE_5        ; 
                     internal_regs(IO_OUT1)(IO_OUT1_RS485_DE_6        ) <= app_2_IOs.RS485_DE_6        ;            
                 end if;
