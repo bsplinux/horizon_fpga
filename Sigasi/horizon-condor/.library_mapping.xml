@@ -9,6 +9,8 @@
   <Mappings Location="Common Libraries/unisim/secureip" Library="not mapped"/>
   <Mappings Location="Common Libraries/unisim/unisim_retarget_VCOMP.vhd" Library="not mapped"/>
   <Mappings Location="vhdl/condor_pl_uzed.vhd" Library="not mapped"/>
+  <Mappings Location="vhdl/tb/condor_pl_tb.vhd" Library="not mapped"/>
+  <Mappings Location="vhdl/tb/sample2v_tb.vhd" Library="not mapped"/>
   <Mappings Location="Common Libraries/STD" Library="std"/>
   <Mappings Location="Common Libraries/unisim" Library="unisim"/>
   <Mappings Location="" Library="work"/>

@@ -15,7 +15,6 @@ entity rs485_if is
         sync_rst         : in  std_logic;
         registers        : in  reg_array_t;
         regs_updating    : in  reg_slv_array_t;
-        --regs_reading     : in  reg_slv_array_t;
         internal_regs    : out reg_array_t;
         internal_regs_we : out reg_slv_array_t;
         HLS_to_BD        : out HLS_axim_to_interconnect_t;

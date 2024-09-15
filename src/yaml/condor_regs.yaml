@@ -45,6 +45,13 @@ reg_general_status: &reg_general_status
     STOP_LOG   : 1
   used_bits: "1:0"
 
+reg_cpu_status: &reg_cpu_status 
+  fpga_access: false
+  cpu_access: true
+  fields:
+    MIU_COM_Status: 0
+  used_bits: "0"
+
 reg_d_int: &reg_d_int
   fpga_access: true
   cpu_access: false
@@ -139,6 +146,82 @@ reg_io_out1: &reg_io_out1
     #range      : "8:0"
   used_bits: "8:0"
 
+reg_psu_stat_l: &reg_psu_stat_l
+  fpga_access: true
+  cpu_access: false
+  fields:
+    DC_IN_Status                :  0
+    AC_IN_Status                :  1
+    Power_Out_Status            :  2
+    MIU_COM_Status              :  3
+    OUT1_OC                     :  4
+    OUT2_OC                     :  5
+    OUT3_OC                     :  6
+    OUT4_OC                     :  7
+    OUT5_OC                     :  8
+    OUT6_OC                     :  9
+    OUT7_OC                     : 10
+    OUT8_OC                     : 11
+    OUT9_OC                     : 12
+    OUT10_OC                    : 13
+    DC_IN_OV                    : 14
+    AC_IN_PH1_OV                : 15
+    AC_IN_PH2_OV                : 16
+    AC_IN_PH3_OV                : 17
+    OUT1_OV                     : 18
+    OUT2_OV                     : 19
+    OUT3_OV                     : 20
+    OUT4_OV                     : 21
+    OUT5_OV                     : 22
+    OUT6_OV                     : 23
+    OUT7_OV                     : 24
+    OUT8_OV                     : 25
+    OUT9_OV                     : 26
+    OUT10_OV                    : 27
+    DC_IN_UV                    : 28
+    AC_IN_PH1_UV                : 29
+    AC_IN_PH2_UV                : 30
+    AC_IN_PH3_UV                : 31
+  used_bits: "31:0"
+
+reg_psu_stat_h: &reg_psu_stat_h
+  fpga_access: true
+  cpu_access: false
+  fields:
+    AC_IN_PH1_Status            :  0
+    AC_IN_PH2_Status            :  1
+    AC_IN_PH3_Status            :  2
+    AC_IN_Neutral_Status        :  3
+    Is_Logfile_Running          :  4
+    Is_Logfile_Erase_In_Process :  5
+    Fan1_Speed_Status           :  6
+    Fan2_Speed_Status           :  7
+    Fan3_Speed_Status           :  8
+    T1_OVER_TEMP_Status         :  9
+    T2_OVER_TEMP_Status         : 10
+    T3_OVER_TEMP_Status         : 11
+    T4_OVER_TEMP_Status         : 12
+    T5_OVER_TEMP_Status         : 13
+    T6_OVER_TEMP_Status         : 14
+    T7_OVER_TEMP_Status         : 15
+    T8_OVER_TEMP_Status         : 16
+    T9_OVER_TEMP_Status         : 17
+    CC_TCU_Inhibit              : 18
+    EC_TCU_Inhibit              : 19
+    Reset                       : 20
+    Shutdown                    : 21
+    Emergency_Shutdown          : 22
+    System_Off                  : 23
+    ON_OFF_Switch_State         : 24
+    Capacitor1_end_of_life      : 25
+    Capacitor2_end_of_life      : 26
+    Capacitor3_end_of_life      : 27
+    Capacitor4_end_of_life      : 28
+    Capacitor5_end_of_life      : 29
+    Capacitor6_end_of_life      : 30
+    Capacitor7_end_of_life      : 31
+  used_bits: "31:0"
+  
 reg_sn_eti: &reg_sn_eti
   fpga_access: false
   cpu_access: true
@@ -285,6 +368,8 @@ regs:
     init: 0xF00
   - GENERAL_STATUS: *reg_general_status
     i: auto
+  - CPU_STATUS: *reg_cpu_status
+    i: auto
   - TIMESTAMP_L: *reg_d_int
     i: auto
   - TIMESTAMP_H: *reg_d_int
@@ -343,8 +428,8 @@ regs:
   - LOG_T9            : *reg_d_int
   - LOG_ETM           : *reg_bdir
   - LOG_SN            : *reg_bdir
-  - LOG_PSU_STATUS_L  : *reg_d_int
-  - LOG_PSU_STATUS_H  : *reg_d_int
+  - LOG_PSU_STATUS_L  : *reg_psu_stat_l
+  - LOG_PSU_STATUS_H  : *reg_psu_stat_h
   - LOG_LAMP_IND      : *reg_d_int
   - PWM_CTL           : *reg_pwm_ctl
   - PWM1_LOW          : *reg_d

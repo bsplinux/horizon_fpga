@@ -11,33 +11,58 @@ entity lamp is
         clk                : in  std_logic;
         sync_rst           : in  std_logic;
         registers          : in  reg_array_t;
-        --regs_updating    : in  reg_slv_array_t;
-        --regs_reading     : in  reg_slv_array_t;
-        --internal_regs    : out reg_array_t;
-        --internal_regs_we : out reg_slv_array_t;
-        lamp_stat          : out std_logic
+        stat_28vdc_good    : out std_logic;
+        stat_115vac_good   : out std_logic;
+        lamp_state         : out std_logic_vector(1 downto 0);
+        lamp_out           : out std_logic
     );
 end entity lamp;
 
 architecture RTL of lamp is
     type lamp_status_t is (lamp_off, lamp_on, lamp1Hz, lamp4Hz);
 
-    signal stat_28vdc_good    : std_logic;
-    signal stat_115vac_good   : std_logic;
     signal stat_MIU_comm_good : std_logic;
     signal stat_power_on      : std_logic;
-    signal PSU_status         : std_logic_vector(PSU_Status_range);
-begin
-    PSU_Status <= registers(LOG_PSU_STATUS_H) & registers(LOG_PSU_STATUS_L);
+    signal v28_in             : signed(15 downto 0);
+    signal vph1,vph2,vph3     : signed(15 downto 0);
     
---    stat_28vdc_good    <= not PSU_Status(psu_status_DC_IN_Status);
---    stat_115vac_good   <= not PSU_Status(psu_status_AC_IN_Status);
---    stat_MIU_comm_good <= PSU_Status(psu_status_MIU_COM_Status);
-    stat_power_on      <= PSU_Status(psu_status_ON_OFF_Switch_State);
-    stat_28vdc_good    <= not PSU_Status(psu_status_DC_IN_UV); 
-    stat_115vac_good   <=  not PSU_Status(psu_status_AC_IN_PH1_UV) and not PSU_Status(psu_status_AC_IN_PH2_UV) and not PSU_Status(psu_status_AC_IN_PH3_UV);  
-    stat_MIU_comm_good <= '1'; -- assume on as we don't have SW yet
+    constant LIMIT_18  : integer := 360 ; -- 18[V] / 0.05 [V/UNIT] = 360 [UNITS]
+    constant LIMIT_32  : integer := 640 ; -- 32[V] / 0.05 [V/UNIT] = 640 [UNITS]
 
+    constant LIMIT_125 : integer := 1250; -- 125[V] / 0.1 [V/UNIT] = 1250 [UNITS]
+    constant LIMIT_95  : integer :=  950; --  95[V] / 0.1 [V/UNIT] =  950 [UNITS]
+    
+begin
+    stat_power_on      <= registers(IO_IN)(IO_IN_POWERON_FPGA);
+    stat_MIU_comm_good <= registers(CPU_STATUS)(CPU_STATUS_MIU_COM_Status); 
+
+    v28_in <= signed(registers(SPI_28V_IN_sns)(15 downto 0));
+    vph1   <= signed(registers(SPI_RMS_Vsns_PH1)(15 downto 0));
+    vph2   <= signed(registers(SPI_RMS_Vsns_PH2)(15 downto 0));
+    vph3   <= signed(registers(SPI_RMS_Vsns_PH3)(15 downto 0));
+    
+    limits_pr: process(clk)
+    begin
+        if rising_edge(clk) then
+            if sync_rst then
+                stat_28vdc_good <= '0';
+                stat_115vac_good <= '0';
+            else
+                stat_28vdc_good <= '1';
+                if v28_in > LIMIT_32 or v28_in < LIMIT_18 then
+                    stat_28vdc_good <= '0';
+                end if;
+    
+                stat_115vac_good <= '1';
+                if ((vph1 > LIMIT_125) or (vph1 < LIMIT_95)) or ((vph2 > LIMIT_125) or (vph2 < LIMIT_95)) or ((vph3 > LIMIT_125) or (vph3 < LIMIT_95)) then
+                    stat_115vac_good <= '0';
+                end if;
+               
+            end if;
+        end if;
+    end process;
+    
+    
     gen_led_pr: process(clk)
         variable cnt : integer range 0 to 100_000_000;
         CONSTANT CNT_HALF_1Hz : integer := 50_000_000;-- how many 100MHz ticks in half a second
@@ -46,7 +71,7 @@ begin
     begin
         if rising_edge(clk) then
             if sync_rst then
-                lamp_stat <= '0';
+                lamp_out <= '0';
                 state := lamp_off;
                 cnt := 0;
             else
@@ -66,23 +91,27 @@ begin
                 
                 case state is 
                 when lamp_off =>
-                    lamp_stat <= '0';
+                    lamp_out <= '0';
                     cnt := 0;
+                    lamp_state <= LAMP_STATE_LOW;
                 when lamp_on =>
-                    lamp_stat <= '1';
+                    lamp_out <= '1';
                     cnt := 0;
+                    lamp_state <= LAMP_STATE_HIGH;
                 when lamp1Hz =>
                     cnt := cnt + 1;
                     if cnt >= CNT_HALF_1Hz then
-                        lamp_stat <= not lamp_stat;
+                        lamp_out <= not lamp_out;
                         cnt := 0;
                     end if;
+                    lamp_state <= LAMP_STATE_1K;
                 when lamp4Hz =>
                     cnt := cnt + 1;
                     if cnt >= CNT_HALF_4Hz then
-                        lamp_stat <= not lamp_stat;
+                        lamp_out <= not lamp_out;
                         cnt := 0;
                     end if;
+                    lamp_state <= LAMP_STATE_4K;
                 end case;
                 
             end if;

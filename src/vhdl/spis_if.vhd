@@ -13,12 +13,10 @@ entity spis_if is
         sync_rst         : in  std_logic;
         registers        : in  reg_array_t;
         regs_updating    : in  reg_slv_array_t;
-        --regs_reading     : in  reg_slv_array_t;
         internal_regs    : out reg_array_t;
         internal_regs_we : out reg_slv_array_t;
         HLS_to_BD        : out HLS_axim_to_interconnect_t;
         BD_to_HLS        : in  HLS_axim_from_interconnect_t;
-        z_cross          : out std_logic;
         log_regs         : out log_reg_array_t
     );
 end entity spis_if;
@@ -147,6 +145,7 @@ architecture RTL of spis_if is
     signal p : std_logic_vector(15 downto 0);
     signal p_valid : std_logic;
     signal z_cross_error : std_logic;
+    signal z_cross          : std_logic;
     
     
 begin

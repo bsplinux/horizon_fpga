@@ -211,7 +211,10 @@ package condor_pl_pkg is
     constant limit_relay_3p_a                       : integer := 26;
     constant limit_relay_3p_b                       : integer := 27;
     constant limit_relay_3p_c                       : integer := 28;
-    constant limit_dummy                            : integer := 29;
+    constant limit_lamp_28vdc                       : integer := 29;
+    constant limit_lamp_115vac                      : integer := 30;
+    
+    constant limit_dummy                            : integer := 31;
     subtype limits_range is integer range limit_dummy - 1 downto 0;
 
     -- ps interrupts index
@@ -269,6 +272,10 @@ package condor_pl_pkg is
     end record HLS_axim_from_interconnect_t;
     type HLS_axim_from_interconnect_array_t is array (natural range <>) of HLS_axim_from_interconnect_t;
 
+    constant LAMP_STATE_LOW  : std_logic_vector(1 downto 0) := "00";
+    constant LAMP_STATE_HIGH : std_logic_vector(1 downto 0) := "01";
+    constant LAMP_STATE_1K   : std_logic_vector(1 downto 0) := "10";
+    constant LAMP_STATE_4K   : std_logic_vector(1 downto 0) := "11";
 
     function ios_2_app_vec(x: ios_2_app_t) return std_logic_vector;
 end package condor_pl_pkg;

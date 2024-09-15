@@ -11,10 +11,9 @@ entity limits is
         clk               : in  std_logic;
         sync_rst          : in  std_logic;
         registers         : in  reg_array_t;
-        PSU_Status        : out std_logic_vector(PSU_Status_range);
-        PSU_Status_mask   : out std_logic_vector(PSU_Status_range);
         limits_stat       : out std_logic_vector(limits_range);
-        lamp_stat         : out std_logic;
+        lamp_state        : out std_logic_vector(1 downto 0);
+        lamp_out          : out std_logic;
         P_IN_STATUS_FPGA  : out std_logic;
         P_OUT_STATUS_FPGA : out std_logic
     );
@@ -22,10 +21,6 @@ end entity limits;
 
 architecture RTL of limits is
     signal uvp_error : std_logic;
-    signal PSU_Status_uvp : std_logic_vector(PSU_Status_range);
-    signal PSU_Status_mask_uvp : std_logic_vector(PSU_Status_range);
-    --signal PSU_Status_logic : std_logic_vector(PSU_Status_range);
-    --signal PSU_Status_mask_logic : std_logic_vector(PSU_Status_range);
     signal stat_115_ac_in : std_logic;
     signal stat_28_dc_in : std_logic;
     signal stat_115_ac_out : std_logic;
@@ -48,7 +43,13 @@ architecture RTL of limits is
     signal relay1_ok : std_logic;
     signal relay2_ok : std_logic;
     signal relay3_ok : std_logic;
-
+    signal lamp_28vdc : std_logic;
+    signal lamp_115vac : std_logic;
+    signal AC_IN_PH1_UV : std_logic;
+    signal AC_IN_PH2_UV : std_logic;
+    signal AC_IN_PH3_UV : std_logic;
+    signal DC_IN_UV     : std_logic;
+    
 begin
     -- over voltage
     -- over temperatue
@@ -87,18 +88,17 @@ begin
         sync_rst        => sync_rst,
         registers       => registers,
         uvp_error       => uvp_error,
-        PSU_Status      => PSU_Status_uvp,
-        PSU_Status_mask => PSU_Status_mask_uvp
+        AC_IN_PH1_UV    => AC_IN_PH1_UV,
+        AC_IN_PH2_UV    => AC_IN_PH2_UV,
+        AC_IN_PH3_UV    => AC_IN_PH3_UV,
+        DC_IN_UV        => DC_IN_UV    
     );
     
-    PSU_status <=  (PSU_status_uvp and PSU_status_mask_uvp);-- or (PSU_status_logic and PSU_status_mask_logic);
-    PSU_status_mask <= PSU_status_mask_uvp;-- or PSU_status_mask_logic;
-    
-    limits_stat(limit_uvp)             <= uvp_error;
-    limits_stat(limit_uvp_ph1)         <= PSU_Status_uvp(psu_status_AC_IN_PH1_UV);
-    limits_stat(limit_uvp_ph2)         <= PSU_Status_uvp(psu_status_AC_IN_PH2_UV);
-    limits_stat(limit_uvp_ph3)         <= PSU_Status_uvp(psu_status_AC_IN_PH3_UV);
-    limits_stat(limit_uvp_dc)          <= PSU_Status_uvp(psu_status_DC_IN_UV)    ;
+    limits_stat(limit_uvp)             <= uvp_error                              ;
+    limits_stat(limit_uvp_ph1)         <= AC_IN_PH1_UV                           ;
+    limits_stat(limit_uvp_ph2)         <= AC_IN_PH2_UV                           ;
+    limits_stat(limit_uvp_ph3)         <= AC_IN_PH3_UV                           ;
+    limits_stat(limit_uvp_dc)          <= DC_IN_UV                               ;
     limits_stat(limit_stat_p_in)       <= P_IN_STATUS_FPGA                       ;
     limits_stat(limit_stat_p_out)      <= P_OUT_STATUS_FPGA                      ;
     limits_stat(limit_stat_115_ac_in ) <= stat_115_ac_in                         ;
@@ -123,13 +123,18 @@ begin
     limits_stat(limit_relay_3p_a     ) <= relay1_ok                              ;   
     limits_stat(limit_relay_3p_b     ) <= relay2_ok                              ;   
     limits_stat(limit_relay_3p_c     ) <= relay3_ok                              ;   
+    limits_stat(limit_lamp_28vdc     ) <= lamp_28vdc                             ;
+    limits_stat(limit_lamp_115vac    ) <= lamp_115vac                            ;
     
     lamp_i: entity work.lamp
     port map(
-        clk       => clk,
-        sync_rst  => sync_rst,
-        registers => registers,
-        lamp_stat => lamp_stat
+        clk              => clk,
+        sync_rst         => sync_rst,
+        registers        => registers,
+        stat_28vdc_good  => lamp_28vdc,
+        stat_115vac_good => lamp_115vac,
+        lamp_state       => lamp_state,
+        lamp_out         => lamp_out
     );
     
     relay_limits_i: entity work.relay_limits

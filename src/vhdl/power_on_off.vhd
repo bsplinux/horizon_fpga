@@ -11,17 +11,11 @@ entity power_on_off is
         clk              : in  std_logic;
         sync_rst         : in  std_logic;
         registers        : in  reg_array_t;
-        regs_updating    : in  reg_slv_array_t;
-        regs_reading     : in  reg_slv_array_t;
-        internal_regs    : out reg_array_t;
-        internal_regs_we : out reg_slv_array_t;
         power_2_ios      : out power_2_ios_t;
         free_running_1ms : in  std_logic;
         -- fans
         fans_en          : out std_logic;
         fans_ok          : in  std_logic;
-        zero_cross       : in  std_logic;
-        uvp_error        : in  std_logic;
         PSU_Status       : out std_logic_vector(PSU_Status_range);
         PSU_Status_mask  : out std_logic_vector(PSU_Status_range);
         limits_stat      : in  std_logic_vector(limits_range)
@@ -60,9 +54,6 @@ architecture RTL of power_on_off is
     signal power_on_ok : std_logic;
     signal during_power_down : std_logic;
 begin
-    internal_regs <= (others => X"00000000");
-    internal_regs_we <= (others => '0');
-        
     main_sm_pr: process(clk)
        variable state : main_sm_t := idle;
        variable cnt : integer range 0 to SEC_20 := 0;
@@ -374,7 +365,7 @@ begin
     begin
         if rising_edge(clk) then
             all_in_range <= '1'; -- FIXME at the moment do not check
-            --all_in_range <= not input_ovp and not uvp_error and not output_ovp;
+            --all_in_range <= not input_ovp and not uvp_error and not output_ovp; and comunication ok with uarts and spis
         end if;
     end process;
     

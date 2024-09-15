@@ -41,8 +41,6 @@ architecture RTL of app is
     signal internal_regs_we_spis       : reg_slv_array_t;
     signal internal_regs_ios           : reg_array_t;
     signal internal_regs_we_ios        : reg_slv_array_t;
-    signal internal_regs_power         : reg_array_t;
-    signal internal_regs_we_power      : reg_slv_array_t;
     signal log_regs                    : log_reg_array_t;
     signal log_regs_uart               : log_reg_array_t;
     signal log_regs_spi                : log_reg_array_t;
@@ -56,12 +54,8 @@ architecture RTL of app is
     signal power_2_ios                 : power_2_ios_t;
     signal de                          : std_logic_vector(8 downto 0);
     signal fans_en, fans_ok            : std_logic;
-    signal zero_cross                  : std_logic;
-    signal uvp_error                   : std_logic;
-    signal lamp_stat                   : std_logic;
+    signal lamp_out                    : std_logic;
     signal PSU_status                  : std_logic_vector(PSU_Status_range);
-    signal PSU_status_limits           : std_logic_vector(PSU_Status_range);
-    signal PSU_status_limits_mask      : std_logic_vector(PSU_Status_range);
     signal PSU_status_pwr_on           : std_logic_vector(PSU_Status_range);
     signal PSU_status_pwr_on_mask      : std_logic_vector(PSU_Status_range);
     signal rpm1                        : std_logic_vector(15 downto 0);
@@ -70,6 +64,7 @@ architecture RTL of app is
     signal limits_stat                 : std_logic_vector(limits_range);
     signal P_IN_STATUS_FPGA : std_logic;
     signal P_OUT_STATUS_FPGA : std_logic;
+    signal lamp_state : std_logic_vector(1 downto 0);
     
 begin
     one_ms_tick <= free_running_1ms;
@@ -157,8 +152,9 @@ begin
     end process;
 
     -- TODO check this
-    PSU_status <=  (PSU_status_limits and PSU_status_limits_mask) or
-                 (PSU_status_pwr_on and PSU_status_pwr_on_mask);   
+    PSU_status <=  (PSU_status_pwr_on and PSU_status_pwr_on_mask);
+    -- TODO do this somehow
+    PSU_status(psu_status_MIU_COM_Status) <= registers(CPU_STATUS)(CPU_STATUS_MIU_COM_Status);
     
     timer_pr : process(clk)
     begin
@@ -319,7 +315,6 @@ begin
         sync_rst         => sync_rst,
         registers        => registers,
         regs_updating    => regs_updating,
-        --regs_reading     => regs_reading,
         internal_regs    => internal_regs_rs485,
         internal_regs_we => internal_regs_we_rs485,
         HLS_to_BD        => HLS_to_BD(0),
@@ -336,12 +331,10 @@ begin
         sync_rst         => sync_rst,
         registers        => registers,
         regs_updating    => regs_updating,
-        --regs_reading     => regs_reading,
         internal_regs    => internal_regs_spis,
         internal_regs_we => internal_regs_we_spis,
         HLS_to_BD        => HLS_to_BD(1),
         BD_to_HLS        => BD_to_HLS(1),
-        z_cross          => zero_cross,
         log_regs         => log_regs_spi
     );
     
@@ -359,7 +352,7 @@ begin
         power_2_ios      => power_2_ios,
         fan_pwm          => fan_pwm,
         de               => de,
-        lamp_stat        => lamp_stat,
+        lamp_stat        => lamp_out,
         P_IN_STATUS_FPGA  => P_IN_STATUS_FPGA,
         P_OUT_STATUS_FPGA => P_OUT_STATUS_FPGA
     );
@@ -369,16 +362,10 @@ begin
         clk              => clk,
         sync_rst         => sync_rst,
         registers        => registers,
-        regs_updating    => regs_updating,
-        regs_reading     => regs_reading,
-        internal_regs    => internal_regs_power,
-        internal_regs_we => internal_regs_we_power,
         power_2_ios      => power_2_ios,
         free_running_1ms => free_running_1ms,
         fans_en          => fans_en,
         fans_ok          => fans_ok,
-        zero_cross       => zero_cross,
-        uvp_error        => uvp_error,
         PSU_Status       => PSU_Status_pwr_on,
         PSU_Status_mask  => PSU_Status_pwr_on_mask,
         limits_stat      => limits_stat
@@ -389,10 +376,9 @@ begin
         clk               => clk,
         sync_rst          => sync_rst,
         registers         => registers,
-        PSU_Status        => PSU_Status_limits,
-        PSU_Status_mask   => PSU_Status_limits_mask,
         limits_stat       => limits_stat,
-        lamp_stat         => lamp_stat,
+        lamp_state        => lamp_state, -- FIXME do something with this
+        lamp_out          => lamp_out, 
         P_IN_STATUS_FPGA  => P_IN_STATUS_FPGA,
         P_OUT_STATUS_FPGA => P_OUT_STATUS_FPGA
     );

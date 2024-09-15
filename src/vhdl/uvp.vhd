@@ -11,13 +11,11 @@ entity uvp is
         clk              : in  std_logic;
         sync_rst         : in  std_logic;
         registers        : in  reg_array_t;
-        --regs_updating    : in  reg_slv_array_t;
-        --regs_reading     : in  reg_slv_array_t;
-        --internal_regs    : out reg_array_t;
-        --internal_regs_we : out reg_slv_array_t;
         uvp_error        : out std_logic;
-        PSU_Status       : out std_logic_vector(PSU_Status_range);
-        PSU_Status_mask  : out std_logic_vector(PSU_Status_range)
+        AC_IN_PH1_UV     : out std_logic;
+        AC_IN_PH2_UV     : out std_logic;
+        AC_IN_PH3_UV     : out std_logic;
+        DC_IN_UV         : out std_logic
     );
 end entity uvp;
 
@@ -303,20 +301,11 @@ begin
         if rising_edge(clk) then
             uvp_error <= p1_error or p2_error or p3_error or dc_error;
             
-            PSU_Status <= (others => '0');
-            PSU_Status(psu_status_AC_IN_PH1_UV) <= p1_error;
-            PSU_Status(psu_status_AC_IN_PH2_UV) <= p2_error;
-            PSU_Status(psu_status_AC_IN_PH3_UV) <= p3_error;
-            PSU_Status(psu_status_DC_IN_UV)     <= dc_error;
+            AC_IN_PH1_UV <= p1_error;
+            AC_IN_PH2_UV <= p2_error;
+            AC_IN_PH3_UV <= p3_error;
+            DC_IN_UV     <= dc_error;
         end if;
     end process;
 
-    PSU_Status_mask <= (
-        psu_status_AC_IN_PH1_UV => '1',
-        psu_status_AC_IN_PH2_UV => '1',
-        psu_status_AC_IN_PH3_UV => '1',
-        psu_status_DC_IN_UV     => '1',
-        others                  => '0'
-    );
-    
 end architecture RTL;
