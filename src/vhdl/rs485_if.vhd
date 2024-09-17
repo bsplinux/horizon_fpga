@@ -525,7 +525,7 @@ begin
     begin
         if rising_edge(clk) then                                                                --IRS        Spec            vhdl   
             if uarts_calc_vld(0) then log_regs(LOG_V_OUT_1    ) <=   X"0000" & dcdc_array(0).v_out; end if;--V_OUT_1    DCDC1_VOUT      uart 0 
-            if uarts_calc_vld(0) then log_regs(LOG_V_OUT_2    ) <=   X"0000" & dcdc_array(0).v_out; end if;--V_OUT_2    DCDC1_VOUT      uart 0 
+            if uarts_calc_vld(1) then log_regs(LOG_V_OUT_2    ) <=   X"0000" & dcdc_array(1).v_out; end if;--V_OUT_2    DCDC2_VOUT      uart 1 
             if uarts_calc_vld(2) then log_regs(LOG_V_OUT_5    ) <=   X"0000" & dcdc_array(2).v_out; end if;--V_OUT_5    DCDC5_VOUT      uart 2 
             if uarts_calc_vld(3) then log_regs(LOG_V_OUT_6    ) <=   X"0000" & dcdc_array(3).v_out; end if;--V_OUT_6    DCDC6_VOUT      uart 3 
             if uarts_calc_vld(4) then log_regs(LOG_V_OUT_7    ) <=   X"0000" & dcdc_array(4).v_out; end if;--V_OUT_7    DCDC7_VOUT      uart 4 
@@ -540,15 +540,15 @@ begin
             if uarts_calc_vld(5) then log_regs(LOG_I_OUT_8    ) <=   X"0000" & dcdc_array(5).i_out; end if;--I_OUT_8    DCDC8_IOUT      uart 5 
             if uarts_calc_vld(6) then log_regs(LOG_I_OUT_9    ) <=   X"0000" & dcdc_array(6).i_out; end if;--I_OUT_9    DCDC9_IOUT      uart 6 
             if uarts_calc_vld(7) then log_regs(LOG_I_OUT_10   ) <=   X"0000" & dcdc_array(7).i_out; end if;--I_OUT_10   DCDC10_IOUT     uart 7 
-            if uarts_calc_vld(0) then log_regs(LOG_T1         ) <= X"000000" & dcdc_array(0).t    ; end if;--T1         DCDC1_Temp      uart 0     
-            if uarts_calc_vld(1) then log_regs(LOG_T2         ) <= X"000000" & dcdc_array(1).t    ; end if;--T2         DCDC2_Temp      uart 1     
-            if uarts_calc_vld(7) then log_regs(LOG_T3         ) <= X"000000" & dcdc_array(7).t    ; end if;--T3         DCDC10_Temp     uart 7     
-            if uarts_calc_vld(8) then log_regs(LOG_T4         ) <= X"000000" & dcdc_array(8).t    ; end if;--T4         Main Board Temp uart 8     
-            if uarts_calc_vld(2) then log_regs(LOG_T5         ) <= X"000000" & dcdc_array(2).t    ; end if;--T5         DCDC5_Temp      uart 2     
-            if uarts_calc_vld(3) then log_regs(LOG_T6         ) <= X"000000" & dcdc_array(3).t    ; end if;--T6         DCDC6_Temp      uart 3     
-            if uarts_calc_vld(4) then log_regs(LOG_T7         ) <= X"000000" & dcdc_array(4).t    ; end if;--T7         DCDC7_Temp      uart 4     
-            if uarts_calc_vld(5) then log_regs(LOG_T8         ) <= X"000000" & dcdc_array(5).t    ; end if;--T8         DCDC8_Temp      uart 5     
-            if uarts_calc_vld(6) then log_regs(LOG_T9         ) <= X"000000" & dcdc_array(6).t    ; end if;--T9         DCDC9_Temp      uart 6
+            if uarts_calc_vld(0) then log_regs(LOG_T1         ) <= X"00000" & dcdc_array(0).OVP & dcdc_array(0).OCP & dcdc_array(0).OTP & dcdc_array(0).VINP & dcdc_array(0).t    ; end if;--T1         DCDC1_Temp      uart 0     
+            if uarts_calc_vld(1) then log_regs(LOG_T2         ) <= X"00000" & dcdc_array(1).OVP & dcdc_array(1).OCP & dcdc_array(1).OTP & dcdc_array(1).VINP & dcdc_array(1).t    ; end if;--T2         DCDC2_Temp      uart 1     
+            if uarts_calc_vld(7) then log_regs(LOG_T3         ) <= X"00000" & dcdc_array(7).OVP & dcdc_array(7).OCP & dcdc_array(7).OTP & dcdc_array(7).VINP & dcdc_array(7).t    ; end if;--T3         DCDC10_Temp     uart 7     
+            if uarts_calc_vld(8) then log_regs(LOG_T4         ) <= X"00000" & dcdc_array(8).OVP & dcdc_array(8).OCP & dcdc_array(8).OTP & dcdc_array(8).VINP & dcdc_array(8).t    ; end if;--T4         Main Board Temp uart 8     
+            if uarts_calc_vld(2) then log_regs(LOG_T5         ) <= X"00000" & dcdc_array(2).OVP & dcdc_array(2).OCP & dcdc_array(2).OTP & dcdc_array(2).VINP & dcdc_array(2).t    ; end if;--T5         DCDC5_Temp      uart 2     
+            if uarts_calc_vld(3) then log_regs(LOG_T6         ) <= X"00000" & dcdc_array(3).OVP & dcdc_array(3).OCP & dcdc_array(3).OTP & dcdc_array(3).VINP & dcdc_array(3).t    ; end if;--T6         DCDC6_Temp      uart 3     
+            if uarts_calc_vld(4) then log_regs(LOG_T7         ) <= X"00000" & dcdc_array(4).OVP & dcdc_array(4).OCP & dcdc_array(4).OTP & dcdc_array(4).VINP & dcdc_array(4).t    ; end if;--T7         DCDC7_Temp      uart 4     
+            if uarts_calc_vld(5) then log_regs(LOG_T8         ) <= X"00000" & dcdc_array(5).OVP & dcdc_array(5).OCP & dcdc_array(5).OTP & dcdc_array(5).VINP & dcdc_array(5).t    ; end if;--T8         DCDC8_Temp      uart 5     
+            if uarts_calc_vld(6) then log_regs(LOG_T9         ) <= X"00000" & dcdc_array(6).OVP & dcdc_array(6).OCP & dcdc_array(6).OTP & dcdc_array(6).VINP & dcdc_array(6).t    ; end if;--T9         DCDC9_Temp      uart 6
             --if uarts_calc_vld(8) then log_regs(LOG_I_OUT_3_PH1) <=   X"0000" & dcdc_array(8).i_in ; end if;--I_OUT_3_PH1 before calculation uart 8 calculation is done in app.vhd
             --if uarts_calc_vld(8) then log_regs(LOG_I_OUT_3_PH2) <=   X"0000" & dcdc_array(8).i_out; end if;--I_OUT_3_PH2 before calculation uart 8 calculation is done in app.vhd
             --if uarts_calc_vld(8) then log_regs(LOG_I_OUT_3_PH3) <=   X"0000" & dcdc_array(8).v_in ; end if;--I_OUT_3_PH3 before calculation uart 8 calculation is done in app.vhd

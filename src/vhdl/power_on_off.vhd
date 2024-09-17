@@ -13,13 +13,9 @@ entity power_on_off is
         registers        : in  reg_array_t;
         power_2_ios      : out power_2_ios_t;
         free_running_1ms : in  std_logic;
-        -- fans
         fans_en          : out std_logic;
-        fans_ok          : in  std_logic;
-        PSU_Status       : out std_logic_vector(PSU_Status_range);
-        PSU_Status_mask  : out std_logic_vector(PSU_Status_range);
-        limits_stat      : in  std_logic_vector(limits_range)
-        
+        limits_stat      : in  std_logic_vector(limits_range);
+        general_stat     : out std_logic_vector(full_reg_range)
     );
 end entity power_on_off;
 
@@ -43,8 +39,7 @@ architecture RTL of power_on_off is
     signal power_on_debaunced : std_logic;
     signal poweron_after26secs : std_logic;
     signal relay_3p_pg : std_logic;
-    signal input_ovp : std_logic;
-    signal output_ovp : std_logic;
+    signal ovp, uvp, otp : std_logic;
     signal fans_on : std_logic; -- TODO drive fans from somewere
     signal all_inputs_good : std_logic; -- TODO drive this from somewere  
     signal all_in_range : std_logic; -- TODO drive this from somewere  
@@ -53,6 +48,7 @@ architecture RTL of power_on_off is
     signal temperature_ok : std_logic;
     signal power_on_ok : std_logic;
     signal during_power_down : std_logic;
+    signal fans_ok : std_logic;
 begin
     main_sm_pr: process(clk)
        variable state : main_sm_t := idle;
@@ -353,19 +349,17 @@ begin
         end if;
     end process;
     
-    -- TODO
-    -- for now naive implementation
-    temperature_ok <= '1';
-    input_ovp <= '0';--registers(IO_IN)(IO_IN_FAN_HALL1_FPGA);-- SIMULATING out of range
-    output_ovp <= '0';
-    
+    temperature_ok <= not otp;
+    ovp         <= limits_stat(limit_ovp_error);
     relay_3p_pg <= limits_stat(limit_relay_3p);
+    uvp         <= limits_stat(limit_uvp);
+    otp         <= limits_stat(limit_otp);
+    fans_ok     <= not limits_stat(limit_fans);
         
     all_in_ragne_pr: process(clk)
     begin
         if rising_edge(clk) then
-            all_in_range <= '1'; -- FIXME at the moment do not check
-            --all_in_range <= not input_ovp and not uvp_error and not output_ovp; and comunication ok with uarts and spis
+            all_in_range <= not ovp and not uvp ; -- FIXME and comunication ok with uarts and spis
         end if;
     end process;
     
@@ -480,31 +474,11 @@ begin
     end process;
     power_2_ios.SPARE_OUT_FPGA <= '0';
     
-    process(clk)
+    process(all)
     begin
-        if rising_edge(clk) then
-            PSU_Status <= (others => '0');
-            PSU_Status(psu_status_Power_Out_Status)    <= power_on_ok;
-            PSU_Status(psu_status_CC_TCU_Inhibit)      <= power_2_ios.CCTCU_INH_FPGA;
-            PSU_Status(psu_status_EC_TCU_Inhibit)      <= power_2_ios.ECTCU_INH_FPGA;
-            PSU_Status(psu_status_Reset)               <= not power_2_ios.RESET_OUT_FPGA;
-            PSU_Status(psu_status_Shutdown)            <= not power_2_ios.SHUTDOWN_OUT_FPGA;
-            PSU_Status(psu_status_Emergency_Shutdown)  <= not power_2_ios.ESHUTDOWN_OUT_FPGA;
-            PSU_Status(psu_status_System_Off)          <= during_power_down;
-            PSU_Status(psu_status_ON_OFF_Switch_State) <= power_on_debaunced;
-        end if;
+        general_stat <= (others => '0');
+        general_stat(GENERAL_STATUS_power_on_debaunced) <= power_on_debaunced;
+        general_stat(GENERAL_STATUS_during_power_down)  <= during_power_down;
     end process;
 
-    PSU_Status_mask <= (
-        psu_status_Power_Out_Status    => '1',
-        psu_status_CC_TCU_Inhibit      => '1',
-        psu_status_EC_TCU_Inhibit      => '1',
-        psu_status_Reset               => '1',
-        psu_status_Shutdown            => '1',
-        psu_status_Emergency_Shutdown  => '1',
-        psu_status_System_Off          => '1',
-        psu_status_ON_OFF_Switch_State => '1',
-        others                         => '0'
-    );
-    
 end architecture RTL;

@@ -1,6 +1,6 @@
 /*
 ----------------------------------------------------------------------------------------
--- Registers H file created from yaml definition of registers at     15-09-2024 14:49 --
+-- Registers H file created from yaml definition of registers at     17-09-2024 10:23 --
 --   python function: regs2h.py                                                       --
 --   yaml file name: ../yaml/condor_regs.yaml                                         --
 ----------------------------------------------------------------------------------------
@@ -75,6 +75,10 @@ typedef struct
     uint32_t UVP_EN_DC              : 1;
     uint32_t FAN_CHECK              : 1;
     uint32_t RELAY_CHECK            : 1;
+    uint32_t OVP_IN_EN              : 1;
+    uint32_t OVP_OUT_EN             : 1;
+    uint32_t UVP_EN                 : 1;
+    uint32_t OTP_EN                 : 1;
 }fields_GENERAL_CONTROL_t;
 
 typedef union
@@ -87,6 +91,9 @@ typedef struct
 {
     uint32_t REGS_LOCKED            : 1;
     uint32_t STOP_LOG               : 1;
+    uint32_t LAMP_STATE             : 2;
+    uint32_t power_on_debaunced     : 1;
+    uint32_t during_power_down      : 1;
 }fields_GENERAL_STATUS_t;
 
 typedef union
@@ -98,6 +105,8 @@ typedef union
 typedef struct
 {
     uint32_t MIU_COM_Status         : 1;
+    uint32_t Is_Logfile_Running     : 1;
+    uint32_t Is_Logfile_Erase_In_Process: 1;
 }fields_CPU_STATUS_t;
 
 typedef union
@@ -226,6 +235,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_VDC_IN_t;
 
 typedef union
@@ -236,6 +246,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_VAC_IN_PH_A_t;
 
 typedef union
@@ -246,6 +257,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_VAC_IN_PH_B_t;
 
 typedef union
@@ -256,6 +268,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_VAC_IN_PH_C_t;
 
 typedef union
@@ -266,6 +279,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_DC_IN_t;
 
 typedef union
@@ -276,6 +290,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_AC_IN_PH_A_t;
 
 typedef union
@@ -286,6 +301,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_AC_IN_PH_B_t;
 
 typedef union
@@ -296,6 +312,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_AC_IN_PH_C_t;
 
 typedef union
@@ -306,6 +323,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_V_OUT_1_t;
 
 typedef union
@@ -316,6 +334,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_V_OUT_2_t;
 
 typedef union
@@ -326,6 +345,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_V_OUT_3_PH1_t;
 
 typedef union
@@ -336,6 +356,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_V_OUT_3_PH2_t;
 
 typedef union
@@ -346,6 +367,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_V_OUT_3_PH3_t;
 
 typedef union
@@ -356,6 +378,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_V_OUT_4_t;
 
 typedef union
@@ -366,6 +389,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_V_OUT_5_t;
 
 typedef union
@@ -376,6 +400,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_V_OUT_6_t;
 
 typedef union
@@ -386,6 +411,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_V_OUT_7_t;
 
 typedef union
@@ -396,6 +422,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_V_OUT_8_t;
 
 typedef union
@@ -406,6 +433,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_V_OUT_9_t;
 
 typedef union
@@ -416,6 +444,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_V_OUT_10_t;
 
 typedef union
@@ -426,6 +455,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_OUT_1_t;
 
 typedef union
@@ -436,6 +466,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_OUT_2_t;
 
 typedef union
@@ -446,6 +477,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_OUT_3_PH1_t;
 
 typedef union
@@ -456,6 +488,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_OUT_3_PH2_t;
 
 typedef union
@@ -466,6 +499,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_OUT_3_PH3_t;
 
 typedef union
@@ -476,6 +510,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_OUT_4_t;
 
 typedef union
@@ -486,6 +521,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_OUT_5_t;
 
 typedef union
@@ -496,6 +532,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_OUT_6_t;
 
 typedef union
@@ -506,6 +543,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_OUT_7_t;
 
 typedef union
@@ -516,6 +554,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_OUT_8_t;
 
 typedef union
@@ -526,6 +565,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_OUT_9_t;
 
 typedef union
@@ -536,6 +576,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_I_OUT_10_t;
 
 typedef union
@@ -546,6 +587,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_AC_POWER_t;
 
 typedef union
@@ -556,6 +598,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_FAN1_SPEED_t;
 
 typedef union
@@ -566,6 +609,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_FAN2_SPEED_t;
 
 typedef union
@@ -576,6 +620,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_LOG_FAN3_SPEED_t;
 
 typedef union
@@ -586,6 +631,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 8;
 }fields_LOG_T1_t;
 
 typedef union
@@ -596,6 +642,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 8;
 }fields_LOG_T2_t;
 
 typedef union
@@ -606,6 +653,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 8;
 }fields_LOG_T3_t;
 
 typedef union
@@ -616,6 +664,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 8;
 }fields_LOG_T4_t;
 
 typedef union
@@ -626,6 +675,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 8;
 }fields_LOG_T5_t;
 
 typedef union
@@ -636,6 +686,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 8;
 }fields_LOG_T6_t;
 
 typedef union
@@ -646,6 +697,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 8;
 }fields_LOG_T7_t;
 
 typedef union
@@ -656,6 +708,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 8;
 }fields_LOG_T8_t;
 
 typedef union
@@ -666,6 +719,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 8;
 }fields_LOG_T9_t;
 
 typedef union
@@ -1189,6 +1243,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_V_OUT_1_t;
 
 typedef union
@@ -1199,6 +1254,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_V_OUT_2_t;
 
 typedef union
@@ -1209,6 +1265,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_V_OUT_5_t;
 
 typedef union
@@ -1219,6 +1276,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_V_OUT_6_t;
 
 typedef union
@@ -1229,6 +1287,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_V_OUT_7_t;
 
 typedef union
@@ -1239,6 +1298,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_V_OUT_8_t;
 
 typedef union
@@ -1249,6 +1309,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_V_OUT_9_t;
 
 typedef union
@@ -1259,6 +1320,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_V_OUT_10_t;
 
 typedef union
@@ -1269,6 +1331,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_I_OUT_1_t;
 
 typedef union
@@ -1279,6 +1342,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_I_OUT_2_t;
 
 typedef union
@@ -1289,6 +1353,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_I_OUT_5_t;
 
 typedef union
@@ -1299,6 +1364,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_I_OUT_6_t;
 
 typedef union
@@ -1309,6 +1375,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_I_OUT_7_t;
 
 typedef union
@@ -1319,6 +1386,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_I_OUT_8_t;
 
 typedef union
@@ -1329,6 +1397,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_I_OUT_9_t;
 
 typedef union
@@ -1339,6 +1408,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_I_OUT_10_t;
 
 typedef union
@@ -1349,6 +1419,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t T                      : 8;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_T1_t;
 
 typedef union
@@ -1359,6 +1434,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t T                      : 8;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_T2_t;
 
 typedef union
@@ -1369,6 +1449,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t T                      : 8;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_T3_t;
 
 typedef union
@@ -1379,6 +1464,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t T                      : 8;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_T4_t;
 
 typedef union
@@ -1389,6 +1479,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t T                      : 8;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_T5_t;
 
 typedef union
@@ -1399,6 +1494,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t T                      : 8;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_T6_t;
 
 typedef union
@@ -1409,6 +1509,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t T                      : 8;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_T7_t;
 
 typedef union
@@ -1419,6 +1524,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t T                      : 8;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_T8_t;
 
 typedef union
@@ -1429,6 +1539,11 @@ typedef union
 
 typedef struct
 {
+    uint32_t T                      : 8;
+    uint32_t VINP                   : 1;
+    uint32_t OTP                    : 1;
+    uint32_t OCP                    : 1;
+    uint32_t OVP                    : 1;
 }fields_UART_T9_t;
 
 typedef union
@@ -1439,6 +1554,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_MAIN_I_PH1_t;
 
 typedef union
@@ -1449,6 +1565,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_MAIN_I_PH2_t;
 
 typedef union
@@ -1459,6 +1576,7 @@ typedef union
 
 typedef struct
 {
+    uint32_t d                      : 16;
 }fields_UART_MAIN_I_PH3_t;
 
 typedef union
@@ -1617,10 +1735,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_OUT4_Isns_t;
 
 typedef union
@@ -1631,10 +1746,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_DC_PWR_I_sns_t;
 
 typedef union
@@ -1645,10 +1757,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_PH1_I_sns_t;
 
 typedef union
@@ -1659,10 +1768,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_PH2_I_sns_t;
 
 typedef union
@@ -1673,10 +1779,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_PH3_I_sns_t;
 
 typedef union
@@ -1687,10 +1790,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_28V_IN_sns_t;
 
 typedef union
@@ -1701,10 +1801,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_Vsns_PH_A_RLY_t;
 
 typedef union
@@ -1715,10 +1812,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_Vsns_PH_B_RLY_t;
 
 typedef union
@@ -1729,10 +1823,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_Vsns_PH_C_RLY_t;
 
 typedef union
@@ -1743,10 +1834,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_Vsns_PH3_t;
 
 typedef union
@@ -1757,10 +1845,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_Vsns_PH2_t;
 
 typedef union
@@ -1771,10 +1856,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_Vsns_PH1_t;
 
 typedef union
@@ -1785,10 +1867,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_OUT4_sns_t;
 
 typedef union
@@ -1799,10 +1878,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_RMS_OUT4_Isns_t;
 
 typedef union
@@ -1813,10 +1889,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_RMS_PH1_I_sns_t;
 
 typedef union
@@ -1827,10 +1900,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_RMS_PH2_I_sns_t;
 
 typedef union
@@ -1841,10 +1911,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_RMS_PH3_I_sns_t;
 
 typedef union
@@ -1855,10 +1922,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_RMS_Vsns_PH_A_RLY_t;
 
 typedef union
@@ -1869,10 +1933,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_RMS_Vsns_PH_B_RLY_t;
 
 typedef union
@@ -1883,10 +1944,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_RMS_Vsns_PH_C_RLY_t;
 
 typedef union
@@ -1897,10 +1955,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_RMS_Vsns_PH3_t;
 
 typedef union
@@ -1911,10 +1966,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_RMS_Vsns_PH2_t;
 
 typedef union
@@ -1925,10 +1977,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_RMS_Vsns_PH1_t;
 
 typedef union
@@ -1939,10 +1988,7 @@ typedef union
 
 typedef struct
 {
-    uint32_t L_D_RANGE              : 12;
-    uint32_t L_ID_RANGE             : 4;
-    uint32_t H_D_RANGE              : 12;
-    uint32_t H_ID_RANGE             : 4;
+    uint32_t d                      : 16;
 }fields_SPI_RMS_OUT4_sns_t;
 
 typedef union
@@ -1951,8 +1997,174 @@ typedef union
     fields_SPI_RMS_OUT4_sns_t fields;
 }SPI_RMS_OUT4_sns_t;
 
-#define NUM_REGS_PACKED 153
-#define NUM_REGS 153
+typedef struct
+{
+    uint32_t uvp                    : 1;
+    uint32_t uvp_ph1                : 1;
+    uint32_t uvp_ph2                : 1;
+    uint32_t uvp_ph3                : 1;
+    uint32_t uvp_dc                 : 1;
+    uint32_t stat_p_in              : 1;
+    uint32_t stat_p_out             : 1;
+    uint32_t stat_115_ac_in         : 1;
+    uint32_t stat_115_a_in          : 1;
+    uint32_t stat_115_b_in          : 1;
+    uint32_t stat_115_c_in          : 1;
+    uint32_t stat_28_dc_in          : 1;
+    uint32_t stat_115_ac_out        : 1;
+    uint32_t stat_115_a_out         : 1;
+    uint32_t stat_115_b_out         : 1;
+    uint32_t stat_115_c_out         : 1;
+    uint32_t stat_v_out4_out        : 1;
+    uint32_t stat_dc1_out           : 1;
+    uint32_t stat_dc2_out           : 1;
+    uint32_t stat_dc5_out           : 1;
+    uint32_t stat_dc6_out           : 1;
+    uint32_t stat_dc7_out           : 1;
+    uint32_t stat_dc8_out           : 1;
+    uint32_t stat_dc9_out           : 1;
+    uint32_t stat_dc10_out          : 1;
+    uint32_t relay_3p               : 1;
+    uint32_t relay_3p_a             : 1;
+    uint32_t relay_3p_b             : 1;
+    uint32_t relay_3p_c             : 1;
+    uint32_t lamp_28vdc             : 1;
+    uint32_t lamp_115vac            : 1;
+    uint32_t ovp_error              : 1;
+}fields_LIMITS0_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_LIMITS0_t fields;
+}LIMITS0_t;
+
+typedef struct
+{
+    uint32_t ovp_Vsns_PH_A_RLY      : 1;
+    uint32_t ovp_Vsns_PH_B_RLY      : 1;
+    uint32_t ovp_Vsns_PH_C_RLY      : 1;
+    uint32_t ovp_Vsns_PH1           : 1;
+    uint32_t ovp_Vsns_PH2           : 1;
+    uint32_t ovp_Vsns_PH3           : 1;
+    uint32_t ovp_OUT4_sns           : 1;
+    uint32_t ovp_Vsns_28V_IN        : 1;
+    uint32_t ovp_VOUT_1             : 1;
+    uint32_t ovp_VOUT_2             : 1;
+    uint32_t ovp_VOUT_5             : 1;
+    uint32_t ovp_VOUT_6             : 1;
+    uint32_t ovp_VOUT_7             : 1;
+    uint32_t ovp_VOUT_8             : 1;
+    uint32_t ovp_VOUT_9             : 1;
+    uint32_t ovp_VOUT_10            : 1;
+    uint32_t otp                    : 1;
+    uint32_t otp_t1                 : 1;
+    uint32_t otp_t2                 : 1;
+    uint32_t otp_t3                 : 1;
+    uint32_t otp_t4                 : 1;
+    uint32_t otp_t5                 : 1;
+    uint32_t otp_t6                 : 1;
+    uint32_t otp_t7                 : 1;
+    uint32_t otp_t8                 : 1;
+    uint32_t otp_t9                 : 1;
+    uint32_t fans                   : 1;
+    uint32_t fan1                   : 1;
+    uint32_t fan2                   : 1;
+    uint32_t fan3                   : 1;
+}fields_LIMITS1_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_LIMITS1_t fields;
+}LIMITS1_t;
+
+typedef struct
+{
+    uint32_t DC_IN_Status           : 1;
+    uint32_t AC_IN_Status           : 1;
+    uint32_t Power_Out_Status       : 1;
+    uint32_t MIU_COM_Status         : 1;
+    uint32_t OUT1_OC                : 1;
+    uint32_t OUT2_OC                : 1;
+    uint32_t OUT3_OC                : 1;
+    uint32_t OUT4_OC                : 1;
+    uint32_t OUT5_OC                : 1;
+    uint32_t OUT6_OC                : 1;
+    uint32_t OUT7_OC                : 1;
+    uint32_t OUT8_OC                : 1;
+    uint32_t OUT9_OC                : 1;
+    uint32_t OUT10_OC               : 1;
+    uint32_t DC_IN_OV               : 1;
+    uint32_t AC_IN_PH1_OV           : 1;
+    uint32_t AC_IN_PH2_OV           : 1;
+    uint32_t AC_IN_PH3_OV           : 1;
+    uint32_t OUT1_OV                : 1;
+    uint32_t OUT2_OV                : 1;
+    uint32_t OUT3_OV                : 1;
+    uint32_t OUT4_OV                : 1;
+    uint32_t OUT5_OV                : 1;
+    uint32_t OUT6_OV                : 1;
+    uint32_t OUT7_OV                : 1;
+    uint32_t OUT8_OV                : 1;
+    uint32_t OUT9_OV                : 1;
+    uint32_t OUT10_OV               : 1;
+    uint32_t DC_IN_UV               : 1;
+    uint32_t AC_IN_PH1_UV           : 1;
+    uint32_t AC_IN_PH2_UV           : 1;
+    uint32_t AC_IN_PH3_UV           : 1;
+}fields_PSU_STAT_LIVE_L_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_PSU_STAT_LIVE_L_t fields;
+}PSU_STAT_LIVE_L_t;
+
+typedef struct
+{
+    uint32_t AC_IN_PH1_Status       : 1;
+    uint32_t AC_IN_PH2_Status       : 1;
+    uint32_t AC_IN_PH3_Status       : 1;
+    uint32_t AC_IN_Neutral_Status   : 1;
+    uint32_t Is_Logfile_Running     : 1;
+    uint32_t Is_Logfile_Erase_In_Process: 1;
+    uint32_t Fan1_Speed_Status      : 1;
+    uint32_t Fan2_Speed_Status      : 1;
+    uint32_t Fan3_Speed_Status      : 1;
+    uint32_t T1_OVER_TEMP_Status    : 1;
+    uint32_t T2_OVER_TEMP_Status    : 1;
+    uint32_t T3_OVER_TEMP_Status    : 1;
+    uint32_t T4_OVER_TEMP_Status    : 1;
+    uint32_t T5_OVER_TEMP_Status    : 1;
+    uint32_t T6_OVER_TEMP_Status    : 1;
+    uint32_t T7_OVER_TEMP_Status    : 1;
+    uint32_t T8_OVER_TEMP_Status    : 1;
+    uint32_t T9_OVER_TEMP_Status    : 1;
+    uint32_t CC_TCU_Inhibit         : 1;
+    uint32_t EC_TCU_Inhibit         : 1;
+    uint32_t Reset                  : 1;
+    uint32_t Shutdown               : 1;
+    uint32_t Emergency_Shutdown     : 1;
+    uint32_t System_Off             : 1;
+    uint32_t ON_OFF_Switch_State    : 1;
+    uint32_t Capacitor1_end_of_life : 1;
+    uint32_t Capacitor2_end_of_life : 1;
+    uint32_t Capacitor3_end_of_life : 1;
+    uint32_t Capacitor4_end_of_life : 1;
+    uint32_t Capacitor5_end_of_life : 1;
+    uint32_t Capacitor6_end_of_life : 1;
+    uint32_t Capacitor7_end_of_life : 1;
+}fields_PSU_STAT_LIVE_H_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_PSU_STAT_LIVE_H_t fields;
+}PSU_STAT_LIVE_H_t;
+
+#define NUM_REGS_PACKED 157
+#define NUM_REGS 157
 
 typedef struct
 {
@@ -2109,6 +2321,10 @@ typedef struct
     SPI_RMS_Vsns_PH2_t       SPI_RMS_Vsns_PH2    ;
     SPI_RMS_Vsns_PH1_t       SPI_RMS_Vsns_PH1    ;
     SPI_RMS_OUT4_sns_t       SPI_RMS_OUT4_sns    ;
+    LIMITS0_t                LIMITS0             ;
+    LIMITS1_t                LIMITS1             ;
+    PSU_STAT_LIVE_L_t        PSU_STAT_LIVE_L     ;
+    PSU_STAT_LIVE_H_t        PSU_STAT_LIVE_H     ;
 }registers_t;
 #pragma pack(pop)
 
@@ -2271,5 +2487,9 @@ typedef struct
 #define SPI_RMS_Vsns_PH2_i  150
 #define SPI_RMS_Vsns_PH1_i  151
 #define SPI_RMS_OUT4_sns_i  152
+#define LIMITS0_i           153
+#define LIMITS1_i           154
+#define PSU_STAT_LIVE_L_i   155
+#define PSU_STAT_LIVE_H_i   156
 
 #endif //__REGS_PKG_H__

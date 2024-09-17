@@ -1,4 +1,4 @@
-define: &registers_version 0x00010004
+define: &registers_version 0x00010005
 
 #first define the registers one by one
 reg_version: &reg_version
@@ -35,7 +35,11 @@ reg_general_control: &reg_general_control
     UVP_EN_DC    : 11
     FAN_CHECK    : 12
     RELAY_CHECK  : 13
-  used_bits: "13:0"
+    OVP_IN_EN    : 14
+    OVP_OUT_EN   : 15
+    UVP_EN       : 16
+    OTP_EN       : 17
+  used_bits: "17:0"
 
 reg_general_status: &reg_general_status 
   fpga_access: true
@@ -43,19 +47,49 @@ reg_general_status: &reg_general_status
   fields:
     REGS_LOCKED: 0
     STOP_LOG   : 1
-  used_bits: "1:0"
+    LAMP_STATE : "3:2"
+    power_on_debaunced : 4
+    during_power_down : 5
+  used_bits: "5:0"
 
 reg_cpu_status: &reg_cpu_status 
   fpga_access: false
   cpu_access: true
   fields:
     MIU_COM_Status: 0
-  used_bits: "0"
+    Is_Logfile_Running : 1
+    Is_Logfile_Erase_In_Process : 2
+  used_bits: "2:0"
 
 reg_d_int: &reg_d_int
   fpga_access: true
   cpu_access: false
   used_bits: "31:0"
+
+reg_d_int: &reg_d8_int
+  fpga_access: true
+  cpu_access: false
+  fields:
+    d : "7:0"
+  used_bits: "7:0"
+
+reg_t_int: &reg_t_int
+  fpga_access: true
+  cpu_access: false
+  fields:
+    T : "7:0"
+    VINP : 8
+    OTP  : 9
+    OCP  : 10
+    OVP  : 11
+  used_bits: "11:0"
+
+reg_d_int: &reg_d16_int
+  fpga_access: true
+  cpu_access: false
+  fields:
+    d : "15:0"
+  used_bits: "15:0"
 
 reg_empty: &reg_empty
     cpu_access: false
@@ -352,6 +386,83 @@ reg_vsns_ph: &reg_vsns_ph
     PH_V   : "11:0" 
   used_bits: "11:0"  
 
+reg_limits_0: &reg_limits_0
+  fpga_access: true
+  cpu_access: false
+  fields:
+    uvp             :  0
+    uvp_ph1         :  1
+    uvp_ph2         :  2
+    uvp_ph3         :  3
+    uvp_dc          :  4
+    stat_p_in       :  5
+    stat_p_out      :  6
+    stat_115_ac_in  :  7
+    stat_115_a_in   :  8
+    stat_115_b_in   :  9
+    stat_115_c_in   : 10
+    stat_28_dc_in   : 11
+    stat_115_ac_out : 12
+    stat_115_a_out  : 13
+    stat_115_b_out  : 14
+    stat_115_c_out  : 15
+    stat_v_out4_out : 16
+    stat_dc1_out    : 17
+    stat_dc2_out    : 18
+    stat_dc5_out    : 19
+    stat_dc6_out    : 20
+    stat_dc7_out    : 21
+    stat_dc8_out    : 22
+    stat_dc9_out    : 23
+    stat_dc10_out   : 24
+    relay_3p        : 25
+    relay_3p_a      : 26
+    relay_3p_b      : 27
+    relay_3p_c      : 28
+    lamp_28vdc      : 29
+    lamp_115vac     : 30
+    ovp_error       : 31
+  used_bits: "31:0"  
+
+reg_limits_1: &reg_limits_1
+  fpga_access: true
+  cpu_access: false
+  fields:
+    ovp_Vsns_PH_A_RLY  :  0
+    ovp_Vsns_PH_B_RLY  :  1
+    ovp_Vsns_PH_C_RLY  :  2
+    ovp_Vsns_PH1       :  3
+    ovp_Vsns_PH2       :  4
+    ovp_Vsns_PH3       :  5
+    ovp_OUT4_sns       :  6
+    ovp_Vsns_28V_IN    :  7
+    ovp_VOUT_1         :  8
+    ovp_VOUT_2         :  9
+    ovp_VOUT_5         : 10
+    ovp_VOUT_6         : 11
+    ovp_VOUT_7         : 12
+    ovp_VOUT_8         : 13
+    ovp_VOUT_9         : 14
+    ovp_VOUT_10        : 15
+    otp                : 16
+    otp_t1             : 17
+    otp_t2             : 18
+    otp_t3             : 19
+    otp_t4             : 20
+    otp_t5             : 21
+    otp_t6             : 22
+    otp_t7             : 23
+    otp_t8             : 24
+    otp_t9             : 25
+    fans               : 26
+    fan1               : 27
+    fan2               : 28
+    fan3               : 29
+#                       : 30
+#                       : 31
+  used_bits: "29:0"  
+
+
 # list of registers and blocks of registers with their address
 regs:
   - REGS_VERSION: *reg_version
@@ -381,51 +492,51 @@ regs:
   - IO_OUT1: *reg_io_out1
     i: auto
   - SN_ETI            : *reg_sn_eti 
-  - LOG_VDC_IN        : *reg_d_int
-  - LOG_VAC_IN_PH_A   : *reg_d_int
-  - LOG_VAC_IN_PH_B   : *reg_d_int
-  - LOG_VAC_IN_PH_C   : *reg_d_int
-  - LOG_I_DC_IN       : *reg_d_int
-  - LOG_I_AC_IN_PH_A  : *reg_d_int
-  - LOG_I_AC_IN_PH_B  : *reg_d_int
-  - LOG_I_AC_IN_PH_C  : *reg_d_int
-  - LOG_V_OUT_1       : *reg_d_int
-  - LOG_V_OUT_2       : *reg_d_int
-  - LOG_V_OUT_3_PH1   : *reg_d_int
-  - LOG_V_OUT_3_PH2   : *reg_d_int
-  - LOG_V_OUT_3_PH3   : *reg_d_int
-  - LOG_V_OUT_4       : *reg_d_int
-  - LOG_V_OUT_5       : *reg_d_int
-  - LOG_V_OUT_6       : *reg_d_int
-  - LOG_V_OUT_7       : *reg_d_int
-  - LOG_V_OUT_8       : *reg_d_int
-  - LOG_V_OUT_9       : *reg_d_int
-  - LOG_V_OUT_10      : *reg_d_int
-  - LOG_I_OUT_1       : *reg_d_int
-  - LOG_I_OUT_2       : *reg_d_int
-  - LOG_I_OUT_3_PH1   : *reg_d_int
-  - LOG_I_OUT_3_PH2   : *reg_d_int
-  - LOG_I_OUT_3_PH3   : *reg_d_int
-  - LOG_I_OUT_4       : *reg_d_int
-  - LOG_I_OUT_5       : *reg_d_int
-  - LOG_I_OUT_6       : *reg_d_int
-  - LOG_I_OUT_7       : *reg_d_int
-  - LOG_I_OUT_8       : *reg_d_int
-  - LOG_I_OUT_9       : *reg_d_int
-  - LOG_I_OUT_10      : *reg_d_int
-  - LOG_AC_POWER      : *reg_d_int
-  - LOG_FAN1_SPEED    : *reg_d_int
-  - LOG_FAN2_SPEED    : *reg_d_int
-  - LOG_FAN3_SPEED    : *reg_d_int
-  - LOG_T1            : *reg_d_int
-  - LOG_T2            : *reg_d_int
-  - LOG_T3            : *reg_d_int
-  - LOG_T4            : *reg_d_int
-  - LOG_T5            : *reg_d_int
-  - LOG_T6            : *reg_d_int
-  - LOG_T7            : *reg_d_int
-  - LOG_T8            : *reg_d_int
-  - LOG_T9            : *reg_d_int
+  - LOG_VDC_IN        : *reg_d16_int
+  - LOG_VAC_IN_PH_A   : *reg_d16_int
+  - LOG_VAC_IN_PH_B   : *reg_d16_int
+  - LOG_VAC_IN_PH_C   : *reg_d16_int
+  - LOG_I_DC_IN       : *reg_d16_int
+  - LOG_I_AC_IN_PH_A  : *reg_d16_int
+  - LOG_I_AC_IN_PH_B  : *reg_d16_int
+  - LOG_I_AC_IN_PH_C  : *reg_d16_int
+  - LOG_V_OUT_1       : *reg_d16_int
+  - LOG_V_OUT_2       : *reg_d16_int
+  - LOG_V_OUT_3_PH1   : *reg_d16_int
+  - LOG_V_OUT_3_PH2   : *reg_d16_int
+  - LOG_V_OUT_3_PH3   : *reg_d16_int
+  - LOG_V_OUT_4       : *reg_d16_int
+  - LOG_V_OUT_5       : *reg_d16_int
+  - LOG_V_OUT_6       : *reg_d16_int
+  - LOG_V_OUT_7       : *reg_d16_int
+  - LOG_V_OUT_8       : *reg_d16_int
+  - LOG_V_OUT_9       : *reg_d16_int
+  - LOG_V_OUT_10      : *reg_d16_int
+  - LOG_I_OUT_1       : *reg_d16_int
+  - LOG_I_OUT_2       : *reg_d16_int
+  - LOG_I_OUT_3_PH1   : *reg_d16_int
+  - LOG_I_OUT_3_PH2   : *reg_d16_int
+  - LOG_I_OUT_3_PH3   : *reg_d16_int
+  - LOG_I_OUT_4       : *reg_d16_int
+  - LOG_I_OUT_5       : *reg_d16_int
+  - LOG_I_OUT_6       : *reg_d16_int
+  - LOG_I_OUT_7       : *reg_d16_int
+  - LOG_I_OUT_8       : *reg_d16_int
+  - LOG_I_OUT_9       : *reg_d16_int
+  - LOG_I_OUT_10      : *reg_d16_int
+  - LOG_AC_POWER      : *reg_d16_int
+  - LOG_FAN1_SPEED    : *reg_d16_int
+  - LOG_FAN2_SPEED    : *reg_d16_int
+  - LOG_FAN3_SPEED    : *reg_d16_int
+  - LOG_T1            : *reg_d8_int
+  - LOG_T2            : *reg_d8_int
+  - LOG_T3            : *reg_d8_int
+  - LOG_T4            : *reg_d8_int
+  - LOG_T5            : *reg_d8_int
+  - LOG_T6            : *reg_d8_int
+  - LOG_T7            : *reg_d8_int
+  - LOG_T8            : *reg_d8_int
+  - LOG_T9            : *reg_d8_int
   - LOG_ETM           : *reg_bdir
   - LOG_SN            : *reg_bdir
   - LOG_PSU_STATUS_L  : *reg_psu_stat_l
@@ -459,34 +570,34 @@ regs:
   - UART_RAW7_H       : *reg_uart_d_h
   - UART_RAW8_L       : *reg_uart_main_l
   - UART_RAW8_H       : *reg_uart_main_h
-  - UART_V_OUT_1      : *reg_d_int
-  - UART_V_OUT_2      : *reg_d_int
-  - UART_V_OUT_5      : *reg_d_int
-  - UART_V_OUT_6      : *reg_d_int
-  - UART_V_OUT_7      : *reg_d_int
-  - UART_V_OUT_8      : *reg_d_int
-  - UART_V_OUT_9      : *reg_d_int
-  - UART_V_OUT_10     : *reg_d_int
-  - UART_I_OUT_1      : *reg_d_int
-  - UART_I_OUT_2      : *reg_d_int
-  - UART_I_OUT_5      : *reg_d_int
-  - UART_I_OUT_6      : *reg_d_int
-  - UART_I_OUT_7      : *reg_d_int
-  - UART_I_OUT_8      : *reg_d_int
-  - UART_I_OUT_9      : *reg_d_int
-  - UART_I_OUT_10     : *reg_d_int
-  - UART_T1           : *reg_d_int
-  - UART_T2           : *reg_d_int
-  - UART_T3           : *reg_d_int
-  - UART_T4           : *reg_d_int
-  - UART_T5           : *reg_d_int
-  - UART_T6           : *reg_d_int
-  - UART_T7           : *reg_d_int
-  - UART_T8           : *reg_d_int
-  - UART_T9           : *reg_d_int
-  - UART_MAIN_I_PH1   : *reg_d_int
-  - UART_MAIN_I_PH2   : *reg_d_int
-  - UART_MAIN_I_PH3   : *reg_d_int
+  - UART_V_OUT_1      : *reg_d16_int
+  - UART_V_OUT_2      : *reg_d16_int
+  - UART_V_OUT_5      : *reg_d16_int
+  - UART_V_OUT_6      : *reg_d16_int
+  - UART_V_OUT_7      : *reg_d16_int
+  - UART_V_OUT_8      : *reg_d16_int
+  - UART_V_OUT_9      : *reg_d16_int
+  - UART_V_OUT_10     : *reg_d16_int
+  - UART_I_OUT_1      : *reg_d16_int
+  - UART_I_OUT_2      : *reg_d16_int
+  - UART_I_OUT_5      : *reg_d16_int
+  - UART_I_OUT_6      : *reg_d16_int
+  - UART_I_OUT_7      : *reg_d16_int
+  - UART_I_OUT_8      : *reg_d16_int
+  - UART_I_OUT_9      : *reg_d16_int
+  - UART_I_OUT_10     : *reg_d16_int
+  - UART_T1           : *reg_t_int
+  - UART_T2           : *reg_t_int
+  - UART_T3           : *reg_t_int
+  - UART_T4           : *reg_t_int
+  - UART_T5           : *reg_t_int
+  - UART_T6           : *reg_t_int
+  - UART_T7           : *reg_t_int
+  - UART_T8           : *reg_t_int
+  - UART_T9           : *reg_t_int
+  - UART_MAIN_I_PH1   : *reg_d16_int
+  - UART_MAIN_I_PH2   : *reg_d16_int
+  - UART_MAIN_I_PH3   : *reg_d16_int
   - SPIS_CONTROL      : *reg_spis_ctl
     init: 0x0
   - SPIS_STATUS       : *reg_spis_status
@@ -499,27 +610,32 @@ regs:
   - SPI_RAW2_DC       : *reg_spi_raw
   - SPI_RAW2_FE       : *reg_spi_raw
   - SPI_RAW2_HG       : *reg_spi_raw
-  - SPI_OUT4_Isns     : *reg_spi_raw
-  - SPI_DC_PWR_I_sns  : *reg_spi_raw
-  - SPI_PH1_I_sns     : *reg_spi_raw
-  - SPI_PH2_I_sns     : *reg_spi_raw
-  - SPI_PH3_I_sns     : *reg_spi_raw
-  - SPI_28V_IN_sns    : *reg_spi_raw
-  - SPI_Vsns_PH_A_RLY : *reg_spi_raw
-  - SPI_Vsns_PH_B_RLY : *reg_spi_raw
-  - SPI_Vsns_PH_C_RLY : *reg_spi_raw
-  - SPI_Vsns_PH3      : *reg_spi_raw
-  - SPI_Vsns_PH2      : *reg_spi_raw
-  - SPI_Vsns_PH1      : *reg_spi_raw
-  - SPI_OUT4_sns      : *reg_spi_raw
-  - SPI_RMS_OUT4_Isns     : *reg_spi_raw
-  - SPI_RMS_PH1_I_sns     : *reg_spi_raw
-  - SPI_RMS_PH2_I_sns     : *reg_spi_raw
-  - SPI_RMS_PH3_I_sns     : *reg_spi_raw
-  - SPI_RMS_Vsns_PH_A_RLY : *reg_spi_raw
-  - SPI_RMS_Vsns_PH_B_RLY : *reg_spi_raw
-  - SPI_RMS_Vsns_PH_C_RLY : *reg_spi_raw
-  - SPI_RMS_Vsns_PH3      : *reg_spi_raw
-  - SPI_RMS_Vsns_PH2      : *reg_spi_raw
-  - SPI_RMS_Vsns_PH1      : *reg_spi_raw
-  - SPI_RMS_OUT4_sns      : *reg_spi_raw
+  - SPI_OUT4_Isns     : *reg_d16_int
+  - SPI_DC_PWR_I_sns  : *reg_d16_int
+  - SPI_PH1_I_sns     : *reg_d16_int
+  - SPI_PH2_I_sns     : *reg_d16_int
+  - SPI_PH3_I_sns     : *reg_d16_int
+  - SPI_28V_IN_sns    : *reg_d16_int
+  - SPI_Vsns_PH_A_RLY : *reg_d16_int
+  - SPI_Vsns_PH_B_RLY : *reg_d16_int
+  - SPI_Vsns_PH_C_RLY : *reg_d16_int
+  - SPI_Vsns_PH3      : *reg_d16_int
+  - SPI_Vsns_PH2      : *reg_d16_int
+  - SPI_Vsns_PH1      : *reg_d16_int
+  - SPI_OUT4_sns      : *reg_d16_int
+  - SPI_RMS_OUT4_Isns     : *reg_d16_int
+  - SPI_RMS_PH1_I_sns     : *reg_d16_int
+  - SPI_RMS_PH2_I_sns     : *reg_d16_int
+  - SPI_RMS_PH3_I_sns     : *reg_d16_int
+  - SPI_RMS_Vsns_PH_A_RLY : *reg_d16_int
+  - SPI_RMS_Vsns_PH_B_RLY : *reg_d16_int
+  - SPI_RMS_Vsns_PH_C_RLY : *reg_d16_int
+  - SPI_RMS_Vsns_PH3      : *reg_d16_int
+  - SPI_RMS_Vsns_PH2      : *reg_d16_int
+  - SPI_RMS_Vsns_PH1      : *reg_d16_int
+  - SPI_RMS_OUT4_sns      : *reg_d16_int
+  - LIMITS0               : *reg_limits_0
+  - LIMITS1               : *reg_limits_1
+  - PSU_STAT_LIVE_L     : *reg_psu_stat_l
+  - PSU_STAT_LIVE_H     : *reg_psu_stat_h
+  

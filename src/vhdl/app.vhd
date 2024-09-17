@@ -53,11 +53,11 @@ architecture RTL of app is
     signal log_ps_intr                 : std_logic_vector(PS_INTR_range);
     signal power_2_ios                 : power_2_ios_t;
     signal de                          : std_logic_vector(8 downto 0);
-    signal fans_en, fans_ok            : std_logic;
+    signal fans_en, fans_ok, fan1_ok, fan2_ok, fan3_ok : std_logic;
     signal lamp_out                    : std_logic;
     signal PSU_status                  : std_logic_vector(PSU_Status_range);
-    signal PSU_status_pwr_on           : std_logic_vector(PSU_Status_range);
-    signal PSU_status_pwr_on_mask      : std_logic_vector(PSU_Status_range);
+    --signal PSU_status_pwr_on           : std_logic_vector(PSU_Status_range);
+    --signal PSU_status_pwr_on_mask      : std_logic_vector(PSU_Status_range);
     signal rpm1                        : std_logic_vector(15 downto 0);
     signal rpm2                        : std_logic_vector(15 downto 0);
     signal rpm3                        : std_logic_vector(15 downto 0);
@@ -65,6 +65,8 @@ architecture RTL of app is
     signal P_IN_STATUS_FPGA : std_logic;
     signal P_OUT_STATUS_FPGA : std_logic;
     signal lamp_state : std_logic_vector(1 downto 0);
+    signal zc_error : std_logic;
+    signal general_stat: std_logic_vector(full_reg_range);
     
 begin
     one_ms_tick <= free_running_1ms;
@@ -84,6 +86,10 @@ begin
                 internal_regs_we(GENERAL_STATUS) <= '1';
                 internal_regs(GENERAL_STATUS)(GENERAL_STATUS_REGS_LOCKED) <= internal_regs_update_log(GENERAL_STATUS)(GENERAL_STATUS_REGS_LOCKED);
                 internal_regs(GENERAL_STATUS)(GENERAL_STATUS_STOP_LOG)    <= stop_log_to_cpu;
+                internal_regs(GENERAL_STATUS)(GENERAL_STATUS_LAMP_STATE)  <= lamp_state;
+                internal_regs(GENERAL_STATUS)(GENERAL_STATUS_power_on_debaunced) <= general_stat(GENERAL_STATUS_power_on_debaunced);
+                internal_regs(GENERAL_STATUS)(GENERAL_STATUS_during_power_down)  <= general_stat(GENERAL_STATUS_during_power_down) ;
+                
                 -- timestamp
                 internal_regs_we(TIMESTAMP_L) <= '1';
                 internal_regs(TIMESTAMP_L)    <= timer(31 downto 0);
@@ -147,14 +153,23 @@ begin
                     internal_regs(i) <= internal_regs_spis(i);
                 end loop;
 
+                internal_regs_we(LIMITS0) <= '1';
+                internal_regs_we(LIMITS1) <= '1';
+                internal_regs(LIMITS0) <= limits_stat(31 downto 0);
+                internal_regs(LIMITS1)(limits_stat'left - 32 downto 0) <= limits_stat(limits_stat'left downto 32);
+
+                internal_regs_we(PSU_STAT_LIVE_L) <= '1';
+                internal_regs_we(PSU_STAT_LIVE_H) <= '1';
+                internal_regs(PSU_STAT_LIVE_L) <= PSU_status(31 downto 0);
+                internal_regs(PSU_STAT_LIVE_H) <= PSU_status(63 downto 32);
             end if;
         end if;
     end process;
 
     -- TODO check this
-    PSU_status <=  (PSU_status_pwr_on and PSU_status_pwr_on_mask);
+    --PSU_status <=  (PSU_status_pwr_on and PSU_status_pwr_on_mask);
     -- TODO do this somehow
-    PSU_status(psu_status_MIU_COM_Status) <= registers(CPU_STATUS)(CPU_STATUS_MIU_COM_Status);
+    --PSU_status(psu_status_MIU_COM_Status) <= registers(CPU_STATUS)(CPU_STATUS_MIU_COM_Status);
     
     timer_pr : process(clk)
     begin
@@ -301,6 +316,9 @@ begin
         registers => registers,
         fans_en   => fans_en,
         fans_ok   => fans_ok,
+        fan1_ok   => fan1_ok,
+        fan2_ok   => fan2_ok,
+        fan3_ok   => fan3_ok,
         fan_pwm   => fan_pwm,
         rpm1      => rpm1,
         rpm2      => rpm2,
@@ -335,7 +353,8 @@ begin
         internal_regs_we => internal_regs_we_spis,
         HLS_to_BD        => HLS_to_BD(1),
         BD_to_HLS        => BD_to_HLS(1),
-        log_regs         => log_regs_spi
+        log_regs         => log_regs_spi,
+        zc_error         => zc_error
     );
     
     ios_i: entity work.app_ios
@@ -365,10 +384,8 @@ begin
         power_2_ios      => power_2_ios,
         free_running_1ms => free_running_1ms,
         fans_en          => fans_en,
-        fans_ok          => fans_ok,
-        PSU_Status       => PSU_Status_pwr_on,
-        PSU_Status_mask  => PSU_Status_pwr_on_mask,
-        limits_stat      => limits_stat
+        limits_stat      => limits_stat,
+        general_stat     => general_stat
     );
     
     limits_i: entity work.limits
@@ -377,10 +394,16 @@ begin
         sync_rst          => sync_rst,
         registers         => registers,
         limits_stat       => limits_stat,
-        lamp_state        => lamp_state, -- FIXME do something with this
+        lamp_state        => lamp_state, 
         lamp_out          => lamp_out, 
         P_IN_STATUS_FPGA  => P_IN_STATUS_FPGA,
-        P_OUT_STATUS_FPGA => P_OUT_STATUS_FPGA
+        P_OUT_STATUS_FPGA => P_OUT_STATUS_FPGA,
+        psu_status        => PSU_status,
+        zc_error          => zc_error,
+        fans_ok           => fans_ok,
+        fan1_ok           => fan1_ok,
+        fan2_ok           => fan2_ok,
+        fan3_ok           => fan3_ok
     );
 
 end architecture RTL;

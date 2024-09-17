@@ -33,7 +33,7 @@ architecture RTL of lamp is
     constant LIMIT_95  : integer :=  950; --  95[V] / 0.1 [V/UNIT] =  950 [UNITS]
     
 begin
-    stat_power_on      <= registers(IO_IN)(IO_IN_POWERON_FPGA);
+    stat_power_on      <= registers(GENERAL_STATUS)(GENERAL_STATUS_power_on_debaunced);
     stat_MIU_comm_good <= registers(CPU_STATUS)(CPU_STATUS_MIU_COM_Status); 
 
     v28_in <= signed(registers(SPI_28V_IN_sns)(15 downto 0));

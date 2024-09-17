@@ -17,6 +17,9 @@ entity fans is
         --internal_regs_we : out reg_slv_array_t;
         fans_en          : in  std_logic;
         fans_ok          : out std_logic;
+        fan1_ok          : out std_logic;
+        fan2_ok          : out std_logic;
+        fan3_ok          : out std_logic;
         fan_pwm          : out std_logic_vector(1 to 3);
         rpm1             : out std_logic_vector(15 downto 0);
         rpm2             : out std_logic_vector(15 downto 0);
@@ -46,14 +49,22 @@ begin
     limit_pr: process(clk)
     begin
         if rising_edge(clk) then
-            fans_ok <= '0';
-            if rpm1 > LOW_LIMIT  and rpm1 < HIGH_LIMIT and 
-               rpm2 > LOW_LIMIT  and rpm2 < HIGH_LIMIT and  
-               rpm3 > LOW_LIMIT  and rpm3 < HIGH_LIMIT then
-               fans_ok <= '1';
-           end if;
-           if registers(GENERAL_CONTROL)(GENERAL_CONTROL_FAN_CHECK) = '0' then
-               fans_ok <= fans_en;
+            fans_ok <= fan1_ok and fan2_ok and fan3_ok;
+            fan1_ok <= '0';
+            if rpm1 > LOW_LIMIT  and rpm1 < HIGH_LIMIT then
+                fan1_ok <= '1';
+            end if;
+            if rpm2 > LOW_LIMIT  and rpm2 < HIGH_LIMIT then
+                fan2_ok <= '1';
+            end if;
+            if rpm3 > LOW_LIMIT  and rpm3 < HIGH_LIMIT then
+                fan3_ok <= '1';
+            end if;
+            
+            if registers(GENERAL_CONTROL)(GENERAL_CONTROL_FAN_CHECK) = '0' then
+               fan1_ok <= fans_en;
+               fan2_ok <= fans_en;
+               fan3_ok <= fans_en;
             end if;
         end if;
     end process;

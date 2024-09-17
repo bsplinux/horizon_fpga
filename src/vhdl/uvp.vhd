@@ -21,290 +21,110 @@ end entity uvp;
 
 architecture RTL of uvp is
 
-    type uvp_sm is (idle, wt_1sec_ok, stable, warrning, error);
-    constant MSEC_1000: integer := 100_000_000;
+    constant LIMIT_90  : integer := 900; --  90[V] /  0.1 [V/UNIT] =900 [UNITS]
+    constant LIMIT_95  : integer := 950; --  95[V] /  0.1 [V/UNIT] = 950 [UNITS]
+    constant LIMIT_17   : integer := 340 ; --   17[V] / 0.05 [V/UNIT] =  340 [UNITS]
+    constant LIMIT_18   : integer := 360 ; --   18[V] / 0.05 [V/UNIT] =  360 [UNITS]
+
     constant MSEC_500 : integer :=  50_000_000;
     signal p1_error : std_logic;
     signal p2_error : std_logic;
     signal p3_error : std_logic;
     signal dc_error : std_logic;
-begin
 
-    uvp_115_p1_sm_pr: process(clk)
-        variable state : uvp_sm;
-        variable v : integer range 0 to 2**12 - 1;
-        variable cnt : integer range 0 to MSEC_1000;
+    type integer_array_t is array(natural range <>) of integer;
+    type signed16_array_t is array(natural range <>) of signed(15 downto 0);
+    constant low_limits : integer_array_t(1 to 4)           := (LIMIT_90, LIMIT_90, LIMIT_90, LIMIT_17);
+    constant high_limits: integer_array_t(low_limits'range) := (LIMIT_95, LIMIT_95, LIMIT_95, LIMIT_18);
+    
+    signal uvp_sig: std_logic_vector(low_limits'range);
+    signal uvp_en: std_logic_vector(low_limits'range);
+    signal inputs_vec : signed16_array_t (low_limits'range);
+    type state_t is (idle, uvp_detect, uvp_err, uvp_imediate_err);
+
+begin
+    inputs_vec( 1) <= signed(registers(SPI_RMS_Vsns_PH1     )(SPI_RMS_Vsns_PH1_d));
+    inputs_vec( 2) <= signed(registers(SPI_RMS_Vsns_PH2     )(SPI_RMS_Vsns_PH2_d));
+    inputs_vec( 3) <= signed(registers(SPI_RMS_Vsns_PH3     )(SPI_RMS_Vsns_PH3_d));
+    inputs_vec( 4) <= signed(registers(SPI_28V_IN_sns       )(SPI_28V_IN_sns_d  ));
+    
+    uvp_en( 1) <= registers(GENERAL_CONTROL)(GENERAL_CONTROL_UVP_EN);
+    uvp_en( 2) <= registers(GENERAL_CONTROL)(GENERAL_CONTROL_UVP_EN);
+    uvp_en( 3) <= registers(GENERAL_CONTROL)(GENERAL_CONTROL_UVP_EN);
+    uvp_en( 4) <= registers(GENERAL_CONTROL)(GENERAL_CONTROL_UVP_EN);
+    
+    ovp_gen: for i in low_limits'range generate
+        signal uvp_bit : std_logic;
     begin
-        if rising_edge(clk) then
-            if sync_rst then
-                state := idle;
-                v := 0;
-                cnt := 0;
-                p1_error <= '1';
-            else
-                v := 0; --FIXME to_integer(unsigned(registers(VSNS_PH1)(VSNS_PH1_PH_V)));
-                -- next state logic
-                case state is 
-                    when idle =>
-                        if v >= 95 then
-                            state := wt_1sec_ok;
-                        end if;
-                    when wt_1sec_ok =>
-                        if v < 95 then
-                            state := idle;
-                        elsif cnt >= MSEC_1000 then
-                            state := stable;
-                        end if;
-                    when stable =>
-                        if v < 90 then
-                            state := error;
-                        elsif v < 95 then
-                            state := warrning;
-                        end if;
-                    when warrning =>
-                        if v < 90 then
-                            state := error;
-                        elsif v >= 95 then
-                            state := stable;
-                        elsif cnt >= MSEC_500 then
-                            state := error;
-                        end if;
-                    when error =>
-                        state := idle;
-                end case;
-                
-                -- output logic
-                p1_error <= '1';
-                case state is 
-                    when idle =>
-                        cnt := 0;
-                    when wt_1sec_ok =>
-                        cnt := cnt + 1;
-                    when stable =>
-                        p1_error <= '0';
-                        cnt := 0;
-                    when warrning =>
-                        p1_error <= '0';
-                        cnt := cnt + 1;
-                    when error =>
-                        cnt := 0;
-                end case;
-                if registers(GENERAL_CONTROL)(GENERAL_CONTROL_UVP_EN_PH1) = '0' then
-                    p1_error <= '0';
+        uvp_pr: process(clk)
+            variable state: state_t;
+            variable cnt : integer range 0 to MSEC_500 + 1;
+        begin
+            if rising_edge(clk) then
+                if sync_rst then
+                    uvp_bit <= '0';    
+                    state := idle;
+                    cnt := 0;
+                else
+                    -- next state logic
+                    case state is 
+                        when idle =>
+                            if inputs_vec(i) < low_limits(i) then
+                                state := uvp_imediate_err;
+                            elsif inputs_vec(i) < high_limits(i) then
+                                state := uvp_detect;
+                            end if;
+                        when uvp_detect =>
+                            if inputs_vec(i) < low_limits(i) then
+                                state := uvp_imediate_err;
+                            elsif inputs_vec(i) < high_limits(i) and cnt >= MSEC_500 then
+                                state := uvp_err;
+                            elsif inputs_vec(i) >= high_limits(i) then
+                                state := idle;
+                            end if;
+                        when uvp_err =>
+                            if inputs_vec(i) < low_limits(i) then
+                                state := uvp_imediate_err;
+                            elsif inputs_vec(i) >= high_limits(i) then
+                                state := idle;
+                            end if;
+                        when uvp_imediate_err =>
+                            if inputs_vec(i) >= high_limits(i) then
+                                state := idle;
+                            end if;
+                    end case;
+                    
+                    -- ouput logic
+                    uvp_bit <= '0';
+                    case state is 
+                        when idle =>
+                            cnt := 0;
+                        when uvp_detect =>
+                            cnt := cnt + 1;
+                        when uvp_err =>
+                            uvp_bit <= '1';
+                        when uvp_imediate_err =>
+                            uvp_bit <= '1';
+                    end case;
+                    
+                    if uvp_en(i) = '0' then
+                        uvp_bit <= '0';
+                    end if;
                 end if;
             end if;
-        end if;
-    end process;
-    
-    uvp_115_p2_sm_pr: process(clk)
-        variable state : uvp_sm;
-        variable v : integer range 0 to 2**12 - 1;
-        variable cnt : integer range 0 to MSEC_1000;
-    begin
-        if rising_edge(clk) then
-            if sync_rst then
-                state := idle;
-                v := 0;
-                cnt := 0;
-                p2_error <= '1';
-            else
-                v := 0; -- FIXME to_integer(unsigned(registers(VSNS_PH2)(VSNS_PH2_PH_V)));
-                -- next state logic
-                case state is 
-                    when idle =>
-                        if v >= 95 then
-                            state := wt_1sec_ok;
-                        end if;
-                    when wt_1sec_ok =>
-                        if v < 95 then
-                            state := idle;
-                        elsif cnt >= MSEC_1000 then
-                            state := stable;
-                        end if;
-                    when stable =>
-                        if v < 90 then
-                            state := error;
-                        elsif v < 95 then
-                            state := warrning;
-                        end if;
-                    when warrning =>
-                        if v < 90 then
-                            state := error;
-                        elsif v >= 95 then
-                            state := stable;
-                        elsif cnt >= MSEC_500 then
-                            state := error;
-                        end if;
-                    when error =>
-                        state := idle;
-                end case;
-                
-                -- output logic
-                p2_error <= '1';
-                case state is 
-                    when idle =>
-                        cnt := 0;
-                    when wt_1sec_ok =>
-                        cnt := cnt + 1;
-                    when stable =>
-                        p2_error <= '0';
-                        cnt := 0;
-                    when warrning =>
-                        p2_error <= '0';
-                        cnt := cnt + 1;
-                    when error =>
-                        cnt := 0;
-                end case;
-                if registers(GENERAL_CONTROL)(GENERAL_CONTROL_UVP_EN_PH2) = '0' then
-                    p2_error <= '0';
-                end if;
-            end if;
-        end if;
-    end process;
-    
-    uvp_115_p3_sm_pr: process(clk)
-        variable state : uvp_sm;
-        variable v : integer range 0 to 2**12 - 1;
-        variable cnt : integer range 0 to MSEC_1000;
-    begin
-        if rising_edge(clk) then
-            if sync_rst then
-                state := idle;
-                v := 0;
-                cnt := 0;
-                p3_error <= '1';
-            else
-                v := 0; -- FIXME to_integer(unsigned(registers(VSNS_PH3)(VSNS_PH3_PH_V)));
-                -- next state logic
-                case state is 
-                    when idle =>
-                        if v >= 95 then
-                            state := wt_1sec_ok;
-                        end if;
-                    when wt_1sec_ok =>
-                        if v < 95 then
-                            state := idle;
-                        elsif cnt >= MSEC_1000 then
-                            state := stable;
-                        end if;
-                    when stable =>
-                        if v < 90 then
-                            state := error;
-                        elsif v < 95 then
-                            state := warrning;
-                        end if;
-                    when warrning =>
-                        if v < 90 then
-                            state := error;
-                        elsif v >= 95 then
-                            state := stable;
-                        elsif cnt >= MSEC_500 then
-                            state := error;
-                        end if;
-                    when error =>
-                        state := idle;
-                end case;
-                
-                -- output logic
-                p3_error <= '1';
-                case state is 
-                    when idle =>
-                        cnt := 0;
-                    when wt_1sec_ok =>
-                        cnt := cnt + 1;
-                    when stable =>
-                        p3_error <= '0';
-                        cnt := 0;
-                    when warrning =>
-                        p3_error <= '0';
-                        cnt := cnt + 1;
-                    when error =>
-                        cnt := 0;
-                end case;
-                if registers(GENERAL_CONTROL)(GENERAL_CONTROL_UVP_EN_PH3) = '0' then
-                    p3_error <= '0';
-                end if;
-            end if;
-        end if;
-    end process;
-    
-    uvp_28dc_sm_pr: process(clk)
-        variable state : uvp_sm;
-        variable v : integer range 0 to 2**12 - 1;
-        variable v_sig : std_logic_vector(11 downto 0);
-        variable cnt : integer range 0 to MSEC_1000;
-    begin
-        if rising_edge(clk) then
-            if sync_rst then
-                state := idle;
-                v := 0;
-                cnt := 0;
-                dc_error <= '1';
-            else
-                v_sig := registers(UART_RAW0_L)(15 downto 12) & registers(UART_RAW0_L)(23 downto 16); -- input voltage of DCDC1
-                v  := to_integer(unsigned(v_sig));
-                -- next state logic
-                case state is 
-                    when idle =>
-                        if v >= 18 then
-                            state := wt_1sec_ok;
-                        end if;
-                    when wt_1sec_ok =>
-                        if v < 18 then
-                            state := idle;
-                        elsif cnt >= MSEC_1000 then
-                            state := stable;
-                        end if;
-                    when stable =>
-                        if v < 17 then
-                            state := error;
-                        elsif v < 18 then
-                            state := warrning;
-                        end if;
-                    when warrning =>
-                        if v < 17 then
-                            state := error;
-                        elsif v >= 18 then
-                            state := stable;
-                        elsif cnt >= MSEC_500 then
-                            state := error;
-                        end if;
-                    when error =>
-                        state := idle;
-                end case;
-                
-                -- output logic
-                dc_error <= '1';
-                case state is 
-                    when idle =>
-                        cnt := 0;
-                    when wt_1sec_ok =>
-                        cnt := cnt + 1;
-                    when stable =>
-                        dc_error <= '0';
-                        cnt := 0;
-                    when warrning =>
-                        dc_error <= '0';
-                        cnt := cnt + 1;
-                    when error =>
-                        cnt := 0;
-                end case;
-                if registers(GENERAL_CONTROL)(GENERAL_CONTROL_UVP_EN_DC) = '0' then
-                    dc_error <= '0';
-                end if;
-            end if;
-        end if;
-    end process;
-    
+        end process;
+        uvp_sig(i) <= uvp_bit;
+    end generate ovp_gen;
+
     process(clk)
     begin
         if rising_edge(clk) then
-            uvp_error <= p1_error or p2_error or p3_error or dc_error;
+            uvp_error <= and uvp_sig;
             
-            AC_IN_PH1_UV <= p1_error;
-            AC_IN_PH2_UV <= p2_error;
-            AC_IN_PH3_UV <= p3_error;
-            DC_IN_UV     <= dc_error;
+            AC_IN_PH1_UV <= uvp_sig(1);
+            AC_IN_PH2_UV <= uvp_sig(2);
+            AC_IN_PH3_UV <= uvp_sig(3);
+            DC_IN_UV     <= uvp_sig(4);
         end if;
     end process;
 

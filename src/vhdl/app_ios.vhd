@@ -157,11 +157,8 @@ begin
 
     process(all)
     begin
-        --if registers(GENERAL_CONTROL)(CONTROL_IO_DEBUG_EN) = '1' then
-            internal_regs_we(IO_IN) <= '1';
-            --internal_regs(IO_IN)(IO_IN_range) <= IO_IN_s;
-            internal_regs(IO_IN)(IO_IN_PH_C_ON_fpga downto IO_IN_POWERON_FPGA) <= IO_IN_s;
-        --end if;
+        internal_regs_we(IO_IN) <= '1';
+        internal_regs(IO_IN)(IO_IN_PH_C_ON_fpga downto IO_IN_POWERON_FPGA) <= IO_IN_s;
     end process;
 
 end architecture RTL;

@@ -27,7 +27,8 @@ architecture RTL of update_log is
     signal ms_pulse : std_logic;
     signal regs_locked : std_logic;
     signal intr_ms, intr_stop_log : std_logic;
-    --signal update_log : std_logic;
+    signal psu_status_sticky : std_logic_vector(PSU_Status_range);
+    signal psu_status : std_logic_vector(PSU_Status_range);
 begin
     update_log_regs_pr: process(all)
     begin
@@ -41,30 +42,45 @@ begin
             internal_regs_we(i) <= not regs_locked;
             internal_regs(i) <= log_regs(i);
         end loop;
+        -- following 4 lines override the asignment at previous loop for the psu_status;
+        internal_regs_we(LOG_PSU_STATUS_L) <= '1';
+        internal_regs_we(LOG_PSU_STATUS_H) <= '1';
+        internal_regs(LOG_PSU_STATUS_L) <= psu_status_sticky(31 downto 0);
+        internal_regs(LOG_PSU_STATUS_H) <= psu_status_sticky(63 downto 32);
         
     end process;
     
+    psu_status <= log_regs(LOG_PSU_STATUS_H) & log_regs(LOG_PSU_STATUS_L);
+    
+    psu_status_pr: process(clk)
+    begin
+        if rising_edge(clk) then
+            if sync_rst then
+                psu_status_sticky <= (others => '0');
+            else
+                psu_status_sticky <= psu_status_sticky or psu_status;
+                if regs_reading(LOG_PSU_STATUS_L) then
+                    psu_status_sticky(31 downto 0) <= psu_status(31 downto 0);
+                end if;
+                if regs_reading(LOG_PSU_STATUS_H) then
+                    psu_status_sticky(63 downto 32) <= psu_status(63 downto 32);
+                end if;
+            end if;
+        end if;
+    end process;
+    
     log_update_pr: process(clk)
-        --variable regs_locked_s : std_logic; 
     begin
         if rising_edge(clk) then
             if sync_rst = '1' then
                 regs_locked <= '0';
-                --regs_locked_s := '0';
-                --update_log <= '0';
             else
-                --update_log <= '0';
                 if regs_reading(LOG_VDC_IN) then
                     regs_locked <= '1';
                 elsif regs_reading(LOG_LAMP_IND) = '1' or
                       (registers(GENERAL_CONTROL)(GENERAL_CONTROL_RLEASE_REGS) = '1' and regs_updating(GENERAL_CONTROL) = '1') then
                     regs_locked <= '0';
                 end if;
-                --if regs_locked = '0' and regs_locked_s = '1' then
-                --    update_log <= '1';
-                --end if;
-                
-                --regs_locked_s := regs_locked;
             end if;
         end if;
     end process;

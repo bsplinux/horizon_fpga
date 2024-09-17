@@ -4,11 +4,12 @@ use ieee.std_logic_1164.all;
 use work.regs_pkg.all;
 
 package condor_pl_pkg is
-    constant FPGA_VERSION_CONST : std_logic_vector(full_reg_range) := X"00020001"; -- version (major,minor)
+    constant FPGA_VERSION_CONST : std_logic_vector(full_reg_range) := X"00020002"; -- version (major,minor)
     -- 1.7 integration of SW at Elbit (end of august 2024)
     -- 1.8 is for integration of old board after integration @ elop
     -- 2.0 is for new version of the board
     -- 2.1 changes in spec (uart pinouts and constants and more) 12-9-24
+    -- 2.2 added logic_status, uvp, ovp, otp, lamp, psu_status
     constant UART_A_SIZE        : integer := 12;
     constant AXI_A_SIZE         : integer := 12;
     constant NUM_UARTS          : integer := 9;
@@ -182,16 +183,16 @@ package condor_pl_pkg is
 
     subtype PSU_Status_range is integer range 63 downto 0;
     
-    constant limit_uvp                              : integer := 0;
-    constant limit_uvp_ph1                          : integer := 1;
-    constant limit_uvp_ph2                          : integer := 2;
-    constant limit_uvp_ph3                          : integer := 3;
-    constant limit_uvp_dc                           : integer := 4;
-    constant limit_stat_p_in                        : integer := 5;
-    constant limit_stat_p_out                       : integer := 6;
-    constant limit_stat_115_ac_in                   : integer := 7;
-    constant limit_stat_115_a_in                    : integer := 8;
-    constant limit_stat_115_b_in                    : integer := 9;
+    constant limit_uvp                              : integer :=  0;
+    constant limit_uvp_ph1                          : integer :=  1;
+    constant limit_uvp_ph2                          : integer :=  2;
+    constant limit_uvp_ph3                          : integer :=  3;
+    constant limit_uvp_dc                           : integer :=  4;
+    constant limit_stat_p_in                        : integer :=  5;
+    constant limit_stat_p_out                       : integer :=  6;
+    constant limit_stat_115_ac_in                   : integer :=  7;
+    constant limit_stat_115_a_in                    : integer :=  8;
+    constant limit_stat_115_b_in                    : integer :=  9;
     constant limit_stat_115_c_in                    : integer := 10;
     constant limit_stat_28_dc_in                    : integer := 11;
     constant limit_stat_115_ac_out                  : integer := 12;
@@ -213,8 +214,39 @@ package condor_pl_pkg is
     constant limit_relay_3p_c                       : integer := 28;
     constant limit_lamp_28vdc                       : integer := 29;
     constant limit_lamp_115vac                      : integer := 30;
+    constant limit_ovp_error                        : integer := 31;
+    constant limit_ovp_Vsns_PH_A_RLY                : integer := 32;
+    constant limit_ovp_Vsns_PH_B_RLY                : integer := 33;
+    constant limit_ovp_Vsns_PH_C_RLY                : integer := 34;
+    constant limit_ovp_Vsns_PH1                     : integer := 35;
+    constant limit_ovp_Vsns_PH2                     : integer := 36;
+    constant limit_ovp_Vsns_PH3                     : integer := 37;
+    constant limit_ovp_OUT4_sns                     : integer := 38;
+    constant limit_ovp_Vsns_28V_IN                  : integer := 39;
+    constant limit_ovp_VOUT_1                       : integer := 40;
+    constant limit_ovp_VOUT_2                       : integer := 41;
+    constant limit_ovp_VOUT_5                       : integer := 42;
+    constant limit_ovp_VOUT_6                       : integer := 43;
+    constant limit_ovp_VOUT_7                       : integer := 44;
+    constant limit_ovp_VOUT_8                       : integer := 45;
+    constant limit_ovp_VOUT_9                       : integer := 46;
+    constant limit_ovp_VOUT_10                      : integer := 47;
+    constant limit_otp                              : integer := 48;
+    constant limit_otp_t1                           : integer := 49;
+    constant limit_otp_t2                           : integer := 50;
+    constant limit_otp_t3                           : integer := 51;
+    constant limit_otp_t4                           : integer := 52;
+    constant limit_otp_t5                           : integer := 53;
+    constant limit_otp_t6                           : integer := 54;
+    constant limit_otp_t7                           : integer := 55;
+    constant limit_otp_t8                           : integer := 56;
+    constant limit_otp_t9                           : integer := 57;              
+    constant limit_fans                             : integer := 58;
+    constant limit_fan1                             : integer := 59;
+    constant limit_fan2                             : integer := 60;
+    constant limit_fan3                             : integer := 61;
     
-    constant limit_dummy                            : integer := 31;
+    constant limit_dummy                            : integer := 62;
     subtype limits_range is integer range limit_dummy - 1 downto 0;
 
     -- ps interrupts index

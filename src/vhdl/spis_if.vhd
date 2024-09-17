@@ -17,7 +17,8 @@ entity spis_if is
         internal_regs_we : out reg_slv_array_t;
         HLS_to_BD        : out HLS_axim_to_interconnect_t;
         BD_to_HLS        : in  HLS_axim_from_interconnect_t;
-        log_regs         : out log_reg_array_t
+        log_regs         : out log_reg_array_t;
+        zc_error         : out std_logic
     );
 end entity spis_if;
 
@@ -144,7 +145,6 @@ architecture RTL of spis_if is
     
     signal p : std_logic_vector(15 downto 0);
     signal p_valid : std_logic;
-    signal z_cross_error : std_logic;
     signal z_cross          : std_logic;
     
     
@@ -410,7 +410,7 @@ begin
         d                => sample2v_vec(1),
         d_valid          => sample2v_valid_vec(1),
         zero_cross       => z_cross,
-        zero_cross_error => z_cross_error,
+        zero_cross_error => zc_error,
         n                => open
     );
     process(clk)
@@ -421,7 +421,7 @@ begin
                 zero_cross_error <= '0';
                 clr := '0';
             else
-                if z_cross_error then
+                if zc_error then
                     zero_cross_error <= '1';
                 elsif registers(SPIS_CONTROL)(SPIS_CONTROL_Z_CROSS_ERR_CLR) and not clr then
                     zero_cross_error <= '0';
