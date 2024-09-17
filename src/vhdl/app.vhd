@@ -305,6 +305,7 @@ begin
             log_regs(LOG_FAN1_SPEED) <= X"0000" & rpm1;
             log_regs(LOG_FAN2_SPEED) <= X"0000" & rpm2;
             log_regs(LOG_FAN3_SPEED) <= X"0000" & rpm3;
+            log_regs(LOG_LAMP_IND  )(1 downto 0) <= lamp_state;
         end if;
     end process;
     

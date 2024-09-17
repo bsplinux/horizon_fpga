@@ -306,8 +306,8 @@ package condor_pl_pkg is
 
     constant LAMP_STATE_LOW  : std_logic_vector(1 downto 0) := "00";
     constant LAMP_STATE_HIGH : std_logic_vector(1 downto 0) := "01";
-    constant LAMP_STATE_1K   : std_logic_vector(1 downto 0) := "10";
-    constant LAMP_STATE_4K   : std_logic_vector(1 downto 0) := "11";
+    constant LAMP_STATE_4K   : std_logic_vector(1 downto 0) := "10";
+    constant LAMP_STATE_1K   : std_logic_vector(1 downto 0) := "11";
 
     function ios_2_app_vec(x: ios_2_app_t) return std_logic_vector;
 end package condor_pl_pkg;
