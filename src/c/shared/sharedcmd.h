@@ -7,9 +7,11 @@
 #define PSU_PORT (60101)
 //#define LOG_PORT (60101)
 #define SYNC 0xa5
-//#define TARGET_IP "192.168.1.60"
-#define TARGET_IP "172.20.42.25"
+#define TARGET_IP "192.168.1.60"
+//#define TARGET_IP "172.20.42.25"
 #define MESSAGE_ID_CONST 0x81
+
+#define PSU_LOG_ID "LX60292C48"
 
 #pragma pack(1)
 struct cmdhdr_t{
@@ -214,7 +216,7 @@ typedef struct {
 //}cmd81_union_t;
 
 typedef struct {
-	unsigned int Log_ID;
+	unsigned char Log_ID[10];
 	unsigned short Log_Payload_Size;
 	unsigned int GMT_Time;
 	unsigned short Micro_Sec;
@@ -238,11 +240,10 @@ typedef union {
 	char raw[sizeof(log_header_t) - 1 + TELEMETRY_BYTES + 1];
 } message_superset_union_t;
 
-typedef struct
-{
-	unsigned short flag : 1; /* Flag */
-	unsigned short reserved : 15; /* Reserved */
-} BIT_CONFIG_DT;
+typedef struct {
+	unsigned short flag: 1;
+	unsigned short reserved: 15;
+}BIT_CONFIG_DT ;
 
 typedef struct {
     char m_recordId[5]; // = {'L','F','C','F','G'};
@@ -256,6 +257,11 @@ typedef struct {
     unsigned char m_lenSize; // = 2;
     unsigned char m_cs;
 }log_file_header_t;
+
+typedef union {
+	log_file_header_t h;
+	unsigned char d[sizeof(log_file_header_t)];
+}log_file_header_union_t;
     
 enum{
     CMD_OP0,

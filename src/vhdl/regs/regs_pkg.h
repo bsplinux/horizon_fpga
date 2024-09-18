@@ -1,6 +1,6 @@
 /*
 ----------------------------------------------------------------------------------------
--- Registers H file created from yaml definition of registers at     17-09-2024 10:23 --
+-- Registers H file created from yaml definition of registers at     18-09-2024 12:52 --
 --   python function: regs2h.py                                                       --
 --   yaml file name: ../yaml/condor_regs.yaml                                         --
 ----------------------------------------------------------------------------------------
@@ -101,6 +101,17 @@ typedef union
     uint32_t raw;
     fields_GENERAL_STATUS_t fields;
 }GENERAL_STATUS_t;
+
+typedef struct
+{
+    uint32_t release_psu            : 1;
+}fields_PSU_CONTROL_t;
+
+typedef union
+{
+    uint32_t raw;
+    fields_PSU_CONTROL_t fields;
+}PSU_CONTROL_t;
 
 typedef struct
 {
@@ -2163,8 +2174,8 @@ typedef union
     fields_PSU_STAT_LIVE_H_t fields;
 }PSU_STAT_LIVE_H_t;
 
-#define NUM_REGS_PACKED 157
-#define NUM_REGS 157
+#define NUM_REGS_PACKED 158
+#define NUM_REGS 158
 
 typedef struct
 {
@@ -2174,6 +2185,7 @@ typedef struct
     BITSTREAM_TIME_t         BITSTREAM_TIME      ;
     GENERAL_CONTROL_t        GENERAL_CONTROL     ;
     GENERAL_STATUS_t         GENERAL_STATUS      ;
+    PSU_CONTROL_t            PSU_CONTROL         ;
     CPU_STATUS_t             CPU_STATUS          ;
     TIMESTAMP_L_t            TIMESTAMP_L         ;
     TIMESTAMP_H_t            TIMESTAMP_H         ;
@@ -2340,156 +2352,157 @@ typedef struct
 #define BITSTREAM_TIME_i      3
 #define GENERAL_CONTROL_i     4
 #define GENERAL_STATUS_i      5
-#define CPU_STATUS_i          6
-#define TIMESTAMP_L_i         7
-#define TIMESTAMP_H_i         8
-#define IO_IN_i               9
-#define IO_OUT0_i            10
-#define IO_OUT1_i            11
-#define SN_ETI_i             12
-#define LOG_VDC_IN_i         13
-#define LOG_VAC_IN_PH_A_i    14
-#define LOG_VAC_IN_PH_B_i    15
-#define LOG_VAC_IN_PH_C_i    16
-#define LOG_I_DC_IN_i        17
-#define LOG_I_AC_IN_PH_A_i   18
-#define LOG_I_AC_IN_PH_B_i   19
-#define LOG_I_AC_IN_PH_C_i   20
-#define LOG_V_OUT_1_i        21
-#define LOG_V_OUT_2_i        22
-#define LOG_V_OUT_3_PH1_i    23
-#define LOG_V_OUT_3_PH2_i    24
-#define LOG_V_OUT_3_PH3_i    25
-#define LOG_V_OUT_4_i        26
-#define LOG_V_OUT_5_i        27
-#define LOG_V_OUT_6_i        28
-#define LOG_V_OUT_7_i        29
-#define LOG_V_OUT_8_i        30
-#define LOG_V_OUT_9_i        31
-#define LOG_V_OUT_10_i       32
-#define LOG_I_OUT_1_i        33
-#define LOG_I_OUT_2_i        34
-#define LOG_I_OUT_3_PH1_i    35
-#define LOG_I_OUT_3_PH2_i    36
-#define LOG_I_OUT_3_PH3_i    37
-#define LOG_I_OUT_4_i        38
-#define LOG_I_OUT_5_i        39
-#define LOG_I_OUT_6_i        40
-#define LOG_I_OUT_7_i        41
-#define LOG_I_OUT_8_i        42
-#define LOG_I_OUT_9_i        43
-#define LOG_I_OUT_10_i       44
-#define LOG_AC_POWER_i       45
-#define LOG_FAN1_SPEED_i     46
-#define LOG_FAN2_SPEED_i     47
-#define LOG_FAN3_SPEED_i     48
-#define LOG_T1_i             49
-#define LOG_T2_i             50
-#define LOG_T3_i             51
-#define LOG_T4_i             52
-#define LOG_T5_i             53
-#define LOG_T6_i             54
-#define LOG_T7_i             55
-#define LOG_T8_i             56
-#define LOG_T9_i             57
-#define LOG_ETM_i            58
-#define LOG_SN_i             59
-#define LOG_PSU_STATUS_L_i   60
-#define LOG_PSU_STATUS_H_i   61
-#define LOG_LAMP_IND_i       62
-#define PWM_CTL_i            63
-#define PWM1_LOW_i           64
-#define PWM1_HIGH_i          65
-#define PWM2_LOW_i           66
-#define PWM2_HIGH_i          67
-#define PWM3_LOW_i           68
-#define PWM3_HIGH_i          69
-#define UARTS_CONTROL_i      70
-#define UARTS_STATUS_i       71
-#define UART_RAW0_L_i        72
-#define UART_RAW0_H_i        73
-#define UART_RAW1_L_i        74
-#define UART_RAW1_H_i        75
-#define UART_RAW2_L_i        76
-#define UART_RAW2_H_i        77
-#define UART_RAW3_L_i        78
-#define UART_RAW3_H_i        79
-#define UART_RAW4_L_i        80
-#define UART_RAW4_H_i        81
-#define UART_RAW5_L_i        82
-#define UART_RAW5_H_i        83
-#define UART_RAW6_L_i        84
-#define UART_RAW6_H_i        85
-#define UART_RAW7_L_i        86
-#define UART_RAW7_H_i        87
-#define UART_RAW8_L_i        88
-#define UART_RAW8_H_i        89
-#define UART_V_OUT_1_i       90
-#define UART_V_OUT_2_i       91
-#define UART_V_OUT_5_i       92
-#define UART_V_OUT_6_i       93
-#define UART_V_OUT_7_i       94
-#define UART_V_OUT_8_i       95
-#define UART_V_OUT_9_i       96
-#define UART_V_OUT_10_i      97
-#define UART_I_OUT_1_i       98
-#define UART_I_OUT_2_i       99
-#define UART_I_OUT_5_i      100
-#define UART_I_OUT_6_i      101
-#define UART_I_OUT_7_i      102
-#define UART_I_OUT_8_i      103
-#define UART_I_OUT_9_i      104
-#define UART_I_OUT_10_i     105
-#define UART_T1_i           106
-#define UART_T2_i           107
-#define UART_T3_i           108
-#define UART_T4_i           109
-#define UART_T5_i           110
-#define UART_T6_i           111
-#define UART_T7_i           112
-#define UART_T8_i           113
-#define UART_T9_i           114
-#define UART_MAIN_I_PH1_i   115
-#define UART_MAIN_I_PH2_i   116
-#define UART_MAIN_I_PH3_i   117
-#define SPIS_CONTROL_i      118
-#define SPIS_STATUS_i       119
-#define SPI_RAW0_BA_i       120
-#define SPI_RAW0_DC_i       121
-#define SPI_RAW0_0E_i       122
-#define SPI_RAW1_BA_i       123
-#define SPI_RAW1_DC_i       124
-#define SPI_RAW2_BA_i       125
-#define SPI_RAW2_DC_i       126
-#define SPI_RAW2_FE_i       127
-#define SPI_RAW2_HG_i       128
-#define SPI_OUT4_Isns_i     129
-#define SPI_DC_PWR_I_sns_i  130
-#define SPI_PH1_I_sns_i     131
-#define SPI_PH2_I_sns_i     132
-#define SPI_PH3_I_sns_i     133
-#define SPI_28V_IN_sns_i    134
-#define SPI_Vsns_PH_A_RLY_i 135
-#define SPI_Vsns_PH_B_RLY_i 136
-#define SPI_Vsns_PH_C_RLY_i 137
-#define SPI_Vsns_PH3_i      138
-#define SPI_Vsns_PH2_i      139
-#define SPI_Vsns_PH1_i      140
-#define SPI_OUT4_sns_i      141
-#define SPI_RMS_OUT4_Isns_i 142
-#define SPI_RMS_PH1_I_sns_i 143
-#define SPI_RMS_PH2_I_sns_i 144
-#define SPI_RMS_PH3_I_sns_i 145
-#define SPI_RMS_Vsns_PH_A_RLY_i 146
-#define SPI_RMS_Vsns_PH_B_RLY_i 147
-#define SPI_RMS_Vsns_PH_C_RLY_i 148
-#define SPI_RMS_Vsns_PH3_i  149
-#define SPI_RMS_Vsns_PH2_i  150
-#define SPI_RMS_Vsns_PH1_i  151
-#define SPI_RMS_OUT4_sns_i  152
-#define LIMITS0_i           153
-#define LIMITS1_i           154
-#define PSU_STAT_LIVE_L_i   155
-#define PSU_STAT_LIVE_H_i   156
+#define PSU_CONTROL_i         6
+#define CPU_STATUS_i          7
+#define TIMESTAMP_L_i         8
+#define TIMESTAMP_H_i         9
+#define IO_IN_i              10
+#define IO_OUT0_i            11
+#define IO_OUT1_i            12
+#define SN_ETI_i             13
+#define LOG_VDC_IN_i         14
+#define LOG_VAC_IN_PH_A_i    15
+#define LOG_VAC_IN_PH_B_i    16
+#define LOG_VAC_IN_PH_C_i    17
+#define LOG_I_DC_IN_i        18
+#define LOG_I_AC_IN_PH_A_i   19
+#define LOG_I_AC_IN_PH_B_i   20
+#define LOG_I_AC_IN_PH_C_i   21
+#define LOG_V_OUT_1_i        22
+#define LOG_V_OUT_2_i        23
+#define LOG_V_OUT_3_PH1_i    24
+#define LOG_V_OUT_3_PH2_i    25
+#define LOG_V_OUT_3_PH3_i    26
+#define LOG_V_OUT_4_i        27
+#define LOG_V_OUT_5_i        28
+#define LOG_V_OUT_6_i        29
+#define LOG_V_OUT_7_i        30
+#define LOG_V_OUT_8_i        31
+#define LOG_V_OUT_9_i        32
+#define LOG_V_OUT_10_i       33
+#define LOG_I_OUT_1_i        34
+#define LOG_I_OUT_2_i        35
+#define LOG_I_OUT_3_PH1_i    36
+#define LOG_I_OUT_3_PH2_i    37
+#define LOG_I_OUT_3_PH3_i    38
+#define LOG_I_OUT_4_i        39
+#define LOG_I_OUT_5_i        40
+#define LOG_I_OUT_6_i        41
+#define LOG_I_OUT_7_i        42
+#define LOG_I_OUT_8_i        43
+#define LOG_I_OUT_9_i        44
+#define LOG_I_OUT_10_i       45
+#define LOG_AC_POWER_i       46
+#define LOG_FAN1_SPEED_i     47
+#define LOG_FAN2_SPEED_i     48
+#define LOG_FAN3_SPEED_i     49
+#define LOG_T1_i             50
+#define LOG_T2_i             51
+#define LOG_T3_i             52
+#define LOG_T4_i             53
+#define LOG_T5_i             54
+#define LOG_T6_i             55
+#define LOG_T7_i             56
+#define LOG_T8_i             57
+#define LOG_T9_i             58
+#define LOG_ETM_i            59
+#define LOG_SN_i             60
+#define LOG_PSU_STATUS_L_i   61
+#define LOG_PSU_STATUS_H_i   62
+#define LOG_LAMP_IND_i       63
+#define PWM_CTL_i            64
+#define PWM1_LOW_i           65
+#define PWM1_HIGH_i          66
+#define PWM2_LOW_i           67
+#define PWM2_HIGH_i          68
+#define PWM3_LOW_i           69
+#define PWM3_HIGH_i          70
+#define UARTS_CONTROL_i      71
+#define UARTS_STATUS_i       72
+#define UART_RAW0_L_i        73
+#define UART_RAW0_H_i        74
+#define UART_RAW1_L_i        75
+#define UART_RAW1_H_i        76
+#define UART_RAW2_L_i        77
+#define UART_RAW2_H_i        78
+#define UART_RAW3_L_i        79
+#define UART_RAW3_H_i        80
+#define UART_RAW4_L_i        81
+#define UART_RAW4_H_i        82
+#define UART_RAW5_L_i        83
+#define UART_RAW5_H_i        84
+#define UART_RAW6_L_i        85
+#define UART_RAW6_H_i        86
+#define UART_RAW7_L_i        87
+#define UART_RAW7_H_i        88
+#define UART_RAW8_L_i        89
+#define UART_RAW8_H_i        90
+#define UART_V_OUT_1_i       91
+#define UART_V_OUT_2_i       92
+#define UART_V_OUT_5_i       93
+#define UART_V_OUT_6_i       94
+#define UART_V_OUT_7_i       95
+#define UART_V_OUT_8_i       96
+#define UART_V_OUT_9_i       97
+#define UART_V_OUT_10_i      98
+#define UART_I_OUT_1_i       99
+#define UART_I_OUT_2_i      100
+#define UART_I_OUT_5_i      101
+#define UART_I_OUT_6_i      102
+#define UART_I_OUT_7_i      103
+#define UART_I_OUT_8_i      104
+#define UART_I_OUT_9_i      105
+#define UART_I_OUT_10_i     106
+#define UART_T1_i           107
+#define UART_T2_i           108
+#define UART_T3_i           109
+#define UART_T4_i           110
+#define UART_T5_i           111
+#define UART_T6_i           112
+#define UART_T7_i           113
+#define UART_T8_i           114
+#define UART_T9_i           115
+#define UART_MAIN_I_PH1_i   116
+#define UART_MAIN_I_PH2_i   117
+#define UART_MAIN_I_PH3_i   118
+#define SPIS_CONTROL_i      119
+#define SPIS_STATUS_i       120
+#define SPI_RAW0_BA_i       121
+#define SPI_RAW0_DC_i       122
+#define SPI_RAW0_0E_i       123
+#define SPI_RAW1_BA_i       124
+#define SPI_RAW1_DC_i       125
+#define SPI_RAW2_BA_i       126
+#define SPI_RAW2_DC_i       127
+#define SPI_RAW2_FE_i       128
+#define SPI_RAW2_HG_i       129
+#define SPI_OUT4_Isns_i     130
+#define SPI_DC_PWR_I_sns_i  131
+#define SPI_PH1_I_sns_i     132
+#define SPI_PH2_I_sns_i     133
+#define SPI_PH3_I_sns_i     134
+#define SPI_28V_IN_sns_i    135
+#define SPI_Vsns_PH_A_RLY_i 136
+#define SPI_Vsns_PH_B_RLY_i 137
+#define SPI_Vsns_PH_C_RLY_i 138
+#define SPI_Vsns_PH3_i      139
+#define SPI_Vsns_PH2_i      140
+#define SPI_Vsns_PH1_i      141
+#define SPI_OUT4_sns_i      142
+#define SPI_RMS_OUT4_Isns_i 143
+#define SPI_RMS_PH1_I_sns_i 144
+#define SPI_RMS_PH2_I_sns_i 145
+#define SPI_RMS_PH3_I_sns_i 146
+#define SPI_RMS_Vsns_PH_A_RLY_i 147
+#define SPI_RMS_Vsns_PH_B_RLY_i 148
+#define SPI_RMS_Vsns_PH_C_RLY_i 149
+#define SPI_RMS_Vsns_PH3_i  150
+#define SPI_RMS_Vsns_PH2_i  151
+#define SPI_RMS_Vsns_PH1_i  152
+#define SPI_RMS_OUT4_sns_i  153
+#define LIMITS0_i           154
+#define LIMITS1_i           155
+#define PSU_STAT_LIVE_L_i   156
+#define PSU_STAT_LIVE_H_i   157
 
 #endif //__REGS_PKG_H__

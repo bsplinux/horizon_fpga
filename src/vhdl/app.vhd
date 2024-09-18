@@ -210,7 +210,7 @@ begin
     );
     ps_intr(PS_INTR_MS)       <= log_ps_intr(PS_INTR_MS)      ;
     ps_intr(PS_INTR_STOP_LOG) <= log_ps_intr(PS_INTR_STOP_LOG);
-    stop_log <= '0';  -- TODO connect this to the actual condition that requests to stop log
+    stop_log <= '0';  -- for now there is no condition to internally stop the log, the 12v is mesured by ARM sw and not by firmware
     
     ----------------------
     -- misc fields -------

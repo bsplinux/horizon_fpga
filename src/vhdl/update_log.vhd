@@ -29,6 +29,7 @@ architecture RTL of update_log is
     signal intr_ms, intr_stop_log : std_logic;
     signal psu_status_sticky : std_logic_vector(PSU_Status_range);
     signal psu_status : std_logic_vector(PSU_Status_range);
+    signal release_psu : std_logic;
 begin
     update_log_regs_pr: process(all)
     begin
@@ -57,13 +58,19 @@ begin
         if rising_edge(clk) then
             if sync_rst then
                 psu_status_sticky <= (others => '0');
+                release_psu <= '0';
             else
+                if registers(PSU_CONTROL)(PSU_CONTROL_release_psu) = '1' and regs_updating(PSU_CONTROL) = '1' then
+                    release_psu <= '1';
+                end if;
+                
                 psu_status_sticky <= psu_status_sticky or psu_status;
-                if regs_reading(LOG_PSU_STATUS_L) then
+                if regs_reading(LOG_PSU_STATUS_L) and release_psu then
                     psu_status_sticky(31 downto 0) <= psu_status(31 downto 0);
                 end if;
-                if regs_reading(LOG_PSU_STATUS_H) then
+                if regs_reading(LOG_PSU_STATUS_H) and release_psu then
                     psu_status_sticky(63 downto 32) <= psu_status(63 downto 32);
+                    release_psu <= '0';
                 end if;
             end if;
         end if;

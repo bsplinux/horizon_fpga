@@ -52,6 +52,13 @@ reg_general_status: &reg_general_status
     during_power_down : 5
   used_bits: "5:0"
 
+reg_psu_control: &reg_psu_control
+  fpga_access: false
+  cpu_access: true
+  fields:
+    release_psu: 0
+  used_bits: "0"
+
 reg_cpu_status: &reg_cpu_status 
   fpga_access: false
   cpu_access: true
@@ -479,6 +486,7 @@ regs:
     init: 0xF00
   - GENERAL_STATUS: *reg_general_status
     i: auto
+  - PSU_CONTROL: *reg_psu_control
   - CPU_STATUS: *reg_cpu_status
     i: auto
   - TIMESTAMP_L: *reg_d_int

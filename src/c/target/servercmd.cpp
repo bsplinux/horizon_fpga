@@ -3,6 +3,7 @@
 #include <string>
 #include <thread>
 #include <assert.h>
+#include <cstring>
 #include "socket.h"
 //#include "commondef.h"
 #include "sharedcmd.h"
@@ -223,10 +224,10 @@ void servercmd_stop(ServerStatus &server_status){
 	task_active =0;
 }
 
-
+static const char psu_log_id_const[11] = PSU_LOG_ID;
 void init_message(ServerStatus &server_status)
 {
-	server_status.message.log.header.Log_ID             = 0x12345678;
+	memcpy(server_status.message.log.header.Log_ID,psu_log_id_const,10);
 	server_status.message.log.header.Log_Payload_Size   = TELEMETRY_BYTES - 1; //the -1 as we do not include the messaage id
 	printf("compile Log_Payload_Size %d\n\r",server_status.message.log.header.Log_Payload_Size);
 	server_status.message.log.header.GMT_Time           = 0;
@@ -367,7 +368,10 @@ void format_message(ServerStatus &server_status, unsigned int disk_size,unsigned
 	*/
 	//server_status.message.log.message_base.ETM        ++;//=  (unsigned int)(registers->LOG_ETM.raw);
 	//server_status.message.log.message_base.SN           = (unsigned char)(registers->LOG_SN.raw & 0xFF);
-    server_status.message.log.message_base.PSU_Status.word   = server_status.message.log.message_base.PSU_Status.word | 0xDEADBEAF;
+	server_status.message.log.message_base.PSU_Status.word   =  0;//(unsigned long long)0xFFFFFFFF << 32;
+	server_status.message.log.message_base.PSU_Status.fields.Fan1_Speed_Status   =  1;//(unsigned long long)0xFFFFFFFF << 32;
+	//printf("0x%016llX\n\r",server_status.message.log.message_base.PSU_Status.word);
+    //server_status.message.log.message_base.PSU_Status.word   = server_status.message.log.message_base.PSU_Status.fields.DC_IN_Status = 1; // 0xDEADBEAF;
     //server_status.message.log.message_base.Lamp_Ind     ++;
 
     // calculate checksum

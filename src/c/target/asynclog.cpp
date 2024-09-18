@@ -29,6 +29,7 @@
 #include  "asynclog.h"
 #include  "utils.h"
 #include  "servercmd.h"
+#include  "regs_pkg.h"
 
 #define MAX_ALLOW_FREE_SIZE_B 0x100000
 #define MOUNT_POINT "/mnt/mmc"
@@ -46,12 +47,32 @@ static std::thread         g_log_hread_h;
 static uint64_t  		   g_disk_free_size=0;
 //static char g_msg[PACKET_SIZE];
 //static int  g_msg_size = sizeof(g_msg);
-
-
+extern registers_t* const registers;
 
 //extern ServerStatus server_status;
 
 //static int file_buff_disk(int fd,unsigned char *buffer,int &buffer_offset,void *p_write,unsigned int i_write);
+
+static const char record_id_const[6] = "LFCFG";
+
+void make_header(log_file_header_union_t * h, unsigned int gmtTime, unsigned short microSec)
+{
+	unsigned char checksum = 0;
+
+	memcpy(h->h.m_recordId,record_id_const,5);
+	h->h.m_recordSize = 15;
+	h->h.m_gmtTime = gmtTime;
+	h->h.m_microSec = microSec;
+	h->h.m_endian = 0xCAFE2BED;
+	h->h.m_bitConfig.flag = 1;
+	h->h.m_bitConfig.reserved = 0;
+	h->h.m_version1 = 0x31704A5C;
+	h->h.m_version2 = 0x2C9BFC6F;
+	h->h.m_lenSize = 2;
+    for(unsigned int i = 0 ; i < sizeof(log_file_header_t) - 1; i++) // -1 to exclude the checksum itself
+    	checksum += h->d[i];
+    h->h.m_cs = checksum;
+}
 
 struct Packet {
     unsigned char data [sizeof(message_superset_union_t)];
@@ -323,6 +344,7 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 	static BufferedFileWriter  *gbuffer=0;
 	static FIFOBuffer          *gfifo  =0;
 	int ret;
+	log_file_header_union_t file_header;
 
     init_message(server_status);
 
@@ -370,6 +392,9 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 	  active_task = 1;
       gfifo   = new  FIFOBuffer(PACKET_COUNT);
       gbuffer = new BufferedFileWriter(new_log_file_name,save_block_size);
+      // insert file header to file
+      make_header(&file_header,6,66);
+      gbuffer->writeData(&file_header, sizeof(log_file_header_union_t));
       reader_thread_h= std::thread([] { reader_thread(gbuffer,gfifo);});
 	   
 	  
@@ -383,6 +408,7 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 		   uint64_t disk_size  =0;
 		   uint64_t disk_use   =0;
 		   uint64_t disk_free  =0; 		   
+		   log_file_header_union_t file_header;
            int socket = Socket_UDPSocket();
            running_task = 1;
            assert(socket >0);
@@ -411,6 +437,9 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 
                 	// TODO rename the log file name
                 	gbuffer->update_file_name(new_log_file_name);
+                    // insert file header to file
+                    make_header(&file_header,7,77);
+                    gbuffer->writeData(&file_header, sizeof(log_file_header_union_t));
                 	server_status.update_log_name = false;
                 	//rename(new_log_file_name.c_str(),);
                 }
@@ -435,6 +464,7 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
                 if(pkt_count==0 && server_status.host_ip != 0){
                 	server_status.message.tele.tele.Message_ID = MESSAGE_ID_CONST;
 
+                	registers->PSU_CONTROL.fields.release_psu = 1; // no need to set 0 its a write only
                 	int ret = Socket_SendTo(socket,&server_status.message.tele.tele.Message_ID,sizeof(cmd81_telemetry_t), server_status.host_ip, server_status.log_udp_port);
                 	//printf("%s.%d %d log  IP(0x%x) port(%d) \n\r",__func__,__LINE__,ret,server_status.host_ip,server_status.log_udp_port);
                 }
