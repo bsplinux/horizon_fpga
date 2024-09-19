@@ -27,19 +27,17 @@ reg_general_control: &reg_general_control
     RLEASE_REGS  : 3
     STOP_LOG_ACK : 4
     ALIVE_ERROR  : 5
-    ECTCU_INH    : 6
-    CCTCU_INH    : 7
-    UVP_EN_PH1   : 8
-    UVP_EN_PH2   : 9
-    UVP_EN_PH3   : 10
-    UVP_EN_DC    : 11
-    FAN_CHECK    : 12
-    RELAY_CHECK  : 13
-    OVP_IN_EN    : 14
-    OVP_OUT_EN   : 15
-    UVP_EN       : 16
-    OTP_EN       : 17
-  used_bits: "17:0"
+    UVP_EN_PH1   : 6
+    UVP_EN_PH2   : 7
+    UVP_EN_PH3   : 8 
+    UVP_EN_DC    : 9 
+    FAN_CHECK    : 10
+    RELAY_CHECK  : 11
+    OVP_IN_EN    : 12
+    OVP_OUT_EN   : 13
+    UVP_EN       : 14
+    OTP_EN       : 15
+  used_bits: "15:0"
 
 reg_general_status: &reg_general_status 
   fpga_access: true
@@ -66,7 +64,9 @@ reg_cpu_status: &reg_cpu_status
     MIU_COM_Status: 0
     Is_Logfile_Running : 1
     Is_Logfile_Erase_In_Process : 2
-  used_bits: "2:0"
+    ECTCU_INH    : 3
+    CCTCU_INH    : 4
+  used_bits: "4:0"
 
 reg_d_int: &reg_d_int
   fpga_access: true
@@ -103,11 +103,6 @@ reg_empty: &reg_empty
 
 reg_d: &reg_d
   fpga_access: false
-  cpu_access: true
-  used_bits: "31:0"
-  
-reg_bdir: &reg_bdir
-  fpga_access: true
   cpu_access: true
   used_bits: "31:0"
   
@@ -263,15 +258,6 @@ reg_psu_stat_h: &reg_psu_stat_h
     Capacitor7_end_of_life      : 31
   used_bits: "31:0"
   
-reg_sn_eti: &reg_sn_eti
-  fpga_access: false
-  cpu_access: true
-  fields:
-    SN        : "7:0"
-    SET_SN    : 8              
-    RESET_ETI : 9              
-  used_bits: "9:0"
-
 reg_pwm_ctl: &reg_pwm_ctl
   fpga_access: false
   cpu_access: true
@@ -499,7 +485,6 @@ regs:
     i: auto
   - IO_OUT1: *reg_io_out1
     i: auto
-  - SN_ETI            : *reg_sn_eti 
   - LOG_VDC_IN        : *reg_d16_int
   - LOG_VAC_IN_PH_A   : *reg_d16_int
   - LOG_VAC_IN_PH_B   : *reg_d16_int
@@ -545,8 +530,6 @@ regs:
   - LOG_T7            : *reg_d8_int
   - LOG_T8            : *reg_d8_int
   - LOG_T9            : *reg_d8_int
-  - LOG_ETM           : *reg_bdir
-  - LOG_SN            : *reg_bdir
   - LOG_PSU_STATUS_L  : *reg_psu_stat_l
   - LOG_PSU_STATUS_H  : *reg_psu_stat_h
   - LOG_LAMP_IND      : *reg_d_int

@@ -402,14 +402,14 @@ begin
                 off_tcu_s := turn_off_tcu;
                 
                 -- command from UDP overrides the SM
-                if reg_ectcu /= registers(GENERAL_CONTROL)(GENERAL_CONTROL_ECTCU_INH) then
-                    power_2_ios.ECTCU_INH_FPGA <= registers(GENERAL_CONTROL)(GENERAL_CONTROL_ECTCU_INH);
+                if reg_ectcu /= registers(CPU_STATUS)(CPU_STATUS_ECTCU_INH) then
+                    power_2_ios.ECTCU_INH_FPGA <= registers(CPU_STATUS)(CPU_STATUS_ECTCU_INH);
                 end if;
-                if reg_cctcu /= registers(GENERAL_CONTROL)(GENERAL_CONTROL_CCTCU_INH) then
-                    power_2_ios.CCTCU_INH_FPGA <= registers(GENERAL_CONTROL)(GENERAL_CONTROL_CCTCU_INH);
+                if reg_cctcu /= registers(CPU_STATUS)(CPU_STATUS_CCTCU_INH) then
+                    power_2_ios.CCTCU_INH_FPGA <= registers(CPU_STATUS)(CPU_STATUS_CCTCU_INH);
                 end if;
-                reg_ectcu := registers(GENERAL_CONTROL)(GENERAL_CONTROL_ECTCU_INH);
-                reg_cctcu := registers(GENERAL_CONTROL)(GENERAL_CONTROL_CCTCU_INH);
+                reg_ectcu := registers(CPU_STATUS)(CPU_STATUS_ECTCU_INH);
+                reg_cctcu := registers(CPU_STATUS)(CPU_STATUS_CCTCU_INH);
             end if;
         end if;
     end process;

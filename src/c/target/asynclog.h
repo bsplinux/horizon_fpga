@@ -12,4 +12,13 @@ void init_message();
 
 #define NTP_SERVER_IP "192.168.1.10"
 
+#define SW_VER_MJR 1
+#define SW_VER_MNR 0
+
+// these are constants from the client (ELBIT) IRS
+#define ENDIAN_CONST   (0xCAFE2BED)
+// these 2 constants are from the client and they were delivered orally with no indication in any document or email
+#define VERSION1_CONST (0x31704A5C)
+#define VERSION2_CONST (0x2C9BFC6F)
+
 #endif // ASYNCLOG_H

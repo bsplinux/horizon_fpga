@@ -89,20 +89,31 @@ static int active = 1;
 std::atomic<bool> stopTask(false); // Global variable to stop the task
 void ETI_task() {
 	static unsigned int ETI = 0;
+	unsigned char SN = 0;
 	printf("starting ETI task (should operate once an hour)\n\r");
 	// read current ETI from SPI FLASH and update register
-    // TODO
-	while (!stopTask.load()) {
-        // store ETI into SPI FLASH
-        // TODO
-        // set ETI in register
+	// TODO read from spi flash
+	// ETI = ...
+	printf("ETI read from file: 0x%08X\n\r",ETI);
 
+	// updating SN from file
+	// TODO read SN from file
+	// SN = ...
+	server_status.message.log.message_base.SN = SN;
+	printf("Board SN read from file: 0x%02X\n\r",SN);
+
+	while (!stopTask.load()) {
+    	server_status.message.log.message_base.ETM = ETI;
 		printf("ETI updated to %d \n\r",ETI);
 
-        // Sleep for 1 hour
+		// Sleep for 1 hour
         std::this_thread::sleep_for(std::chrono::hours(1));
+
         // increment ETI
         ETI++;
+
+        // store ETI into SPI FLASH
+        // TODO
     }
 }
 
@@ -113,13 +124,11 @@ void alive_task() {
         // check if keep alive was sent in the last 10 seconds
         if (server_status.keep_alive_cnt > 0) {
         	server_status.keep_alive_cnt = 0;
-        	server_status.message.log.message_base.PSU_Status.fields.MIU_COM_Status = 0; // OK
+        	registers->CPU_STATUS.fields.MIU_COM_Status = 1;
         }
         else if (server_status.received_first_keep_alive)
         { // set keep alive error
-        	// TODO write to keep alive register
-        	// registers.GENERAL_CONTROL.CONTROL_ALIVE_ERROR = 1;
-        	server_status.message.log.message_base.PSU_Status.fields.MIU_COM_Status = 1; // error in communication
+        	registers->CPU_STATUS.fields.MIU_COM_Status = 0;
         	printf("ERROR, keep alive not received in the last 10 seconds\n\r");
         }
         // Sleep for 10 seconds
@@ -146,32 +155,6 @@ int main(int argc, char *argv[])
 	registers = (registers_t*)regs_a;
 
 	init_sysmon();
-	/*
-	for (int i = 0; i < 10000000; i++)
-	{
-		vcc12 = get_sysmon_sample();
-		//printf("%s.%d: vcc12 = %X\r\n",__func__,__LINE__,vcc12); OS_MSleep(1);
-		printf("%X\r\n",vcc12);OS_MSleep(100);
-	}
-	*/
-	/*
-	printf("testing write to first 16 regs \n\r");
-    printf("%s.%d\r\n",__func__,__LINE__); OS_MSleep(50);
-	for (int i = 0; i < 16; i++)
-	{
-		printf("%s.%d\r\n",__func__,__LINE__); OS_MSleep(50);
-		regs_a[i] = i + 1;
-	}
-	printf("testing reading to first 16 regs \n\r");
-    printf("%s.%d\r\n",__func__,__LINE__); OS_MSleep(50);
-	for (int i = 0; i < 16; i++)
-	{
-		printf("%s.%d\r\n",__func__,__LINE__); OS_MSleep(50);
-		printf("%02X=%08X  ", i,regs_a[i]);
-	}
-	printf ("\n\r");
-	*/
-
 
 	server_status.log_udp_port = MDC_PORT;
 	printf("PS server start \n\r");

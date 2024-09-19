@@ -4,12 +4,17 @@
 #include <thread>
 #include <assert.h>
 #include <cstring>
+#include <iostream>
+#include <sys/time.h>
+#include <ctime>
 #include "socket.h"
 //#include "commondef.h"
 #include "sharedcmd.h"
 #include "asynclog.h"
 #include "servercmd.h"
 #include "regs_pkg.h"
+
+#define TIME_AT_1_1_2024 (1704067200)
 
 extern unsigned int * regs_a;
 extern int log_mseconds;
@@ -46,7 +51,7 @@ int servercmd_start(int server_port, ServerStatus &server_status){
 	task_active = 1;
     fprintf(stderr,"start %d readers \n\r",count);
 	log_mount_path = create_log_dir();
-	start_async_log(1024, log_mount_path, server_status); //FIXME enable this. log should start automatically
+	start_async_log(1024, log_mount_path, server_status);
 
     std::thread t([&count,server_port, &server_status] {
     	int src_ip=0,src_port=0;
@@ -72,11 +77,10 @@ int servercmd_start(int server_port, ServerStatus &server_status){
 						continue;
 					}
 					server_status.keep_alive_cnt++;
-					// TODO delete keep alive error if exists
-					// registers.GENERAL_CONTROL.CONTROL_ALIVE_ERROR = 0;
 					// write to register
 					if(!server_status.received_first_keep_alive){  //  first keep alive received
 						server_status.received_first_keep_alive = true;
+						registers->CPU_STATUS.fields.MIU_COM_Status = 1;
 						server_status.host_ip = src_ip;
 						printf("received first keep alive, from ip = %d\n\r", src_ip);
 					}
@@ -94,12 +98,12 @@ int servercmd_start(int server_port, ServerStatus &server_status){
 					if (pcmd->cmd2.tcu_id == 0)  //ECTCU
 					{
 						// do not set the status directly it comes from registers //server_status.message.log.message_base.PSU_Status.fields.EC_Inhibit = pcmd->cmd2.on_off;
-						// TODO set register  registers.GENERAL_CONTROL.CONTROL_ECTCU_INH = pcmd->cmd2.on_off;
+						registers->CPU_STATUS.fields.ECTCU_INH = pcmd->cmd2.on_off;
 					}
 					else if (pcmd->cmd2.tcu_id == 1)  //CCTCU
 					{
 						// do not set the status directly it comes from registers //server_status.message.log.message_base.PSU_Status.fields.CC_Inhibit = pcmd->cmd2.on_off;
-						// TODO set register  registers.GENERAL_CONTROL.CONTROL_CCTCU_INH = pcmd->cmd2.on_off
+						registers->CPU_STATUS.fields.CCTCU_INH = pcmd->cmd2.on_off;
 					}
 
 					count++;
@@ -117,7 +121,8 @@ int servercmd_start(int server_port, ServerStatus &server_status){
         		    	if (server_status.log_active) {
         		    		//end_async_log();
         		    		server_status.log_active = false;
-        		    		server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Running = 0;
+        		    		registers->CPU_STATUS.fields.Is_Logfile_Running = 0;
+        		    		//server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Running = 0;
         		    		printf("Pusing Log \n\r");
         		    	}
         		    }
@@ -126,22 +131,28 @@ int servercmd_start(int server_port, ServerStatus &server_status){
         		    		//std::string log_name = create_log_name();
         		    		//start_async_log(1024, log_name, HOST_IP, server_status);
         		    		server_status.log_active = true;
-        		    		server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Running = 1;
+        		    		registers->CPU_STATUS.fields.Is_Logfile_Running = 1;
+        		    		//server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Running = 1;
         		    		printf("restarting log \n\r");
         		    	}
         		    }
         		    if(pcmd->cmd3.command == 2){ // erase log
         		    	if(server_status.log_active) {
         		    		end_async_log();
-        		    		server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Running = 0;
+        		    		server_status.log_active = false;
+        		    		registers->CPU_STATUS.fields.Is_Logfile_Running = 0;
+        		    		//server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Running = 0;
         		    	}
-        		    	server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Erase_In_Process = 1;
-        		    	erase_log();
-        		    	server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Erase_In_Process = 0;
-        		    	// now restarting log
+    		    		registers->CPU_STATUS.fields.Is_Logfile_Erase_In_Process = 1;
+    		    		//server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Erase_In_Process = 1;
+    		    		erase_log();
+    		    		registers->CPU_STATUS.fields.Is_Logfile_Erase_In_Process = 0;
+        		    	//server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Erase_In_Process = 0;
         		    	
-       		    		start_async_log(1024, log_mount_path, server_status);
-       		    		server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Running = 1;
+    		    		// now restarting log
+        		    	start_async_log(1024, log_mount_path, server_status);
+    		    		registers->CPU_STATUS.fields.Is_Logfile_Running = 1;
+    		    		//server_status.message.log.message_base.PSU_Status.fields.Is_Logfile_Running = 1;
        		    		server_status.log_active = true;
         		        printf("erasing log\n\r");
         		    }
@@ -149,12 +160,33 @@ int servercmd_start(int server_port, ServerStatus &server_status){
 				break;
                 case  CMD_OP4:
                 {
-					if(rx_size != (sizeof(pcmd->cmd4))){
+                    struct timeval tv;
+
+                	if(rx_size != (sizeof(pcmd->cmd4))){
 						printf("%s.%d  worng packet size, got %d expected %d  \n\r",__func__,__LINE__,rx_size, sizeof(pcmd->cmd4) );
 						continue;
 					}
 					printf("Got cmd(%d) gmt_time(%d) gmt_microseconds(%d)\n\r",pcmd->cmd4.message_id, pcmd->cmd4.gmt_time, pcmd->cmd4.microseconds);
 					// change file name of log
+				    tv.tv_sec = pcmd->cmd4.gmt_time;
+				    tv.tv_usec = pcmd->cmd4.microseconds;
+				    if (settimeofday(&tv, NULL) < 0) {
+				        printf("%s.%d Failed to set time\n\r",__func__,__LINE__);
+				    }
+				    else {
+				        struct tm *ptm;
+				        char time_string[40];
+				        long milliseconds;
+				        gettimeofday(&tv, NULL);
+				        // Convert the time to a human-readable format
+				        ptm = localtime(&tv.tv_sec);
+				        strftime(time_string, sizeof(time_string), "%Y-%m-%d %H:%M:%S", ptm);
+				        // Compute milliseconds
+				        milliseconds = tv.tv_usec / 1000;
+				        // Print the time with milliseconds
+				        std::cout << "Current time: " << time_string << "." << milliseconds << " milliseconds\n";
+				    }
+
 					server_status.update_log_name = true;
 					count++;
                 }
@@ -169,12 +201,11 @@ int servercmd_start(int server_port, ServerStatus &server_status){
 					}
 					printf("Got cmd(%d) command(%d) reg_a(%d) reg_d(%d)\n\r",pcmd->cmd5.message_id, pcmd->cmd5.command, pcmd->cmd5.reg_address, pcmd->cmd5.reg_data);
 					if(pcmd->cmd5.command == 0){ // write
-						//regs_a[pcmd->cmd5.reg_address] = pcmd->cmd5.reg_data;
-						//reg_val = regs_a[pcmd->cmd5.reg_address];
+						regs_a[pcmd->cmd5.reg_address] = pcmd->cmd5.reg_data;
+						reg_val = regs_a[pcmd->cmd5.reg_address];
 					}
 					else if (pcmd->cmd5.command == 1){ // read
-						//reg_val = regs_a[pcmd->cmd5.reg_address];
-						reg_val = pcmd->cmd5.reg_data + 1;
+						reg_val = regs_a[pcmd->cmd5.reg_address];
 					}
 
 					cmd5_reg_rw_t *resp = (cmd5_reg_rw_t *) calloc(1,sizeof(cmd5_reg_rw_t));
@@ -225,6 +256,185 @@ void servercmd_stop(ServerStatus &server_status){
 }
 
 static const char psu_log_id_const[11] = PSU_LOG_ID;
+void init_message(ServerStatus &server_status)
+{
+	memcpy(server_status.message.log.header.Log_ID,psu_log_id_const,10);
+	server_status.message.log.header.Log_Payload_Size   = TELEMETRY_BYTES - 1; //the -1 as we do not include the messaage id
+	server_status.message.log.header.GMT_Time           = 0;
+	server_status.message.log.header.Micro_Sec          = 0;
+	server_status.message.log.footer_checksum           = 0;
+
+	server_status.message.log.message_base.VDC_IN       = 0;
+	server_status.message.log.message_base.VAC_IN_PH_A  = 0;
+	server_status.message.log.message_base.VAC_IN_PH_B  = 0;
+	server_status.message.log.message_base.VAC_IN_PH_C  = 0;
+	server_status.message.log.message_base.I_DC_IN      = 0;
+	server_status.message.log.message_base.I_AC_IN_PH_A = 0;
+	server_status.message.log.message_base.I_AC_IN_PH_B = 0;
+	server_status.message.log.message_base.I_AC_IN_PH_C = 0;
+	server_status.message.log.message_base.V_OUT_1      = 0;
+	server_status.message.log.message_base.V_OUT_2      = 0;
+	server_status.message.log.message_base.V_OUT_3_ph1  = 0;
+	server_status.message.log.message_base.V_OUT_3_ph2  = 0;
+	server_status.message.log.message_base.V_OUT_3_ph3  = 0;
+	server_status.message.log.message_base.V_OUT_4      = 0;
+	server_status.message.log.message_base.V_OUT_5      = 0;
+	server_status.message.log.message_base.V_OUT_6      = 0;
+	server_status.message.log.message_base.V_OUT_7      = 0;
+	server_status.message.log.message_base.V_OUT_8      = 0;
+	server_status.message.log.message_base.V_OUT_9      = 0;
+	server_status.message.log.message_base.V_OUT_10     = 0;
+	server_status.message.log.message_base.I_OUT_1      = 0;
+	server_status.message.log.message_base.I_OUT_2      = 0;
+	server_status.message.log.message_base.I_OUT_3_ph1  = 0;
+	server_status.message.log.message_base.I_OUT_3_ph2  = 0;
+	server_status.message.log.message_base.I_OUT_3_ph3  = 0;
+	server_status.message.log.message_base.I_OUT_4      = 0;
+	server_status.message.log.message_base.I_OUT_5      = 0;
+	server_status.message.log.message_base.I_OUT_6      = 0;
+	server_status.message.log.message_base.I_OUT_7      = 0;
+	server_status.message.log.message_base.I_OUT_8      = 0;
+	server_status.message.log.message_base.I_OUT_9      = 0;
+	server_status.message.log.message_base.I_OUT_10     = 0;
+	server_status.message.log.message_base.AC_Power     = 0;
+	server_status.message.log.message_base.Fan1_Speed   = 0;
+	server_status.message.log.message_base.Fan2_Speed   = 0;
+	server_status.message.log.message_base.Fan3_Speed   = 0;
+	server_status.message.log.message_base.Volume_size  = 0;
+	server_status.message.log.message_base.Logfile_size = 0;
+	server_status.message.log.message_base.T1           = 0;
+	server_status.message.log.message_base.T2           = 0;
+	server_status.message.log.message_base.T3           = 0;
+	server_status.message.log.message_base.T4           = 0;
+	server_status.message.log.message_base.T5           = 0;
+	server_status.message.log.message_base.T6           = 0;
+	server_status.message.log.message_base.T7           = 0;
+	server_status.message.log.message_base.T8           = 0;
+	server_status.message.log.message_base.T9           = 0;
+	//server_status.message.log.message_base.ETM          = 0; ETM is updated in it's own task
+	server_status.message.log.message_base.Major        = SW_VER_MJR;
+	server_status.message.log.message_base.Minor        = SW_VER_MNR;
+	server_status.message.log.message_base.Build        = 0;
+	server_status.message.log.message_base.Hotfix       = 0;
+	//server_status.message.log.message_base.SN           = 0; SN is updated in the ETM task
+    server_status.message.log.message_base.PSU_Status.word  = 0;
+    server_status.message.log.message_base.Lamp_Ind     = 0;
+    server_status.message.log.message_base.FW_Major     = registers->FPGA_VERSION.fields.REV_MAJOR & 0xFF;
+    server_status.message.log.message_base.FW_Minor     = registers->FPGA_VERSION.fields.REV_MINOR & 0xFF;
+    server_status.message.log.message_base.FW_Build     = 0;
+    server_status.message.log.message_base.FW_Hotfix    = 0;
+    server_status.message.log.message_base.Spare0       = 0;
+    server_status.message.log.message_base.Spare1       = 0;
+    server_status.message.log.message_base.Spare2       = 0;
+    server_status.message.log.message_base.Spare3       = 0;
+    server_status.message.log.message_base.Spare4       = 0;
+    server_status.message.log.message_base.Spare5       = 0;
+    server_status.message.log.message_base.Spare6       = 0;
+    server_status.message.log.message_base.Spare7       = 0;
+    server_status.message.log.message_base.Spare8       = 0;
+    server_status.message.log.message_base.Spare9       = 0;
+
+    server_status.message.tele.tele.Message_ID          = MESSAGE_ID_CONST;
+
+    printf("FPGA compile time: 0x%08X\n\r",registers->COMPILE_TIME.raw);
+    printf("FPGA version (Hex:major.minor): %02X.%02X\n\r",server_status.message.log.message_base.FW_Major, server_status.message.log.message_base.FW_Minor);
+    printf("SW   version (Hex:major.minor): %02X.%02X\n\r",server_status.message.log.message_base.Major, server_status.message.log.message_base.Minor);
+
+}
+
+void format_message(ServerStatus &server_status, unsigned int disk_size,unsigned int disk_use)
+{
+	unsigned char checksum;
+	unsigned long long psu_stat = 0;
+    struct timeval tv;
+    struct tm *ptm;
+    char time_string[40];
+    long milliseconds;
+    static int cnt = 0;
+
+	// get PSU status (must read first (low) and only then the second (high) else FPGA will not flush correctly)
+	psu_stat  = registers->LOG_PSU_STATUS_L.raw;
+	psu_stat |= ((unsigned long long)(registers->LOG_PSU_STATUS_H.raw) << 32);
+
+	// get the system time and format it
+    gettimeofday(&tv, NULL);// Get the current time
+    ptm = localtime(&tv.tv_sec);// Convert the time to a human-readable format
+    strftime(time_string, sizeof(time_string), "%Y-%m-%d %H:%M:%S", ptm);
+    milliseconds = tv.tv_usec / 1000;    // Compute milliseconds
+    // Print the time with milliseconds once in 10 seconds
+    if(cnt % 10000)
+    	std::cout << "Current time: " << time_string << "." << milliseconds << " milliseconds\n";
+    cnt++;
+
+    if ((server_status.message.log.header.GMT_Time < TIME_AT_1_1_2024) && (tv.tv_sec > TIME_AT_1_1_2024))// need to update file name as time has been updated (by NTP or by message)
+    {
+    	server_status.update_log_name = true;
+    }
+
+	// read status from HW and format correctly for LOG
+	server_status.message.log.header.GMT_Time           = tv.tv_sec;
+	server_status.message.log.header.Micro_Sec          = (unsigned short)((double)tv.tv_usec * 1E-6 * 0xFFFF); // this is the format asked by client (email from Efrat Rot 21-2-24)
+
+	server_status.message.log.message_base.VDC_IN       =          (short)(registers->LOG_VDC_IN.raw       & 0xFFFF);
+	server_status.message.log.message_base.VAC_IN_PH_A  =          (short)(registers->LOG_VAC_IN_PH_A.raw  & 0xFFFF);
+	server_status.message.log.message_base.VAC_IN_PH_B  =          (short)(registers->LOG_VAC_IN_PH_B.raw  & 0xFFFF);
+	server_status.message.log.message_base.VAC_IN_PH_C  =          (short)(registers->LOG_VAC_IN_PH_C.raw  & 0xFFFF);
+	server_status.message.log.message_base.I_DC_IN      =          (short)(registers->LOG_I_DC_IN.raw      & 0xFFFF);
+	server_status.message.log.message_base.I_AC_IN_PH_A =          (short)(registers->LOG_I_AC_IN_PH_A.raw & 0xFFFF);
+	server_status.message.log.message_base.I_AC_IN_PH_B =          (short)(registers->LOG_I_AC_IN_PH_B.raw & 0xFFFF);
+	server_status.message.log.message_base.I_AC_IN_PH_C =          (short)(registers->LOG_I_AC_IN_PH_C.raw & 0xFFFF);
+	server_status.message.log.message_base.V_OUT_1      =          (short)(registers->LOG_V_OUT_1.raw      & 0xFFFF);
+	server_status.message.log.message_base.V_OUT_2      =          (short)(registers->LOG_V_OUT_2.raw      & 0xFFFF);
+	server_status.message.log.message_base.V_OUT_3_ph1  =          (short)(registers->LOG_V_OUT_3_PH1.raw  & 0xFFFF);
+	server_status.message.log.message_base.V_OUT_3_ph2  =          (short)(registers->LOG_V_OUT_3_PH2.raw  & 0xFFFF);
+	server_status.message.log.message_base.V_OUT_3_ph3  =          (short)(registers->LOG_V_OUT_3_PH3.raw  & 0xFFFF);
+	server_status.message.log.message_base.V_OUT_4      =          (short)(registers->LOG_V_OUT_4.raw      & 0xFFFF);
+	server_status.message.log.message_base.V_OUT_5      =          (short)(registers->LOG_V_OUT_5.raw      & 0xFFFF);
+	server_status.message.log.message_base.V_OUT_6      =          (short)(registers->LOG_V_OUT_6.raw      & 0xFFFF);
+	server_status.message.log.message_base.V_OUT_7      =          (short)(registers->LOG_V_OUT_7.raw      & 0xFFFF);
+	server_status.message.log.message_base.V_OUT_8      =          (short)(registers->LOG_V_OUT_8.raw      & 0xFFFF);
+	server_status.message.log.message_base.V_OUT_9      =          (short)(registers->LOG_V_OUT_9.raw      & 0xFFFF);
+	server_status.message.log.message_base.V_OUT_10     =          (short)(registers->LOG_V_OUT_10.raw     & 0xFFFF);
+	server_status.message.log.message_base.I_OUT_1      =          (short)(registers->LOG_I_OUT_1.raw      & 0xFFFF);
+	server_status.message.log.message_base.I_OUT_2      =          (short)(registers->LOG_I_OUT_2.raw      & 0xFFFF);
+	server_status.message.log.message_base.I_OUT_3_ph1  =          (short)(registers->LOG_I_OUT_3_PH1.raw  & 0xFFFF);
+	server_status.message.log.message_base.I_OUT_3_ph2  =          (short)(registers->LOG_I_OUT_3_PH2.raw  & 0xFFFF);
+	server_status.message.log.message_base.I_OUT_3_ph3  =          (short)(registers->LOG_I_OUT_3_PH3.raw  & 0xFFFF);
+	server_status.message.log.message_base.I_OUT_4      =          (short)(registers->LOG_I_OUT_4.raw      & 0xFFFF);
+	server_status.message.log.message_base.I_OUT_5      =          (short)(registers->LOG_I_OUT_5.raw      & 0xFFFF);
+	server_status.message.log.message_base.I_OUT_6      =          (short)(registers->LOG_I_OUT_6.raw      & 0xFFFF);
+	server_status.message.log.message_base.I_OUT_7      =          (short)(registers->LOG_I_OUT_7.raw      & 0xFFFF);
+	server_status.message.log.message_base.I_OUT_8      =          (short)(registers->LOG_I_OUT_8.raw      & 0xFFFF);
+	server_status.message.log.message_base.I_OUT_9      =          (short)(registers->LOG_I_OUT_9.raw      & 0xFFFF);
+	server_status.message.log.message_base.I_OUT_10     =          (short)(registers->LOG_I_OUT_10.raw     & 0xFFFF);
+	server_status.message.log.message_base.AC_Power     = (unsigned short)(registers->LOG_AC_POWER.raw     & 0xFFFF);
+	server_status.message.log.message_base.Fan1_Speed   = (unsigned short)(registers->LOG_FAN1_SPEED.raw   & 0xFFFF);
+	server_status.message.log.message_base.Fan2_Speed   = (unsigned short)(registers->LOG_FAN2_SPEED.raw   & 0xFFFF);
+	server_status.message.log.message_base.Fan3_Speed   = (unsigned short)(registers->LOG_FAN3_SPEED.raw   & 0xFFFF);
+	server_status.message.log.message_base.Volume_size  = disk_size;
+	server_status.message.log.message_base.Logfile_size = disk_use;
+	server_status.message.log.message_base.T1           =          (char )(registers->LOG_T1.raw           & 0xFF);
+	server_status.message.log.message_base.T2           =          (char )(registers->LOG_T2.raw           & 0xFF);
+	server_status.message.log.message_base.T3           =          (char )(registers->LOG_T3.raw           & 0xFF);
+	server_status.message.log.message_base.T4           =          (char )(registers->LOG_T4.raw           & 0xFF);
+	server_status.message.log.message_base.T5           =          (char )(registers->LOG_T5.raw           & 0xFF);
+	server_status.message.log.message_base.T6           =          (char )(registers->LOG_T6.raw           & 0xFF);
+	server_status.message.log.message_base.T7           =          (char )(registers->LOG_T7.raw           & 0xFF);
+	server_status.message.log.message_base.T8           =          (char )(registers->LOG_T8.raw           & 0xFF);
+	server_status.message.log.message_base.T9           =          (char )(registers->LOG_T9.raw           & 0xFF);
+//	server_status.message.log.message_base.ETM          =   (unsigned int)(registers->LOG_ETM.raw                );
+//	server_status.message.log.message_base.SN           =  (unsigned char)(registers->LOG_SN.raw           & 0xFF);
+	server_status.message.log.message_base.PSU_Status.word   =  psu_stat;
+    server_status.message.log.message_base.Lamp_Ind     =  (unsigned char)(registers->LOG_LAMP_IND.raw     & 0xFF);
+
+    // calculate checksum
+    for(unsigned int i = 0 ; i < sizeof(server_status.message.raw - 1); i++) { // -1 to exclude the checksum itself
+    	checksum += server_status.message.raw[i];
+	}
+    server_status.message.log.footer_checksum           = checksum;
+}
+
+#if 0 // the costumer request to save the code used for validation of communication on the 27/8/24 integration day
 void init_message(ServerStatus &server_status)
 {
 	memcpy(server_status.message.log.header.Log_ID,psu_log_id_const,10);
@@ -381,3 +591,4 @@ void format_message(ServerStatus &server_status, unsigned int disk_size,unsigned
 	server_status.message.log.footer_checksum           = checksum;
 }
 
+#endif

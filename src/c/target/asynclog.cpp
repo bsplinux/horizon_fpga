@@ -24,6 +24,8 @@
 #include <filesystem>
 #include <atomic>
 #include <cstdio> // Include C standard IO
+#include <sys/time.h>
+#include <ctime>
 
 #include  "socket.h"
 #include  "asynclog.h"
@@ -53,21 +55,23 @@ extern registers_t* const registers;
 
 //static int file_buff_disk(int fd,unsigned char *buffer,int &buffer_offset,void *p_write,unsigned int i_write);
 
-static const char record_id_const[6] = "LFCFG";
+static const char record_id_const[6] = "LFCFG"; // this is taken from IRS
 
-void make_header(log_file_header_union_t * h, unsigned int gmtTime, unsigned short microSec)
+void make_header(log_file_header_union_t * h)
 {
 	unsigned char checksum = 0;
+    struct timeval tv;
+    gettimeofday(&tv, NULL);// Get the current time
 
 	memcpy(h->h.m_recordId,record_id_const,5);
 	h->h.m_recordSize = 15;
-	h->h.m_gmtTime = gmtTime;
-	h->h.m_microSec = microSec;
-	h->h.m_endian = 0xCAFE2BED;
+	h->h.m_gmtTime = tv.tv_sec;
+	h->h.m_microSec = (unsigned short)((double)tv.tv_usec * 1E-6 * 0xFFFF); // this is the format asked by client (email from Efrat Rot 21-2-24)
+	h->h.m_endian = ENDIAN_CONST;
 	h->h.m_bitConfig.flag = 1;
 	h->h.m_bitConfig.reserved = 0;
-	h->h.m_version1 = 0x31704A5C;
-	h->h.m_version2 = 0x2C9BFC6F;
+	h->h.m_version1 = VERSION1_CONST;
+	h->h.m_version2 = VERSION2_CONST;
 	h->h.m_lenSize = 2;
     for(unsigned int i = 0 ; i < sizeof(log_file_header_t) - 1; i++) // -1 to exclude the checksum itself
     	checksum += h->d[i];
@@ -389,11 +393,12 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 		  std::cerr << "Error: " << e.what() << std::endl;
 	  }
 
+	  registers->CPU_STATUS.fields.Is_Logfile_Running = 1;
 	  active_task = 1;
       gfifo   = new  FIFOBuffer(PACKET_COUNT);
       gbuffer = new BufferedFileWriter(new_log_file_name,save_block_size);
       // insert file header to file
-      make_header(&file_header,6,66);
+      make_header(&file_header);
       gbuffer->writeData(&file_header, sizeof(log_file_header_union_t));
       reader_thread_h= std::thread([] { reader_thread(gbuffer,gfifo);});
 	   
@@ -422,7 +427,13 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 		   
             // Simulate packet data fill (for illustration, not actually filling data here)
             while(active_task){
-                // as per spec 2.2.1.6 check 12v before new log
+                bool send_to_host = false;
+
+                pkt_count = (pkt_count + 1) % 10;
+                if(pkt_count==0 && server_status.host_ip != 0)
+                	send_to_host = true;
+
+            	// as per spec 2.2.1.6 check 12v before new log
             	if (get_sysmon_sample() < 1700)
             	{
             		unmount_flag = true;
@@ -438,10 +449,9 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
                 	// TODO rename the log file name
                 	gbuffer->update_file_name(new_log_file_name);
                     // insert file header to file
-                    make_header(&file_header,7,77);
+                    make_header(&file_header);
                     gbuffer->writeData(&file_header, sizeof(log_file_header_union_t));
                 	server_status.update_log_name = false;
-                	//rename(new_log_file_name.c_str(),);
                 }
 				g_disk_free_size = disk_free - gbuffer->get_write_acc();
 				if(g_disk_free_size < MAX_ALLOW_FREE_SIZE_B && server_status.log_active){
@@ -450,19 +460,19 @@ int start_async_log(int save_block_size,std::string log_path, ServerStatus &serv
 				}
 				
 				storage_get_info(log_path,disk_size,disk_use,disk_free);
+                if(send_to_host) // must check before formating message because we need to know if reading psu_status also flushes it
+                	registers->PSU_CONTROL.fields.release_psu = 1; // no need to set 0 its a write only
                 format_message(server_status,disk_size,disk_use);
 
                 Packet packet(&server_status.message,sizeof(message_superset_union_t)) ;
                 log_count = (log_count + 1) % server_status.log_mseconds;
                 if(gfifo && log_count == 0 && server_status.log_active){
                     gfifo->write(std::move(packet)); // Push pointer into the queue
-					
-					
-                    //printf("%s.%d write paket\n\r",__func__,__LINE__);
-                 }
-                pkt_count = (pkt_count + 1) % 10;
-                if(pkt_count==0 && server_status.host_ip != 0){
-                	server_status.message.tele.tele.Message_ID = MESSAGE_ID_CONST;
+				    //printf("%s.%d write paket\n\r",__func__,__LINE__);
+                }
+                if(send_to_host)
+                {
+                	server_status.message.tele.tele.Message_ID = MESSAGE_ID_CONST; // this byte is shared by log as last byte of header or by telemetry by message id so need to override
 
                 	registers->PSU_CONTROL.fields.release_psu = 1; // no need to set 0 its a write only
                 	int ret = Socket_SendTo(socket,&server_status.message.tele.tele.Message_ID,sizeof(cmd81_telemetry_t), server_status.host_ip, server_status.log_udp_port);

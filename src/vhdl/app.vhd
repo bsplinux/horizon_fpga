@@ -44,8 +44,6 @@ architecture RTL of app is
     signal log_regs                    : log_reg_array_t;
     signal log_regs_uart               : log_reg_array_t;
     signal log_regs_spi                : log_reg_array_t;
-    signal ETI                         : std_logic_vector(31 downto 0);
-    signal SN                          : std_logic_vector(7 downto 0);
     signal fan_pwm                     : std_logic_vector(1 to 3);
     signal free_running_1ms            : std_logic;
     signal stop_log_to_cpu             : std_logic;
@@ -212,40 +210,10 @@ begin
     ps_intr(PS_INTR_STOP_LOG) <= log_ps_intr(PS_INTR_STOP_LOG);
     stop_log <= '0';  -- for now there is no condition to internally stop the log, the 12v is mesured by ARM sw and not by firmware
     
-    ----------------------
-    -- misc fields -------
-    ----------------------
-    
-    -- ETI (counting hours)
-        -- the cpu is in charge of updating ETI in flash but reset ETI comes from registers
-    -- SN (serial no.)
-    process(clk)
-    begin
-        if rising_edge(clk) then
-            ps_intr(PS_INTR_UPDATE_FLASH) <= '0';
-            
-            if registers(SN_ETI)(SN_ETI_RESET_ETI) = '1' and regs_updating(SN_ETI) = '1' then
-                ETI <= (others => '0');
-                ps_intr(PS_INTR_UPDATE_FLASH) <= '1'; 
-            else
-                ETI <= registers(LOG_ETM);
-            end if;
-            if registers(SN_ETI)(SN_ETI_SET_SN) = '1' and regs_updating(SN_ETI) = '1' then
-                SN <= registers(SN_ETI)(SN'range);
-                ps_intr(PS_INTR_UPDATE_FLASH) <= '1'; 
-            else
-                SN <= registers(LOG_SN)(SN'range);
-            end if;
-        end if;
-    end process;
-
     process(clk)
     begin
         if rising_edge(clk) then
             log_regs <= (others => X"00000000");
-            
-            log_regs(LOG_ETM) <= ETI;
-            log_regs(LOG_SN)(SN'range) <= SN;
             
             log_regs(LOG_V_OUT_1 ) <= log_regs_uart(LOG_V_OUT_1 );
             log_regs(LOG_V_OUT_2 ) <= log_regs_uart(LOG_V_OUT_2 );

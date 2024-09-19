@@ -258,7 +258,7 @@ begin
             psu_status(psu_status_DC_IN_Status               ) <= limits_stat(limit_stat_28_dc_in);
             psu_status(psu_status_AC_IN_Status               ) <= limits_stat(limit_stat_115_ac_in);
             psu_status(psu_status_Power_Out_Status           ) <= limits_stat(limit_stat_115_ac_out) or limits_stat(limit_stat_v_out4_out);
-            psu_status(psu_status_MIU_COM_Status             ) <= registers(CPU_STATUS)(CPU_STATUS_MIU_COM_Status);
+            psu_status(psu_status_MIU_COM_Status             ) <= not registers(CPU_STATUS)(CPU_STATUS_MIU_COM_Status);
             psu_status(psu_status_OUT1_OC                    ) <= registers(UART_T1)(UART_T1_OCP);
             psu_status(psu_status_OUT2_OC                    ) <= registers(UART_T2)(UART_T2_OCP);
             psu_status(psu_status_OUT3_OC                    ) <= '0'; -- no info keep 0
