@@ -1,3 +1,6 @@
+#todo:
+# allow bit fields to overlap and then use only one set of bitfields in union (it works in vhdl it doesnt in h)
+
 from pathlib import Path
 import re
 from datetime import datetime

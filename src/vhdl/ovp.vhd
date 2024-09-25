@@ -34,18 +34,20 @@ end entity ovp;
 architecture RTL of ovp is
 
     constant LIMIT_125  : integer := 1250; --  125[V] /  0.1 [V/UNIT] = 1250 [UNITS]
+    constant LIMIT_32   : integer := 640 ; --   32[V] / 0.05 [V/UNIT] =  640 [UNITS]
     constant LIMIT_35   : integer := 700 ; --   35[V] / 0.05 [V/UNIT] =  700 [UNITS]
     constant LIMIT_45   : integer := 900 ; --   45[V] / 0.05 [V/UNIT] =  900 [UNITS]
     constant LIMIT_31_5 : integer := 630 ; -- 31.5[V] / 0.05 [V/UNIT] =  630 [UNITS]
 
 
-    constant MSEC_100: integer := 10_000_000;
-    constant MSEC_2 : integer :=  200_000;
+    constant MSEC_5000: integer := 500_000_000;
+    constant MSEC_100 : integer :=  10_000_000;
+    constant MSEC_2   : integer :=     200_000;
     
     type integer_array_t is array(natural range <>) of integer;
     type signed16_array_t is array(natural range <>) of signed(15 downto 0);
-    constant limits: integer_array_t(1 to 16) := (LIMIT_125, LIMIT_125, LIMIT_125, LIMIT_125, LIMIT_125, LIMIT_125, LIMIT_125, LIMIT_35, LIMIT_45, LIMIT_31_5, LIMIT_35, LIMIT_35, LIMIT_35, LIMIT_35, LIMIT_35, LIMIT_35);
-    constant t_time: integer_array_t(limits'range) := (MSEC_100, MSEC_100, MSEC_100, MSEC_100, MSEC_100, MSEC_100, MSEC_100, MSEC_2, MSEC_2, MSEC_2, MSEC_2, MSEC_2, MSEC_2, MSEC_2, MSEC_2, MSEC_2);
+    constant limits: integer_array_t(1 to 16) := (LIMIT_125, LIMIT_125, LIMIT_125, LIMIT_125, LIMIT_125, LIMIT_125, LIMIT_125, LIMIT_32, LIMIT_45, LIMIT_31_5, LIMIT_35, LIMIT_35, LIMIT_35, LIMIT_35, LIMIT_35, LIMIT_35);
+    constant t_time: integer_array_t(limits'range) := (MSEC_100, MSEC_100, MSEC_100, MSEC_100, MSEC_100, MSEC_100, MSEC_100, MSEC_5000, MSEC_2, MSEC_2, MSEC_2, MSEC_2, MSEC_2, MSEC_2, MSEC_2, MSEC_2);
     
     signal ovp_sig: std_logic_vector(limits'range);
     signal ovp_en: std_logic_vector(limits'range);
