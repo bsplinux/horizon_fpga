@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------------------------
--- Registers VHDL package created from yaml definition of registers at 19-09-2024 16:35 --
+-- Registers VHDL package created from yaml definition of registers at 06-10-2024 13:43 --
 --   python function: regs2vhdl.py                                                      --
 --   yaml file name: ../yaml/condor_regs.yaml                                           --
 ------------------------------------------------------------------------------------------
@@ -375,6 +375,7 @@ package regs_pkg is
   subtype  GENERAL_STATUS_LAMP_STATE      is integer range  3 downto  2;
   constant GENERAL_STATUS_power_on_debaunced : integer :=  4;
   constant GENERAL_STATUS_during_power_down : integer :=  5;
+  constant GENERAL_STATUS_power_is_on     : integer :=  6;
   -- fields for PSU_CONTROL
   constant PSU_CONTROL_release_psu        : integer :=  0;
   -- fields for CPU_STATUS
@@ -1077,7 +1078,7 @@ package regs_pkg is
   constant WRITEABLE_REGS : reg_array_t := (
     BITSTREAM_TIME       => X"FFFFFFFF",
     GENERAL_CONTROL      => X"0000FFFF",
-    GENERAL_STATUS       => X"0000003F",
+    GENERAL_STATUS       => X"0000007F",
     PSU_CONTROL          => X"00000001",
     CPU_STATUS           => X"0000001F",
     TIMESTAMP_L          => X"FFFFFFFF",

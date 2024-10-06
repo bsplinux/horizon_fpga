@@ -87,6 +87,7 @@ begin
                 internal_regs(GENERAL_STATUS)(GENERAL_STATUS_LAMP_STATE)  <= lamp_state;
                 internal_regs(GENERAL_STATUS)(GENERAL_STATUS_power_on_debaunced) <= general_stat(GENERAL_STATUS_power_on_debaunced);
                 internal_regs(GENERAL_STATUS)(GENERAL_STATUS_during_power_down)  <= general_stat(GENERAL_STATUS_during_power_down) ;
+                internal_regs(GENERAL_STATUS)(GENERAL_STATUS_power_is_on)        <= general_stat(GENERAL_STATUS_power_is_on)       ;
                 
                 -- timestamp
                 internal_regs_we(TIMESTAMP_L) <= '1';

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="power_on_off_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="condor_pl_pkg" />
+            <top_module name="power_on_off_tb" />
+            <top_module name="regs_pkg" />
+            <top_module name="sim_pkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="3,294.001 ns"></ZoomEndTime>
+      <Cursor1Time time="384.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="423"></NameColumnWidth>
+      <ValueColumnWidth column_width="466"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="10" />
+   <wvobject fp_name="/power_on_off_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/power_on_off_tb/sync_rst" type="logic">
+      <obj_property name="ElementShortName">sync_rst</obj_property>
+      <obj_property name="ObjectShortName">sync_rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/power_on_off_tb/registers" type="array">
+      <obj_property name="ElementShortName">registers[0:155][31:0]</obj_property>
+      <obj_property name="ObjectShortName">registers[0:155][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/power_on_off_tb/power_2_ios" type="array">
+      <obj_property name="ElementShortName">power_2_ios</obj_property>
+      <obj_property name="ObjectShortName">power_2_ios</obj_property>
+   </wvobject>
+   <wvobject fp_name="/power_on_off_tb/free_running_1ms" type="logic">
+      <obj_property name="ElementShortName">free_running_1ms</obj_property>
+      <obj_property name="ObjectShortName">free_running_1ms</obj_property>
+   </wvobject>
+   <wvobject fp_name="/power_on_off_tb/fans_en" type="logic">
+      <obj_property name="ElementShortName">fans_en</obj_property>
+      <obj_property name="ObjectShortName">fans_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/power_on_off_tb/limits_stat" type="array">
+      <obj_property name="ElementShortName">limits_stat[61:0]</obj_property>
+      <obj_property name="ObjectShortName">limits_stat[61:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/power_on_off_tb/general_stat" type="array">
+      <obj_property name="ElementShortName">general_stat[31:0]</obj_property>
+      <obj_property name="ObjectShortName">general_stat[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/power_on_off_tb/stop_clock" type="other">
+      <obj_property name="ElementShortName">stop_clock</obj_property>
+      <obj_property name="ObjectShortName">stop_clock</obj_property>
+   </wvobject>
+   <wvobject fp_name="group88" type="group">
+      <obj_property name="label">power</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/power_on_off_tb/uut/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/sync_rst" type="logic">
+         <obj_property name="ElementShortName">sync_rst</obj_property>
+         <obj_property name="ObjectShortName">sync_rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/registers" type="array">
+         <obj_property name="ElementShortName">registers[0:155][31:0]</obj_property>
+         <obj_property name="ObjectShortName">registers[0:155][31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/power_2_ios" type="array">
+         <obj_property name="ElementShortName">power_2_ios</obj_property>
+         <obj_property name="ObjectShortName">power_2_ios</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/free_running_1ms" type="logic">
+         <obj_property name="ElementShortName">free_running_1ms</obj_property>
+         <obj_property name="ObjectShortName">free_running_1ms</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/fans_en" type="logic">
+         <obj_property name="ElementShortName">fans_en</obj_property>
+         <obj_property name="ObjectShortName">fans_en</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/limits_stat" type="array">
+         <obj_property name="ElementShortName">limits_stat[61:0]</obj_property>
+         <obj_property name="ObjectShortName">limits_stat[61:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/general_stat" type="array">
+         <obj_property name="ElementShortName">general_stat[31:0]</obj_property>
+         <obj_property name="ObjectShortName">general_stat[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/debug_state" type="other">
+         <obj_property name="ElementShortName">debug_state</obj_property>
+         <obj_property name="ObjectShortName">debug_state</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/power_on_debaunced" type="logic">
+         <obj_property name="ElementShortName">power_on_debaunced</obj_property>
+         <obj_property name="ObjectShortName">power_on_debaunced</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/poweron_after26secs" type="logic">
+         <obj_property name="ElementShortName">poweron_after26secs</obj_property>
+         <obj_property name="ObjectShortName">poweron_after26secs</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/relay_3p_pg" type="logic">
+         <obj_property name="ElementShortName">relay_3p_pg</obj_property>
+         <obj_property name="ObjectShortName">relay_3p_pg</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/ovp" type="logic">
+         <obj_property name="ElementShortName">ovp</obj_property>
+         <obj_property name="ObjectShortName">ovp</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/uvp" type="logic">
+         <obj_property name="ElementShortName">uvp</obj_property>
+         <obj_property name="ObjectShortName">uvp</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/otp" type="logic">
+         <obj_property name="ElementShortName">otp</obj_property>
+         <obj_property name="ObjectShortName">otp</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/fans_on" type="logic">
+         <obj_property name="ElementShortName">fans_on</obj_property>
+         <obj_property name="ObjectShortName">fans_on</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/all_inputs_good" type="logic">
+         <obj_property name="ElementShortName">all_inputs_good</obj_property>
+         <obj_property name="ObjectShortName">all_inputs_good</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/all_in_range" type="logic">
+         <obj_property name="ElementShortName">all_in_range</obj_property>
+         <obj_property name="ObjectShortName">all_in_range</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/keep_fans_on_10min" type="logic">
+         <obj_property name="ElementShortName">keep_fans_on_10min</obj_property>
+         <obj_property name="ObjectShortName">keep_fans_on_10min</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/turn_on_tcu" type="logic">
+         <obj_property name="ElementShortName">turn_on_tcu</obj_property>
+         <obj_property name="ObjectShortName">turn_on_tcu</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/turn_off_tcu" type="logic">
+         <obj_property name="ElementShortName">turn_off_tcu</obj_property>
+         <obj_property name="ObjectShortName">turn_off_tcu</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/temperature_ok" type="logic">
+         <obj_property name="ElementShortName">temperature_ok</obj_property>
+         <obj_property name="ObjectShortName">temperature_ok</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/power_on_ok" type="logic">
+         <obj_property name="ElementShortName">power_on_ok</obj_property>
+         <obj_property name="ObjectShortName">power_on_ok</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/during_power_down" type="logic">
+         <obj_property name="ElementShortName">during_power_down</obj_property>
+         <obj_property name="ObjectShortName">during_power_down</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/fans_ok" type="logic">
+         <obj_property name="ElementShortName">fans_ok</obj_property>
+         <obj_property name="ObjectShortName">fans_ok</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/MSEC_5" type="other">
+         <obj_property name="ElementShortName">MSEC_5</obj_property>
+         <obj_property name="ObjectShortName">MSEC_5</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/MSEC_10" type="other">
+         <obj_property name="ElementShortName">MSEC_10</obj_property>
+         <obj_property name="ObjectShortName">MSEC_10</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/MSEC_20" type="other">
+         <obj_property name="ElementShortName">MSEC_20</obj_property>
+         <obj_property name="ObjectShortName">MSEC_20</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/MSEC_50" type="other">
+         <obj_property name="ElementShortName">MSEC_50</obj_property>
+         <obj_property name="ObjectShortName">MSEC_50</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/MSEC_51" type="other">
+         <obj_property name="ElementShortName">MSEC_51</obj_property>
+         <obj_property name="ObjectShortName">MSEC_51</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/SEC_1" type="other">
+         <obj_property name="ElementShortName">SEC_1</obj_property>
+         <obj_property name="ObjectShortName">SEC_1</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/SEC_6_DEB" type="other">
+         <obj_property name="ElementShortName">SEC_6_DEB</obj_property>
+         <obj_property name="ObjectShortName">SEC_6_DEB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/SEC_10" type="other">
+         <obj_property name="ElementShortName">SEC_10</obj_property>
+         <obj_property name="ObjectShortName">SEC_10</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/SEC_20" type="other">
+         <obj_property name="ElementShortName">SEC_20</obj_property>
+         <obj_property name="ObjectShortName">SEC_20</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/SEC_26" type="other">
+         <obj_property name="ElementShortName">SEC_26</obj_property>
+         <obj_property name="ObjectShortName">SEC_26</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/MIN_10" type="other">
+         <obj_property name="ElementShortName">MIN_10</obj_property>
+         <obj_property name="ObjectShortName">MIN_10</obj_property>
+      </wvobject>
+      <wvobject fp_name="/power_on_off_tb/uut/HIGH_RES_1MSEC" type="other">
+         <obj_property name="ElementShortName">HIGH_RES_1MSEC</obj_property>
+         <obj_property name="ObjectShortName">HIGH_RES_1MSEC</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

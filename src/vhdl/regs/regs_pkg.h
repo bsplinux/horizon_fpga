@@ -1,6 +1,6 @@
 /*
 ----------------------------------------------------------------------------------------
--- Registers H file created from yaml definition of registers at     19-09-2024 16:35 --
+-- Registers H file created from yaml definition of registers at     06-10-2024 13:43 --
 --   python function: regs2h.py                                                       --
 --   yaml file name: ../yaml/condor_regs.yaml                                         --
 ----------------------------------------------------------------------------------------
@@ -92,6 +92,7 @@ typedef struct
     uint32_t LAMP_STATE             : 2;
     uint32_t power_on_debaunced     : 1;
     uint32_t during_power_down      : 1;
+    uint32_t power_is_on            : 1;
 }fields_GENERAL_STATUS_t;
 
 typedef union

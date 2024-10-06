@@ -22,7 +22,7 @@ end entity power_on_off;
 architecture RTL of power_on_off is
     -- for simulation all next constants are set to 1, for synthesis each with its real value
     -- note that for simulation the 1ms tick is actually 1us
-    constant MSEC_5    : integer := set_const(5,5,sim_on);
+    constant MSEC_5    : integer := set_const(5_000_000,5_000_000,sim_on); -- in 10 ns
     constant MSEC_10   : integer := set_const(10,10,sim_on); -- in miliseconds
     constant MSEC_20   : integer := set_const(20,20,sim_on); -- in miliseconds
     constant MSEC_50   : integer := set_const(50,50,sim_on); -- in miliseconds
@@ -32,7 +32,7 @@ architecture RTL of power_on_off is
     constant SEC_10    : integer := set_const(1000,10000,sim_on); -- 10 sec (1 sec for sim)
     constant SEC_20    : integer := set_const(2000,20000,sim_on); -- 20 sec (2 sec for sim)
     constant SEC_26    : integer := set_const(2600,26000,sim_on); -- 26 sec (2.6 for sim)
-    constant MIN_10    : integer := set_const(6000,600000,sim_on);-- 10 min (6 sec for sim)
+    constant ONE_MIN   : integer := set_const(1000,60000,sim_on);-- 1 min (1 sec for sim)
     constant HIGH_RES_1MSEC: integer := set_const(10,100_000,sim_on); -- counting 10 ns a clock for syn and 10us for sim 
     type main_sm_t is (idle, start_pwron, wt4_pg_buck, pwron_psus, wt4_all_on, e_shutdown, e_shutdowning, e_shtdwn_wt_ok ,power_on, poweron_low, reset, power_down, wt_pwron0, wt_pwron1);    
     signal debug_state : main_sm_t;
@@ -43,12 +43,13 @@ architecture RTL of power_on_off is
     signal fans_on : std_logic; -- TODO drive fans from somewere
     signal all_inputs_good : std_logic; -- TODO drive this from somewere  
     signal all_in_range : std_logic; -- TODO drive this from somewere  
-    signal keep_fans_on_10min : std_logic; -- from main sm to fans control can be active althugh state could be idle or others. 
+    signal keep_fans_on_1min : std_logic; -- from main sm to fans control can be active althugh state could be idle or others. 
     signal turn_on_tcu, turn_off_tcu : std_logic;
     signal temperature_ok : std_logic;
     signal power_on_ok : std_logic;
     signal during_power_down : std_logic;
     signal fans_ok : std_logic;
+    signal tcus_turend_on : std_logic;
 begin
     main_sm_pr: process(clk)
        variable state : main_sm_t := idle;
@@ -77,34 +78,34 @@ begin
                 turn_on_tcu <= '0';
                 turn_off_tcu <= '0';
                 all_in_range_s := '0';
-                keep_fans_on_10min <= '0';
+                keep_fans_on_1min <= '0';
                 power_on_ok <= '0';
                 during_power_down <= '0';
             else
                 -- next state logic
                 case state is 
                     when idle =>
-                        if power_on_debaunced and temperature_ok and all_in_range then
+                        if power_on_debaunced /* and temperature_ok and all_in_range */ then -- TODO I removed the conditions check this
                             state := start_pwron; 
                         end if;
                     when start_pwron =>
                         state := wt4_pg_buck;
                     when wt4_pg_buck =>
-                        if cnt = SEC_10  or all_in_range = '0' then
+                        if cnt = SEC_20  /* or all_in_range = '0' */ then -- TODO I removed the condition for all_in_range please validate the spec
                             state := e_shutdown;
                         elsif registers(IO_IN)(IO_IN_PG_BUCK_FB) and fans_ok then
                             state := pwron_psus;
                         end if;
-                    when pwron_psus =>
-                        if cnt = SEC_10 or all_in_range = '0' then
+                    when pwron_psus =>  -- FIXME considere mreging this state with wt4_all_on state I cna't see why they shouuld be separated
+                        if cnt = SEC_20 /* or all_in_range = '0' */ then  -- TODO I removed the condition for all_in_range please validate the spec
                             state := e_shutdown;
                         else
                             state := wt4_all_on;
                         end if;
                     when wt4_all_on =>
-                        if all_inputs_good then
+                        if all_inputs_good /* and all_in_range*/ then -- TODO should I add the condition for all_in_range please validate the spec
                            state := power_on;
-                        elsif cnt = SEC_10 or all_in_range = '0' then
+                        elsif cnt = SEC_20 /* or all_in_range = '0'*/ then -- TODO I removed the condition for all_in_range please validate the spec
                             state := e_shutdown;
                         end if;
                     when e_shutdown =>
@@ -136,7 +137,7 @@ begin
                         elsif power_on_debaunced = '1' and cnt < SEC_6_DEB then
                             state := reset;
                             cnt := 0;
-                        elsif cnt > SEC_6_DEB then
+                        elsif cnt > SEC_6_DEB  or temperature_ok = '0' then
                             state := power_down;
                             cnt := 0;
                         end if;
@@ -147,9 +148,9 @@ begin
                             state := power_on;
                         end if;
                     when power_down =>
-                        if all_in_range = '0' then
-                            state := e_shutdown;
-                        elsif cnt = SEC_20 then 
+                        --if all_in_range = '0' then  removed the option for eshutdown during shutdown (wait for confirmation before erasing these 2 lines)
+                        --    state := e_shutdown;
+                        if cnt = SEC_20 then 
                             state := idle;
                         end if;
                     when wt_pwron0 =>
@@ -172,9 +173,10 @@ begin
                 power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                 turn_on_tcu <= '0';
                 turn_off_tcu <= '0';
-                keep_fans_on_10min <= '0';
+                keep_fans_on_1min <= '0';
                 power_on_ok <= '0';
                 during_power_down <= '0';
+                
                 case state is 
                     when idle =>
                         cnt := 0;
@@ -217,16 +219,16 @@ begin
                             cnt := cnt + 1;
                         end if;
                     when e_shutdown =>
-                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '0';
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                         power_2_ios.EN_PSU_1_FB <= '0';
                         power_2_ios.EN_PSU_9_FB <= '0';
                         power_2_ios.RELAY_3PH_FPGA <= '0';
                         cnt := 0;
                         all_in_range_s := all_in_range;
-                        keep_fans_on_10min <= '1';
+                        keep_fans_on_1min <= '1';
                         fans_on <= '0';
                     when e_shutdowning =>
-                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '0';
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                         if cnt  = MSEC_10 then
                             power_2_ios.EN_PSU_2_FB <= '0';
                             power_2_ios.EN_PSU_6_FB <= '0';
@@ -255,25 +257,36 @@ begin
                         end if;
                     when power_on =>
                         power_on_ok <= '1';
+                        if tcus_turend_on then
+                            power_2_ios.RESET_OUT_FPGA <= '0';
+                            power_2_ios.SHUTDOWN_OUT_FPGA <= '0';
+                            power_2_ios.ESHUTDOWN_OUT_FPGA <= '0';
+                        end if;
                         cnt := 0;
                         turn_on_tcu <= '1';
                     when poweron_low =>
+                        power_2_ios.RESET_OUT_FPGA <= '0';
+                        power_2_ios.SHUTDOWN_OUT_FPGA <= '0';
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '0';
                         if free_running_1ms then
                             cnt := cnt + 1;
                         end if;
                     when reset =>
-                        power_2_ios.RESET_OUT_FPGA <= '0';
-                        if free_running_1ms then
-                            cnt := cnt + 1;
-                        end if;
+                        power_2_ios.RESET_OUT_FPGA <= '1';
+                        power_2_ios.SHUTDOWN_OUT_FPGA <= '0';
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '0';
+                        cnt := cnt + 1; -- counter now is high resolution (100MHz system clock) as we need 5 ms +- 10%
                     when power_down =>
+                        power_2_ios.RESET_OUT_FPGA <= '0';
+                        power_2_ios.SHUTDOWN_OUT_FPGA <= '0';
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '0';
                         during_power_down <= '1';
                         if cnt < SEC_10 then
-                            power_2_ios.SHUTDOWN_OUT_FPGA <= '0';
+                            power_2_ios.SHUTDOWN_OUT_FPGA <= '1';
                         else
                             power_2_ios.EN_PFC_FB      <= '0';
                             fans_on <= '0';
-                            keep_fans_on_10min <= '1';
+                            keep_fans_on_1min <= '1';
                             power_2_ios.EN_PSU_1_FB    <= '0';
                             power_2_ios.EN_PSU_2_FB    <= '0';
                             power_2_ios.EN_PSU_5_FB    <= '0';
@@ -381,11 +394,13 @@ begin
                 reg_cctcu := '0';
                 on_tcu_s := '0';
                 off_tcu_s := '0';
+                tcus_turend_on <= '0';
             else
                 if turn_off_tcu = '1' and off_tcu_s = '0' then
                     wait_for_on := '0';
                     power_2_ios.ECTCU_INH_FPGA <= '0';
                     power_2_ios.CCTCU_INH_FPGA <= '0';
+                    tcus_turend_on <= '0';
                 elsif wait_for_on = '0' and turn_on_tcu = '1' and on_tcu_s = '0' then
                     wait_for_on := '1';
                     high_res_cnt := 0;
@@ -393,6 +408,7 @@ begin
                     if high_res_cnt = HIGH_RES_1MSEC then
                         power_2_ios.ECTCU_INH_FPGA <= '1';
                         power_2_ios.CCTCU_INH_FPGA <= '1';
+                        tcus_turend_on <= '1';
                         wait_for_on := '0';
                     elsif high_res_cnt < HIGH_RES_1MSEC then
                         high_res_cnt := high_res_cnt + 1;
@@ -440,7 +456,7 @@ begin
 
     fans_en_pr: process(clk)
         variable keep_fans_on_10min_s : std_logic;
-        variable cnt : integer range 0 to MIN_10 := 0;
+        variable cnt : integer range 0 to ONE_MIN := 0;
     begin
         if rising_edge(clk) then
             if sync_rst then
@@ -455,7 +471,12 @@ begin
                 power_2_ios.FAN_EN2_FPGA <= fans_en;        
                 power_2_ios.FAN_EN3_FPGA <= fans_en;        
                 fans_en <= fans_on;
-                if cnt = MIN_10 then
+
+                if not keep_fans_on_10min_s and keep_fans_on_1min then
+                    cnt := 1;
+                end if;
+
+                if cnt = ONE_MIN then
                     cnt := 0;
                 elsif cnt > 0 then
                     fans_en <= '1';
@@ -464,11 +485,7 @@ begin
                     end if;
                 end if;
                 
-                if not keep_fans_on_10min_s and keep_fans_on_10min then
-                    cnt := 1;
-                end if;
-                
-                keep_fans_on_10min_s := keep_fans_on_10min;
+                keep_fans_on_10min_s := keep_fans_on_1min;
             end if;
         end if;
     end process;
@@ -479,6 +496,7 @@ begin
         general_stat <= (others => '0');
         general_stat(GENERAL_STATUS_power_on_debaunced) <= power_on_debaunced;
         general_stat(GENERAL_STATUS_during_power_down)  <= during_power_down;
+        general_stat(GENERAL_STATUS_power_is_on)        <= power_on_ok;
     end process;
 
 end architecture RTL;

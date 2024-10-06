@@ -48,7 +48,8 @@ reg_general_status: &reg_general_status
     LAMP_STATE : "3:2"
     power_on_debaunced : 4
     during_power_down : 5
-  used_bits: "5:0"
+    power_is_on : 6
+  used_bits: "6:0"
 
 reg_psu_control: &reg_psu_control
   fpga_access: false

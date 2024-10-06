@@ -33,13 +33,22 @@ architecture RTL of fans is
     signal low1, low2, low3 : std_logic_vector(31 downto 0);
     signal high1, high2, high3 : std_logic_vector(31 downto 0);
     
-    constant CONST_LOW  : std_logic_vector(31 downto 0) := X"0000D904"; -- 900 Hz @ 100MHz clock, half a period [10^8/900/2 = 55,556]
-    constant CONST_HIGH : std_logic_vector(31 downto 0) := CONST_LOW;
+    -- for 50/50 duty cycle
+    --constant CONST_LOW  : std_logic_vector(31 downto 0) := X"0000D904"; -- 900 Hz @ 100MHz clock, half a period [10^8/900/2 = 55,556]
+    --constant CONST_HIGH : std_logic_vector(31 downto 0) := CONST_LOW;
+    
+    -- for 55/45 duty cycle
+    constant CONST_LOW  : std_logic_vector(31 downto 0) := X"0000EEB7"; -- 900 Hz @ 100MHz clock, 55% of the period [(10^8/900)X0.55 = 61,111]
+    constant CONST_HIGH : std_logic_vector(31 downto 0) := X"0000C350"; -- 900 Hz @ 100MHz clock, 45% of the period [(10^8/900)X0.45 = 50,000]
     
     constant FAN_RATING   : std_logic_vector(15 downto 0) := X"55F0"; -- 22,000 
-    constant FAN_SET_POINT: std_logic_vector(15 downto 0) := X"44C0"; -- 80% - 17600
-    constant HIGH_LIMIT   : std_logic_vector(15 downto 0) := X"490C"; -- 85% - 18700
-    constant LOW_LIMIT    : std_logic_vector(15 downto 0) := X"4074"; -- 75% - 16500
+    --constant FAN_SET_POINT: std_logic_vector(15 downto 0) := X"44C0"; -- 80% - 17600
+    --constant HIGH_LIMIT   : std_logic_vector(15 downto 0) := X"490C"; -- 85% - 18700
+    --constant LOW_LIMIT    : std_logic_vector(15 downto 0) := X"4074"; -- 75% - 16500
+    constant FAN_SET_POINT: std_logic_vector(15 downto 0) := X"03EB"; -- 1000
+    constant HIGH_LIMIT   : std_logic_vector(15 downto 0) := X"55F0"; -- 100% - 22,000
+    --constant LOW_LIMIT    : std_logic_vector(15 downto 0) := X"0320"; -- 80% of set point - 800
+    constant LOW_LIMIT    : std_logic_vector(15 downto 0) := X"03E8"; -- 1000 rpm
     
 begin
     fans_in(1) <= registers(IO_IN)(IO_IN_FAN_HALL1_FPGA);
@@ -54,9 +63,11 @@ begin
             if rpm1 > LOW_LIMIT  and rpm1 < HIGH_LIMIT then
                 fan1_ok <= '1';
             end if;
+            fan2_ok <= '0';
             if rpm2 > LOW_LIMIT  and rpm2 < HIGH_LIMIT then
                 fan2_ok <= '1';
             end if;
+            fan3_ok <= '0';
             if rpm3 > LOW_LIMIT  and rpm3 < HIGH_LIMIT then
                 fan3_ok <= '1';
             end if;
