@@ -4,14 +4,15 @@ use ieee.std_logic_1164.all;
 use work.regs_pkg.all;
 
 package condor_pl_pkg is
-    constant FPGA_VERSION_CONST : std_logic_vector(full_reg_range) := X"00020004"; -- version (major,minor)
+    constant FPGA_VERSION_CONST : std_logic_vector(full_reg_range) := X"00020005"; -- version (major,minor)
     -- 1.7 integration of SW at Elbit (end of august 2024)
     -- 1.8 is for integration of old board after integration @ elop
     -- 2.0 is for new version of the board
     -- 2.1 changes in spec (uart pinouts and constants and more) 12-9-24
     -- 2.2 added logic_status, uvp, ovp, otp, lamp, psu_status
     -- 2.3 integrating changes in spec from 24-9-24
-    -- 2.4 integrating changes in spec from 30-9-24
+    -- 2.4 integrating changes in spec from 30-9-24 parital (taking care of RPM, power on, reset, shutdown)
+    -- 2.5 same task as 2.4 completing (eshutdown) also default limits are enabled and spis and uarts enabled
     
     constant UART_A_SIZE        : integer := 12;
     constant AXI_A_SIZE         : integer := 12;

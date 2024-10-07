@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------------------------
--- Registers VHDL package created from yaml definition of registers at 06-10-2024 13:43 --
+-- Registers VHDL package created from yaml definition of registers at 07-10-2024 12:48 --
 --   python function: regs2vhdl.py                                                      --
 --   yaml file name: ../yaml/condor_regs.yaml                                           --
 ------------------------------------------------------------------------------------------
@@ -358,17 +358,16 @@ package regs_pkg is
   constant GENERAL_CONTROL_EN_1MS_INTR    : integer :=  2;
   constant GENERAL_CONTROL_RLEASE_REGS    : integer :=  3;
   constant GENERAL_CONTROL_STOP_LOG_ACK   : integer :=  4;
-  constant GENERAL_CONTROL_ALIVE_ERROR    : integer :=  5;
-  constant GENERAL_CONTROL_UVP_EN_PH1     : integer :=  6;
-  constant GENERAL_CONTROL_UVP_EN_PH2     : integer :=  7;
-  constant GENERAL_CONTROL_UVP_EN_PH3     : integer :=  8;
-  constant GENERAL_CONTROL_UVP_EN_DC      : integer :=  9;
-  constant GENERAL_CONTROL_FAN_CHECK      : integer := 10;
-  constant GENERAL_CONTROL_RELAY_CHECK    : integer := 11;
-  constant GENERAL_CONTROL_OVP_IN_EN      : integer := 12;
-  constant GENERAL_CONTROL_OVP_OUT_EN     : integer := 13;
-  constant GENERAL_CONTROL_UVP_EN         : integer := 14;
-  constant GENERAL_CONTROL_OTP_EN         : integer := 15;
+  constant GENERAL_CONTROL_UVP_EN_PH1     : integer :=  8;
+  constant GENERAL_CONTROL_UVP_EN_PH2     : integer :=  9;
+  constant GENERAL_CONTROL_UVP_EN_PH3     : integer := 10;
+  constant GENERAL_CONTROL_UVP_EN_DC      : integer := 11;
+  constant GENERAL_CONTROL_FAN_CHECK      : integer := 12;
+  constant GENERAL_CONTROL_RELAY_CHECK    : integer := 13;
+  constant GENERAL_CONTROL_OVP_IN_EN      : integer := 14;
+  constant GENERAL_CONTROL_OVP_OUT_EN     : integer := 15;
+  constant GENERAL_CONTROL_UVP_EN         : integer := 16;
+  constant GENERAL_CONTROL_OTP_EN         : integer := 17;
   -- fields for GENERAL_STATUS
   constant GENERAL_STATUS_REGS_LOCKED     : integer :=  0;
   constant GENERAL_STATUS_STOP_LOG        : integer :=  1;
@@ -1059,8 +1058,10 @@ package regs_pkg is
   -- Register Reset value (defalut is 0)                                            
   ----------------------------------------------------------------------------------
   constant REGISTERS_INIT : reg_array_t := (
-    REGS_VERSION         => X"00010005",
-    GENERAL_CONTROL      => X"00000F00",
+    REGS_VERSION         => X"00010006",
+    GENERAL_CONTROL      => X"0003FF00",
+    UARTS_CONTROL        => X"000001FF",
+    SPIS_CONTROL         => X"00000005",
     others               => X"00000000"
   );
 
@@ -1077,7 +1078,7 @@ package regs_pkg is
   ----------------------------------------------------------------------------------
   constant WRITEABLE_REGS : reg_array_t := (
     BITSTREAM_TIME       => X"FFFFFFFF",
-    GENERAL_CONTROL      => X"0000FFFF",
+    GENERAL_CONTROL      => X"0003FF1F",
     GENERAL_STATUS       => X"0000007F",
     PSU_CONTROL          => X"00000001",
     CPU_STATUS           => X"0000001F",

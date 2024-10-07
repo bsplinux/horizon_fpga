@@ -1,6 +1,6 @@
 /*
 ----------------------------------------------------------------------------------------
--- Registers H file created from yaml definition of registers at     06-10-2024 13:43 --
+-- Registers H file created from yaml definition of registers at     07-10-2024 12:48 --
 --   python function: regs2h.py                                                       --
 --   yaml file name: ../yaml/condor_regs.yaml                                         --
 ----------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ typedef struct
     uint32_t EN_1MS_INTR            : 1;
     uint32_t RLEASE_REGS            : 1;
     uint32_t STOP_LOG_ACK           : 1;
-    uint32_t ALIVE_ERROR            : 1;
+    uint32_t pad5                   : 3;
     uint32_t UVP_EN_PH1             : 1;
     uint32_t UVP_EN_PH2             : 1;
     uint32_t UVP_EN_PH3             : 1;

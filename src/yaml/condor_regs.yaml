@@ -1,4 +1,4 @@
-define: &registers_version 0x00010005
+define: &registers_version 0x00010006
 
 #first define the registers one by one
 reg_version: &reg_version
@@ -26,18 +26,17 @@ reg_general_control: &reg_general_control
     EN_1MS_INTR  : 2
     RLEASE_REGS  : 3
     STOP_LOG_ACK : 4
-    ALIVE_ERROR  : 5
-    UVP_EN_PH1   : 6
-    UVP_EN_PH2   : 7
-    UVP_EN_PH3   : 8 
-    UVP_EN_DC    : 9 
-    FAN_CHECK    : 10
-    RELAY_CHECK  : 11
-    OVP_IN_EN    : 12
-    OVP_OUT_EN   : 13
-    UVP_EN       : 14
-    OTP_EN       : 15
-  used_bits: "15:0"
+    UVP_EN_PH1   : 8 
+    UVP_EN_PH2   : 9 
+    UVP_EN_PH3   : 10 
+    UVP_EN_DC    : 11
+    FAN_CHECK    : 12
+    RELAY_CHECK  : 13
+    OVP_IN_EN    : 14
+    OVP_OUT_EN   : 15
+    UVP_EN       : 16
+    OTP_EN       : 17
+  used_bits: "17:8,4:0"
 
 reg_general_status: &reg_general_status 
   fpga_access: true
@@ -470,7 +469,7 @@ regs:
     i: auto
   - GENERAL_CONTROL: *reg_general_control
     i: auto
-    init: 0xF00
+    init: 0x3FF00
   - GENERAL_STATUS: *reg_general_status
     i: auto
   - PSU_CONTROL: *reg_psu_control
@@ -542,7 +541,7 @@ regs:
   - PWM3_LOW          : *reg_d
   - PWM3_HIGH         : *reg_d
   - UARTS_CONTROL     : *reg_uarts_ctl
-    init: 0x0
+#    init: 0x0
   - UARTS_STATUS      : *reg_uarts_status
   - UART_RAW0_L       : *reg_uart_d_l
   - UART_RAW0_H       : *reg_uart_d_h
@@ -591,7 +590,7 @@ regs:
   - UART_MAIN_I_PH2   : *reg_d16_int
   - UART_MAIN_I_PH3   : *reg_d16_int
   - SPIS_CONTROL      : *reg_spis_ctl
-    init: 0x0
+#    init: 0x0
   - SPIS_STATUS       : *reg_spis_status
   - SPI_RAW0_BA       : *reg_spi_raw
   - SPI_RAW0_DC       : *reg_spi_raw

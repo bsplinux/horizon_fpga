@@ -15,7 +15,8 @@ entity power_on_off is
         free_running_1ms : in  std_logic;
         fans_en          : out std_logic;
         limits_stat      : in  std_logic_vector(limits_range);
-        general_stat     : out std_logic_vector(full_reg_range)
+        general_stat     : out std_logic_vector(full_reg_range);
+        uarts_error      : in  std_logic
     );
 end entity power_on_off;
 
@@ -31,18 +32,18 @@ architecture RTL of power_on_off is
     constant SEC_6_DEB : integer := set_const(600,6000 - MSEC_50,sim_on); -- 6 sec minus the debauns value (0.6 sec for sim)
     constant SEC_10    : integer := set_const(1000,10000,sim_on); -- 10 sec (1 sec for sim)
     constant SEC_20    : integer := set_const(2000,20000,sim_on); -- 20 sec (2 sec for sim)
-    constant SEC_26    : integer := set_const(2600,26000,sim_on); -- 26 sec (2.6 for sim)
+    --constant SEC_26    : integer := set_const(2600,26000,sim_on); -- 26 sec (2.6 for sim)-- TODO I put this in comment as it is not in the spec anymore, if needed I can uncomment. erase the comment after approval from customer
     constant ONE_MIN   : integer := set_const(1000,60000,sim_on);-- 1 min (1 sec for sim)
     constant HIGH_RES_1MSEC: integer := set_const(10,100_000,sim_on); -- counting 10 ns a clock for syn and 10us for sim 
     type main_sm_t is (idle, start_pwron, wt4_pg_buck, pwron_psus, wt4_all_on, e_shutdown, e_shutdowning, e_shtdwn_wt_ok ,power_on, poweron_low, reset, power_down, wt_pwron0, wt_pwron1);    
-    signal debug_state : main_sm_t;
+    signal debug_state : main_sm_t; -- @suppress "Signal debug_state is never read"
     signal power_on_debaunced : std_logic;
-    signal poweron_after26secs : std_logic;
+    --signal poweron_after26secs : std_logic;-- TODO I put this in comment as it is not in the spec anymore, if needed I can uncomment. erase the comment after approval from customer
     signal relay_3p_pg : std_logic;
     signal ovp, uvp, otp : std_logic;
-    signal fans_on : std_logic; -- TODO drive fans from somewere
-    signal all_inputs_good : std_logic; -- TODO drive this from somewere  
-    signal all_in_range : std_logic; -- TODO drive this from somewere  
+    signal fans_on : std_logic;
+    signal all_inputs_good : std_logic;  
+    signal all_in_range : std_logic;  
     signal keep_fans_on_1min : std_logic; -- from main sm to fans control can be active althugh state could be idle or others. 
     signal turn_on_tcu, turn_off_tcu : std_logic;
     signal temperature_ok : std_logic;
@@ -50,6 +51,7 @@ architecture RTL of power_on_off is
     signal during_power_down : std_logic;
     signal fans_ok : std_logic;
     signal tcus_turend_on : std_logic;
+    signal spis_ok : std_logic;
 begin
     main_sm_pr: process(clk)
        variable state : main_sm_t := idle;
@@ -85,33 +87,33 @@ begin
                 -- next state logic
                 case state is 
                     when idle =>
-                        if power_on_debaunced /* and temperature_ok and all_in_range */ then -- TODO I removed the conditions check this
+                        if power_on_debaunced and temperature_ok then
                             state := start_pwron; 
                         end if;
                     when start_pwron =>
                         state := wt4_pg_buck;
                     when wt4_pg_buck =>
-                        if cnt = SEC_20  /* or all_in_range = '0' */ then -- TODO I removed the condition for all_in_range please validate the spec
+                        if cnt = SEC_20 then
                             state := e_shutdown;
                         elsif registers(IO_IN)(IO_IN_PG_BUCK_FB) and fans_ok then
                             state := pwron_psus;
                         end if;
                     when pwron_psus =>  -- FIXME considere mreging this state with wt4_all_on state I cna't see why they shouuld be separated
-                        if cnt = SEC_20 /* or all_in_range = '0' */ then  -- TODO I removed the condition for all_in_range please validate the spec
+                        if cnt = SEC_20 then
                             state := e_shutdown;
                         else
                             state := wt4_all_on;
                         end if;
                     when wt4_all_on =>
-                        if all_inputs_good /* and all_in_range*/ then -- TODO should I add the condition for all_in_range please validate the spec
+                        if all_inputs_good and all_in_range then 
                            state := power_on;
-                        elsif cnt = SEC_20 /* or all_in_range = '0'*/ then -- TODO I removed the condition for all_in_range please validate the spec
+                        elsif cnt = SEC_20 then
                             state := e_shutdown;
                         end if;
                     when e_shutdown =>
                         state := e_shutdowning;
                     when e_shutdowning =>
-                        if cnt = MSEC_50 + 1 then
+                        if cnt = MSEC_51 then
                             cnt := 0;
                             if all_in_range_s = '0' then 
                                 state := e_shtdwn_wt_ok;
@@ -148,8 +150,6 @@ begin
                             state := power_on;
                         end if;
                     when power_down =>
-                        --if all_in_range = '0' then  removed the option for eshutdown during shutdown (wait for confirmation before erasing these 2 lines)
-                        --    state := e_shutdown;
                         if cnt = SEC_20 then 
                             state := idle;
                         end if;
@@ -163,14 +163,11 @@ begin
                         end if;
                 end case;
                 -- state override using poweron_after26secs
-                if poweron_after26secs then
+                /*if poweron_after26secs then  -- TODO I put this in comment as it is not in the spec anymore, if needed I can uncomment. erase the comment after approval from customer
                     state := idle;
-                end if;
+                end if;*/
                 
                 -- output logic
-                power_2_ios.RESET_OUT_FPGA <= '1';
-                power_2_ios.SHUTDOWN_OUT_FPGA <= '1';
-                power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                 turn_on_tcu <= '0';
                 turn_off_tcu <= '0';
                 keep_fans_on_1min <= '0';
@@ -179,6 +176,9 @@ begin
                 
                 case state is 
                     when idle =>
+                        power_2_ios.RESET_OUT_FPGA <= '1';
+                        power_2_ios.SHUTDOWN_OUT_FPGA <= '1';
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                         cnt := 0;
                         power_2_ios.EN_PFC_FB      <= '0';
                         power_2_ios.EN_PSU_1_FB    <= '0';
@@ -193,15 +193,23 @@ begin
                         fans_on <= '0';
                         turn_off_tcu <= '1';
                     when start_pwron => 
+                        power_2_ios.RESET_OUT_FPGA <= '1';
+                        power_2_ios.SHUTDOWN_OUT_FPGA <= '1';
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                         power_2_ios.EN_PFC_FB      <= '1';
                         fans_on <= '1';
                         cnt := 0;
                     when wt4_pg_buck =>
+                        power_2_ios.RESET_OUT_FPGA <= '1';
+                        power_2_ios.SHUTDOWN_OUT_FPGA <= '1';
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                         if free_running_1ms then
                             cnt := cnt + 1;
                         end if;
                     when pwron_psus =>
-                        
+                        power_2_ios.RESET_OUT_FPGA <= '1';
+                        power_2_ios.SHUTDOWN_OUT_FPGA <= '1';
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                         power_2_ios.EN_PSU_1_FB    <= '1';
                         power_2_ios.EN_PSU_2_FB    <= '1';
                         power_2_ios.EN_PSU_5_FB    <= '1';
@@ -215,6 +223,9 @@ begin
                             cnt := cnt + 1;
                         end if;
                     when wt4_all_on =>
+                        power_2_ios.RESET_OUT_FPGA <= '1';
+                        power_2_ios.SHUTDOWN_OUT_FPGA <= '1';
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                         if free_running_1ms then
                             cnt := cnt + 1;
                         end if;
@@ -228,7 +239,6 @@ begin
                         keep_fans_on_1min <= '1';
                         fans_on <= '0';
                     when e_shutdowning =>
-                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '1';
                         if cnt  = MSEC_10 then
                             power_2_ios.EN_PSU_2_FB <= '0';
                             power_2_ios.EN_PSU_6_FB <= '0';
@@ -241,8 +251,6 @@ begin
                         if cnt = MSEC_50 then
                             power_2_ios.EN_PSU_5_FB <= '0';
                             power_2_ios.EN_PFC_FB   <= '0';
-                        end if;
-                        if cnt = MSEC_51 then
                             turn_off_tcu <= '1';
                         end if;
                         
@@ -250,6 +258,7 @@ begin
                             cnt := cnt + 1;
                         end if;
                     when e_shtdwn_wt_ok => 
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '0';
                         if all_in_range = '0' then
                             cnt := 0;
                         elsif free_running_1ms then
@@ -302,6 +311,7 @@ begin
                             cnt := cnt + 1;
                         end if;
                     when wt_pwron0 =>
+                        power_2_ios.ESHUTDOWN_OUT_FPGA <= '0';
                         cnt := 0;
                     when wt_pwron1 =>
                         if power_on_debaunced = '0' then
@@ -337,7 +347,7 @@ begin
         end if;
     end process;
     
-    poweron_force_pr: process(clk)
+    /*poweron_force_pr: process(clk)-- TODO I put this in comment as it is not in the spec anymore, if needed I can uncomment. erase the comment after approval from customer
         variable cnt: integer range 0 to SEC_26 := 0;
     begin
         if rising_edge(clk) then
@@ -360,7 +370,7 @@ begin
                 end if;
             end if;
         end if;
-    end process;
+    end process;*/
     
     temperature_ok <= not otp;
     ovp         <= limits_stat(limit_ovp_error);
@@ -368,11 +378,12 @@ begin
     uvp         <= limits_stat(limit_uvp);
     otp         <= limits_stat(limit_otp);
     fans_ok     <= not limits_stat(limit_fans);
-        
+    spis_ok    <= '1' when registers(SPIS_CONTROL)(SPIS_CONTROL_EN_RANGE) = registers(SPIS_STATUS)(SPIS_STATUS_SPI2_OK downto SPIS_STATUS_SPI0_OK) else '0';
+    
     all_in_ragne_pr: process(clk)
     begin
         if rising_edge(clk) then
-            all_in_range <= not ovp and not uvp ; -- FIXME and comunication ok with uarts and spis
+            all_in_range <= not ovp and not uvp and spis_ok and not uarts_error;
         end if;
     end process;
     
@@ -450,7 +461,6 @@ begin
                     all_inputs_good <= '1';
                 end if;                   
             end if;
-            all_inputs_good <= '1';-- FIXME at the moment override alwayes all inputs good.
         end if;
     end process;
 

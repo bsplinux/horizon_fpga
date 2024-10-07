@@ -21,7 +21,8 @@ entity rs485_if is
         BD_to_HLS        : in  HLS_axim_from_interconnect_t;
         one_ms_interrupt : in  std_logic;
         de               : out std_logic_vector(8 downto 0);
-        log_regs         : out log_reg_array_t
+        log_regs         : out log_reg_array_t;
+        uarts_error      : out std_logic
     );
     end entity rs485_if;
 
@@ -110,7 +111,7 @@ architecture RTL of rs485_if is
     signal uarts_d_array  : uarts_d_array_t;
     signal uart_de : STD_LOGIC_VECTOR(UARTS_RANGE);
     signal uart_de_ap_vld : STD_LOGIC;
-    signal one_ms_error : std_logic;
+    signal one_ms_error_sticky : std_logic;
     
     type dcdc_t is record
         i_in : std_logic_vector(15 downto 0);
@@ -137,8 +138,10 @@ begin
                 state := idle;
                 ap_start <= '0';
                 allow_hls := false;
-                one_ms_error <= '0';
+                one_ms_error_sticky <= '0';
+                uarts_error <= '0';
             else
+                uarts_error <= '0';
                 allow_hls := false;
                 if registers(UARTS_CONTROL)(UARTS_CONTROL_EN_RANGE) /= "000000000" then
                     allow_hls := true;
@@ -167,21 +170,24 @@ begin
                 case state is 
                 when idle =>
                     if one_ms_interrupt = '1' and allow_hls and ap_idle = '0' and hls_rstn = '1' then
-                        one_ms_error <= '1';
+                        one_ms_error_sticky <= '1';
+                        uarts_error <= '1';
                     end if;
                 when wt_rdy =>
                     ap_start <= '1';
                     if one_ms_interrupt = '1' and ap_start = '1' then
-                        one_ms_error <= '1';
+                        one_ms_error_sticky <= '1';
+                        uarts_error <= '1';
                     end if;
                 when wt_done =>
                     if one_ms_interrupt = '1' then
-                        one_ms_error <= '1';
+                        one_ms_error_sticky <= '1';
+                        uarts_error <= '1';
                     end if;
                 end case;
                 
                 if registers(UARTS_CONTROL)(UARTS_CONTROL_MS1_ERR_CLR) and regs_updating(UARTS_CONTROL) then
-                    one_ms_error <= '0';
+                    one_ms_error_sticky <= '0';
                 end if;
             
             end if;
@@ -197,11 +203,11 @@ begin
                 one_ms_error_s := '0';
             else
                 hls_rstn <= '1';
-                if (one_ms_error_s = '0' and one_ms_error = '1') or sync_rst = '1' or 
+                if (one_ms_error_s = '0' and one_ms_error_sticky = '1') or sync_rst = '1' or 
                     (registers(UARTS_CONTROL)(UARTS_CONTROL_RST) = '1' and regs_updating(UARTS_CONTROL) = '1') then
                         hls_rstn <= '0';
                 end if;                
-                one_ms_error_s := one_ms_error;
+                one_ms_error_s := one_ms_error_sticky;
             end if;
         end if;
     end process;
@@ -251,7 +257,7 @@ begin
         
         internal_regs_we(UARTS_STATUS) <= '1';
         internal_regs(UARTS_STATUS)(UARTS_STATUS_BUSY) <= not ap_idle;
-        internal_regs(UARTS_STATUS)(UARTS_STATUS_MS1_ERR) <= one_ms_error;
+        internal_regs(UARTS_STATUS)(UARTS_STATUS_MS1_ERR) <= one_ms_error_sticky;
         
         internal_regs_we(UART_V_OUT_1 ) <= '1';
         internal_regs_we(UART_V_OUT_2 ) <= '1';
@@ -455,6 +461,8 @@ begin
                     if sync_rst then
                         ipha_var := (others => '0');
                         iphc_var := (others => '0');
+                        --uarts_calc_vld <= (others => '0'); -- we have an issue here as this vector has drivers in 2 different processes and that is iligal in VHDL. consider fixing
+                        --dcdc_array <= dcdc_array_zero;     -- we have an issue here as this vector has drivers in 2 different processes and that is iligal in VHDL. consider fixing
                     else
                         ipha_var := signed(uarts_d_array(uart)(UART_IPHA_H_RANGE)) & signed(uarts_d_array(uart)(UART_IPHA_L_RANGE));
                         iphc_var := signed(uarts_d_array(uart)(UART_IPHC_H_RANGE)) & signed(uarts_d_array(uart)(UART_IPHC_L_RANGE));

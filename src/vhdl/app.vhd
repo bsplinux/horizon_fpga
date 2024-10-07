@@ -65,6 +65,7 @@ architecture RTL of app is
     signal lamp_state : std_logic_vector(1 downto 0);
     signal zc_error : std_logic;
     signal general_stat: std_logic_vector(full_reg_range);
+    signal uarts_error : std_logic;
     
 begin
     one_ms_tick <= free_running_1ms;
@@ -309,7 +310,8 @@ begin
         BD_to_HLS        => BD_to_HLS(0),
         one_ms_interrupt => free_running_1ms,
         de               => de,
-        log_regs         => log_regs_uart
+        log_regs         => log_regs_uart,
+        uarts_error      => uarts_error
     );
     
     spis_i: entity work.spis_if
@@ -355,7 +357,8 @@ begin
         free_running_1ms => free_running_1ms,
         fans_en          => fans_en,
         limits_stat      => limits_stat,
-        general_stat     => general_stat
+        general_stat     => general_stat,
+        uarts_error      => uarts_error
     );
     
     limits_i: entity work.limits
